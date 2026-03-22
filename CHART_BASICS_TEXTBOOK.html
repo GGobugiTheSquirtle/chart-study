@@ -1,0 +1,3229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>차트 기초 완벽 교재 — 차트프로 초급 차트편 40강</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #1c2333;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --accent: #58a6ff;
+  --accent2: #3fb950;
+  --warn: #d29922;
+  --danger: #f85149;
+  --purple: #bc8cff;
+  --cyan: #39d2c0;
+  --orange: #f0883e;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  font-size: 15px;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 20px; }
+
+/* Header */
+.hero {
+  text-align: center;
+  padding: 60px 20px 40px;
+  background: linear-gradient(135deg, #0d1117 0%, #2a1f0d 50%, #0d1117 100%);
+  border-bottom: 1px solid var(--border);
+}
+.hero h1 {
+  font-size: 2.4em;
+  background: linear-gradient(135deg, #f0883e, #d29922);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+.hero .subtitle { color: var(--text2); font-size: 1.1em; }
+.hero .meta { color: var(--text2); font-size: 0.85em; margin-top: 15px; }
+
+/* Navigation */
+nav.toc {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13,17,23,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+nav.toc .container { display: flex; gap: 4px; flex-wrap: nowrap; }
+nav.toc a {
+  color: var(--text2);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8em;
+  font-weight: 500;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+nav.toc a:hover, nav.toc a.active {
+  background: var(--surface);
+  color: var(--orange);
+}
+
+/* Sections */
+section { padding: 50px 0; border-bottom: 1px solid var(--border); }
+section:last-child { border-bottom: none; }
+
+h2 {
+  font-size: 1.8em;
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--orange);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+h2 .num {
+  background: var(--orange);
+  color: var(--bg);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6em;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+h3 {
+  font-size: 1.25em;
+  color: var(--orange);
+  margin: 30px 0 12px;
+  padding-left: 12px;
+  border-left: 3px solid var(--orange);
+}
+h4 {
+  font-size: 1.05em;
+  color: var(--purple);
+  margin: 20px 0 8px;
+}
+
+p { margin-bottom: 12px; color: var(--text); }
+
+/* Cards */
+.concept-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 16px 0;
+}
+.concept-card.highlight {
+  border-color: var(--orange);
+  background: linear-gradient(135deg, rgba(240,136,62,0.05), rgba(210,153,34,0.05));
+}
+.concept-card.warning {
+  border-color: var(--warn);
+  background: rgba(210,153,34,0.05);
+}
+.concept-card.danger {
+  border-color: var(--danger);
+  background: rgba(248,81,73,0.05);
+}
+.concept-card.success {
+  border-color: var(--accent2);
+  background: rgba(63,185,80,0.05);
+}
+
+.card-title {
+  font-weight: 700;
+  font-size: 1.05em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title .badge {
+  font-size: 0.7em;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+.badge-core { background: var(--orange); color: var(--bg); }
+.badge-adv { background: var(--purple); color: var(--bg); }
+.badge-rule { background: var(--warn); color: var(--bg); }
+.badge-danger { background: var(--danger); color: #fff; }
+
+/* Definition lists */
+.def-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+@media (max-width: 700px) { .def-grid { grid-template-columns: 1fr; } }
+
+.def-item {
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 3px solid var(--orange);
+}
+.def-item.sell { border-left-color: var(--danger); }
+.def-item.buy { border-left-color: var(--accent2); }
+.def-item.info { border-left-color: var(--accent); }
+.def-item .label {
+  font-size: 0.8em;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.def-item .value { font-weight: 600; font-size: 1.05em; }
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.9em;
+}
+th {
+  background: var(--surface2);
+  color: var(--orange);
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--border);
+}
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+tr:hover { background: rgba(240,136,62,0.03); }
+
+/* Lists */
+ul, ol { margin: 8px 0 16px 20px; }
+li { margin-bottom: 6px; }
+li strong { color: var(--orange); }
+
+/* Flow diagrams (text-based) */
+.flow {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 16px 0;
+  text-align: center;
+  font-family: 'Consolas', monospace;
+  font-size: 0.95em;
+  line-height: 2;
+  overflow-x: auto;
+}
+.flow .arrow { color: var(--orange); font-weight: bold; }
+.flow .stage {
+  display: inline-block;
+  background: var(--surface2);
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  margin: 2px;
+}
+.flow .stage.active {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+/* Key insight boxes */
+.insight {
+  background: linear-gradient(135deg, rgba(57,210,192,0.08), rgba(240,136,62,0.08));
+  border: 1px solid var(--cyan);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+.insight::before {
+  content: '핵심 통찰';
+  display: block;
+  font-size: 0.8em;
+  color: var(--cyan);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+/* Candle sticks */
+.candle-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 16px 0;
+  min-height: 120px;
+  position: relative;
+  overflow-x: auto;
+}
+.candle-chart.anatomy {
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+.candle-chart .chart-label {
+  position: absolute;
+  top: 6px;
+  left: 12px;
+  font-size: 0.7em;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.candle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  min-width: 18px;
+}
+.candle .wick {
+  width: 2px;
+  background: var(--text2);
+}
+.candle .body {
+  width: 14px;
+  border-radius: 2px;
+  min-height: 6px;
+}
+.candle.bull .body { background: var(--accent2); }
+.candle.bear .body { background: var(--danger); }
+.candle.bull .wick { background: var(--accent2); }
+.candle.bear .wick { background: var(--danger); }
+.candle.doji .body { background: var(--warn); height: 2px !important; }
+.candle.doji .wick { background: var(--warn); }
+.candle .candle-label {
+  font-size: 0.6em;
+  color: var(--text2);
+  margin-top: 4px;
+  white-space: nowrap;
+}
+.candle .candle-label-top {
+  font-size: 0.6em;
+  color: var(--text2);
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
+.candle.wide .body { width: 22px; }
+.candle.narrow .body { width: 8px; }
+
+/* Anatomy specific */
+.anatomy-group {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.anatomy-candle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.anatomy-candle .wick { width: 2px; }
+.anatomy-candle .body { width: 30px; border-radius: 3px; }
+.anatomy-candle .ann {
+  position: absolute;
+  font-size: 0.7em;
+  color: var(--text2);
+  white-space: nowrap;
+}
+.anatomy-candle .ann-left { right: 100%; margin-right: 8px; }
+.anatomy-candle .ann-right { left: 100%; margin-left: 8px; }
+
+/* Price level lines */
+.price-level {
+  position: absolute;
+  left: 0; right: 0;
+  border-top: 1px dashed;
+  padding-left: 8px;
+  font-size: 0.65em;
+  font-weight: 600;
+}
+.price-level.resistance { border-color: var(--danger); color: var(--danger); }
+.price-level.support { border-color: var(--accent2); color: var(--accent2); }
+.price-level.eq { border-color: var(--warn); color: var(--warn); }
+
+/* Flow arrow diagrams */
+.visual-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 16px 0;
+  font-size: 0.9em;
+  overflow-x: auto;
+}
+.vf-step {
+  background: var(--surface2);
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  text-align: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.vf-step.buy { border-color: var(--accent2); color: var(--accent2); }
+.vf-step.sell { border-color: var(--danger); color: var(--danger); }
+.vf-step.trap { border-color: var(--warn); color: var(--warn); background: rgba(210,153,34,0.08); }
+.vf-step.key { border-color: var(--orange); color: var(--orange); }
+.vf-step.neutral { border-color: var(--text2); }
+.vf-arrow {
+  color: var(--text2);
+  font-size: 1.2em;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+.vf-arrow.down { color: var(--danger); }
+.vf-arrow.up { color: var(--accent2); }
+
+/* Comparison side by side */
+.compare-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+@media (max-width: 600px) { .compare-box { grid-template-columns: 1fr; } }
+.compare-side {
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.compare-side.wrong {
+  background: rgba(248,81,73,0.05);
+  border-color: var(--danger);
+}
+.compare-side.right {
+  background: rgba(63,185,80,0.05);
+  border-color: var(--accent2);
+}
+.compare-label {
+  font-size: 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.compare-side.wrong .compare-label { color: var(--danger); }
+.compare-side.right .compare-label { color: var(--accent2); }
+
+/* Collapsible */
+details {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 12px 0;
+  overflow: hidden;
+}
+details summary {
+  padding: 14px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--orange);
+  background: var(--surface2);
+  list-style: none;
+}
+details summary::before { content: '▸ '; }
+details[open] summary::before { content: '▾ '; }
+details .detail-body { padding: 16px 20px; }
+
+/* Volume bar */
+.vol-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  margin-top: 6px;
+}
+.vol-bar .bar {
+  width: 14px;
+  border-radius: 2px 2px 0 0;
+  min-height: 4px;
+}
+.vol-bar .bar.high { background: var(--orange); }
+.vol-bar .bar.mid { background: var(--text2); opacity: 0.5; }
+.vol-bar .bar.low { background: var(--text2); opacity: 0.25; }
+
+/* Scenario */
+.scenario {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 16px 0;
+  position: relative;
+}
+.scenario .scenario-title {
+  font-size: 0.75em;
+  color: var(--purple);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.scenario.bullish { border-left: 4px solid var(--accent2); }
+.scenario.bearish { border-left: 4px solid var(--danger); }
+
+/* Arrow annotation */
+.arrow-annotation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  margin: 6px 0;
+  background: var(--surface2);
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+.arrow-annotation .arr { font-size: 1.3em; }
+.arr-up { color: var(--accent2); }
+.arr-down { color: var(--danger); }
+.arr-warn { color: var(--warn); }
+.arr-info { color: var(--orange); }
+
+/* Print */
+@media print {
+  body { background: #fff; color: #000; font-size: 11pt; }
+  .hero { background: none; border-bottom: 2px solid #000; }
+  .hero h1 { -webkit-text-fill-color: #000; color: #000; }
+  nav.toc { display: none; }
+  .concept-card, details, .flow, .insight {
+    background: #f5f5f5; border-color: #ccc;
+    break-inside: avoid;
+  }
+  th { background: #eee; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero">
+  <h1>차트 기초 완벽 교재</h1>
+  <p class="subtitle">차트프로 초급 차트편 40강 완벽 정리 — 캔들부터 실전 매매까지</p>
+  <p class="meta">출처: 차트프로 유튜브 채널 '초급 차트편' 시리즈 기반 | 2026년 정리</p>
+</header>
+
+<!-- ==================== NAV ==================== -->
+<nav class="toc">
+  <div class="container">
+    <a href="#ch0">Ch.0 용어집</a>
+    <a href="#ch1">Ch.1 캔들</a>
+    <a href="#ch2">Ch.2 거래량</a>
+    <a href="#ch3">Ch.3 지지·저항</a>
+    <a href="#ch4">Ch.4 기준봉·허리</a>
+    <a href="#ch5">Ch.5 이동평균선</a>
+    <a href="#ch6">Ch.6 추세</a>
+    <a href="#ch7">Ch.7 매매 종류</a>
+    <a href="#ch8">Ch.8 핵심 패턴</a>
+    <a href="#ch9">Ch.9 세력가·기준가</a>
+    <a href="#ch10">Ch.10 매매 실전</a>
+    <a href="#intermediate" style="color:var(--purple);">|중급|</a>
+    <a href="#ch11">Ch.11 손절</a>
+    <a href="#ch12">Ch.12 돌파</a>
+    <a href="#ch13">Ch.13 눌림목</a>
+    <a href="#ch14">Ch.14 밥그릇</a>
+    <a href="#ch15">Ch.15 이평선</a>
+    <a href="#ch16">Ch.16 세력가</a>
+    <a href="#ch17">Ch.17 스타일</a>
+    <a href="#ch18">Ch.18 거꾸로</a>
+    <a href="#ch19">Ch.19 AF/VL</a>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- ================================================================ -->
+<!-- CH.0 용어 속성 정리                                              -->
+<!-- ================================================================ -->
+<section id="ch0">
+<h2><span class="num">0</span>용어 속성 정리</h2>
+<p>본 교재에서 반복 등장하는 핵심 용어를 먼저 정리한다. 각 용어의 상세 설명은 해당 챕터에서 다룬다.</p>
+
+<table>
+<thead>
+<tr><th>용어</th><th>의미</th><th>관련 챕터</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>기준봉</strong></td><td>장대 양봉 + 거래량 급증 + 저항선 돌파로 새 추세의 시작을 알리는 캔들</td><td>Ch.4</td></tr>
+<tr><td><strong>기준마디</strong></td><td>기준봉 출현 후 상승이 이어진 파동 덩어리 (시작점~조정 직전)</td><td>Ch.4</td></tr>
+<tr><td><strong>허리</strong></td><td>기준마디의 중심부 핵심 지지/저항대. 산술적 50%가 아닌 실제 매물 집중 구간</td><td>Ch.4</td></tr>
+<tr><td><strong>세력가 / 기준가</strong></td><td>세력이 매수·매도의 기준으로 삼는 핵심 가격대</td><td>Ch.9</td></tr>
+<tr><td><strong>접점 기준가</strong></td><td>캔들의 시가/종가/고가/저가가 가장 많이 겹치는 가격대</td><td>Ch.9</td></tr>
+<tr><td><strong>거래량 기준가</strong></td><td>대량 거래 캔들의 범위 내에서 지지/저항이 확인된 가격대</td><td>Ch.9</td></tr>
+<tr><td><strong>절대 기준가</strong></td><td>접점 기준가와 거래량 기준가가 겹치는 최강 지지/저항 가격대</td><td>Ch.9</td></tr>
+<tr><td><strong>AF 패턴</strong></td><td>A자(공방, 거래량 폭발) + F자(횡보, 거래량 감소, 이평선 수렴) 복합 패턴</td><td>Ch.8</td></tr>
+<tr><td><strong>밥그릇 패턴</strong></td><td>급락 후 둥근 바닥을 그리며 회복, 뚜껑(저항선) 돌파 시 급등</td><td>Ch.8</td></tr>
+<tr><td><strong>원웨이 패턴</strong></td><td>한 방향 연속 상승의 4가지 유형: 일자, 계단, N자, 톱니</td><td>Ch.8</td></tr>
+<tr><td><strong>눌림목 매매</strong></td><td>상승 추세 중 조정(눌림)을 기다려 저점에서 진입하는 예측 매매</td><td>Ch.7</td></tr>
+<tr><td><strong>돌파 매매</strong></td><td>저항선을 돌파하는 순간 추격 진입하는 확인 매매</td><td>Ch.7</td></tr>
+<tr><td><strong>정배열</strong></td><td>단기 이평선 > 중기 > 장기 순서. 모든 매수자가 수익 중인 상태</td><td>Ch.5</td></tr>
+<tr><td><strong>역배열</strong></td><td>장기 이평선 > 중기 > 단기 순서. 모든 매수자가 손실 중인 상태</td><td>Ch.5</td></tr>
+<tr><td><strong>골든크로스</strong></td><td>단기 이평선이 장기 이평선을 위로 돌파. 상승 전환 신호</td><td>Ch.5</td></tr>
+<tr><td><strong>데드크로스</strong></td><td>단기 이평선이 장기 이평선을 아래로 돌파. 하락 전환 신호</td><td>Ch.5</td></tr>
+<tr><td><strong>트랩</strong></td><td>세력이 개미를 속이기 위한 의도적 속임수 (가짜 돌파, 가짜 이탈 등)</td><td>Ch.6, 8</td></tr>
+<tr><td><strong>캔들 카운팅</strong></td><td>과거 N일 전 종가와 현재 종가를 비교하여 이평선 기울기 전환 시점을 예측</td><td>Ch.5</td></tr>
+<tr><td><strong>마디 매매</strong></td><td>한 파동(마디)을 온전히 잡는 중기 매매 스타일</td><td>Ch.10</td></tr>
+<tr><td><strong>라운드 피겨</strong></td><td>10,000원, 50,000원 등 심리적으로 의미 있는 둥근 가격대</td><td>Ch.3</td></tr>
+</tbody>
+</table>
+<div class="insight">
+    <strong>💡 핵심 격언:</strong> 차트의 언어를 모르면 시장의 말을 들을 수 없다. 용어가 기초 체력이다.
+</div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.1 캔들의 기초                                                  -->
+<!-- ================================================================ -->
+<section id="ch1">
+<h2><span class="num">1</span>캔들의 기초: 가격의 언어를 읽다</h2>
+<p class="meta">영상 1~4 기반</p>
+
+<h3>1.1 캔들의 구조</h3>
+<p>하나의 캔들에는 네 가지 가격 정보가 담겨 있다.</p>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">시가 (시작가)</div>
+    <div class="value">해당 시간대가 시작될 때 매수자와 매도자가 처음 합의한 가격. 그 날의 첫 합의 스코어.</div>
+  </div>
+  <div class="def-item">
+    <div class="label">종가 (마감가)</div>
+    <div class="value">해당 시간대가 끝날 때의 최종 합의가. 승자가 결정된 최종 스코어로, 미래의 지지/저항 기준이 된다.</div>
+  </div>
+  <div class="def-item sell">
+    <div class="label">고가 (최고가)</div>
+    <div class="value">매수세가 도달한 최대 한계선. 이 이상은 매도 압력에 막혀 올라가지 못했다는 뜻.</div>
+  </div>
+  <div class="def-item info">
+    <div class="label">저가 (최저가)</div>
+    <div class="value">매도세가 도달한 최대 한계선. 이 이하로는 매수 압력이 받쳐줬다는 뜻.</div>
+  </div>
+</div>
+
+<h4>양봉과 음봉</h4>
+<p><strong>양봉</strong>은 종가가 시가보다 높은 캔들로, 매수자가 이긴 결과다. <strong>음봉</strong>은 종가가 시가보다 낮은 캔들로, 매도자가 이긴 결과다. 몸통은 시가와 종가 사이의 영역이고, 꼬리(심지)는 고가/저가까지 뻗은 선이다.</p>
+
+<!-- 캔들 해부 다이어그램 (anatomy - center 정렬) -->
+<div class="candle-chart anatomy" style="min-height: 240px; gap: 80px;">
+  <span class="chart-label">캔들 해부도</span>
+  <!-- 양봉 -->
+  <div style="display:flex; flex-direction:column; align-items:center; position:relative;">
+    <div style="font-size:0.75em; color:var(--accent2); font-weight:600; margin-bottom:8px;">양봉</div>
+    <div style="position:relative; display:flex; flex-direction:column; align-items:center;">
+      <div style="font-size:0.65em; color:var(--text2); margin-bottom:2px;">← 고가</div>
+      <div style="width:2px; height:30px; background:var(--accent2);"></div>
+      <div style="font-size:0.65em; color:var(--text2); position:absolute; right:-50px; top:38px;">← 종가</div>
+      <div style="width:36px; height:50px; background:var(--accent2); border-radius:3px;"></div>
+      <div style="font-size:0.65em; color:var(--text2); position:absolute; right:-50px; bottom:38px;">← 시가</div>
+      <div style="width:2px; height:20px; background:var(--accent2);"></div>
+      <div style="font-size:0.65em; color:var(--text2); margin-top:2px;">← 저가</div>
+    </div>
+    <div style="font-size:0.6em; color:var(--text2); margin-top:6px;">몸통 = 시가~종가</div>
+  </div>
+  <!-- 음봉 -->
+  <div style="display:flex; flex-direction:column; align-items:center; position:relative;">
+    <div style="font-size:0.75em; color:var(--danger); font-weight:600; margin-bottom:8px;">음봉</div>
+    <div style="position:relative; display:flex; flex-direction:column; align-items:center;">
+      <div style="font-size:0.65em; color:var(--text2); margin-bottom:2px;">← 고가</div>
+      <div style="width:2px; height:20px; background:var(--danger);"></div>
+      <div style="font-size:0.65em; color:var(--text2); position:absolute; right:-50px; top:28px;">← 시가</div>
+      <div style="width:36px; height:50px; background:var(--danger); border-radius:3px;"></div>
+      <div style="font-size:0.65em; color:var(--text2); position:absolute; right:-50px; bottom:38px;">← 종가</div>
+      <div style="width:2px; height:30px; background:var(--danger);"></div>
+      <div style="font-size:0.65em; color:var(--text2); margin-top:2px;">← 저가</div>
+    </div>
+    <div style="font-size:0.6em; color:var(--text2); margin-top:6px;">꼬리 = 고가/저가까지의 심지</div>
+  </div>
+</div>
+
+<h3>1.2 종가·고가·저가의 진짜 의미</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">종가는 '최종 승자의 합의가'</div>
+  <p>장이 마감될 때 마지막까지 남아있는 세력의 합의가가 종가다. 따라서 종가는 그 다음 날의 <strong>지지 혹은 저항의 기준선</strong>이 된다. 전일 종가 위에서 출발하면 매수 우위, 아래에서 출발하면 매도 우위를 의미한다.</p>
+</div>
+
+<ul>
+  <li><strong>고가</strong> = 매수세가 허용된 최대 한계. 그 이상으로 가격을 밀어올리지 못한 '천장'</li>
+  <li><strong>저가</strong> = 매도세가 허용된 최대 한계. 그 이하로 끌어내리지 못한 '바닥'</li>
+  <li><strong>변동폭</strong>(고가 - 저가)이 갑자기 커지면, 시장 참여자들의 의견 충돌이 격화되었다는 신호 → <strong>새로운 시세 방향이 예고</strong>된다</li>
+</ul>
+
+<h3>1.3 시가·갭·몸통</h3>
+
+<h4>갭(Gap)의 의미</h4>
+<p>전일 종가와 금일 시가의 차이를 갭이라 한다. 장이 닫힌 사이에 누적된 매수 또는 매도 열망이 갭으로 표출된다.</p>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">갭 상승</div>
+    <div class="value">밤사이 호재가 누적되어 매수 열망 폭발. 갭 자체가 지지선 역할을 한다.</div>
+  </div>
+  <div class="def-item sell">
+    <div class="label">갭 하락</div>
+    <div class="value">밤사이 악재가 누적되어 매도 열망 폭발. 갭 자체가 저항선 역할을 한다.</div>
+  </div>
+</div>
+
+<h4>몸통 크기의 의미</h4>
+<p>몸통이 크다 = 한쪽이 압도적으로 지배했다는 뜻. 그러나 <strong>하루치 캔들만으로 판단하면 안 된다</strong>. 반드시 며칠치를 묶어서 누가 진정한 우위를 점하고 있는지를 봐야 한다.</p>
+
+<h3>1.4 캔들의 힘 싸움</h3>
+
+<h4>대표 캔들 유형</h4>
+<table>
+<thead>
+<tr><th>유형</th><th>모양</th><th>해석</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>장대양봉</strong></td><td>몸통이 크고 꼬리가 짧은 양봉</td><td>매수세가 압도적으로 승리. 강한 상승 의지</td></tr>
+<tr><td><strong>장대음봉</strong></td><td>몸통이 크고 꼬리가 짧은 음봉</td><td>매도세가 압도적으로 승리. 강한 하락 의지</td></tr>
+<tr><td><strong>도지 (십자형)</strong></td><td>몸통이 거의 없고 위아래 꼬리</td><td>매수·매도 세력이 팽팽. 전환점 가능성</td></tr>
+<tr><td><strong>T자형</strong></td><td>위에 몸통, 아래 긴 꼬리</td><td>하락 시도 후 강한 반등. 저점 지지 신호</td></tr>
+<tr><td><strong>역T자형</strong></td><td>아래 몸통, 위 긴 꼬리</td><td>상승 시도 후 강한 눌림. 고점 저항 신호</td></tr>
+</tbody>
+</table>
+
+<h4>캔들 쪼개기: 하위 타임프레임으로 분해</h4>
+<p>일봉 하나를 4시간봉 6개, 혹은 1시간봉 24개로 쪼개면 그 안에서 벌어진 힘의 공방이 보인다. 예를 들어 장대양봉처럼 보이지만, 하위 타임프레임에서는 후반부에만 급등한 것일 수 있다.</p>
+
+<h4>캔들 합치기: 연속 캔들의 통합 해석</h4>
+<p>반대로 2~3일치 캔들을 하나로 합쳐서 보면, 전체 힘의 흐름을 한눈에 파악할 수 있다.</p>
+
+<!-- 캔들 합치기 다이어그램 -->
+<div class="candle-chart" style="align-items:center; justify-content:center; gap:20px; min-height:180px;">
+  <span class="chart-label">캔들 합치기 예시</span>
+  <!-- 음봉 -->
+  <div class="candle bear" style="margin-bottom:0;">
+    <div class="wick" style="height:15px;"></div>
+    <div class="body" style="height:40px; width:20px;"></div>
+    <div class="wick" style="height:10px;"></div>
+    <div class="candle-label">음봉</div>
+  </div>
+  <div style="font-size:1.5em; color:var(--text2);">+</div>
+  <!-- 양봉 -->
+  <div class="candle bull" style="margin-bottom:0;">
+    <div class="wick" style="height:10px;"></div>
+    <div class="body" style="height:50px; width:20px;"></div>
+    <div class="wick" style="height:15px;"></div>
+    <div class="candle-label">양봉</div>
+  </div>
+  <div style="font-size:1.5em; color:var(--orange);">=</div>
+  <!-- 합성봉 (T자형) -->
+  <div class="candle bull" style="margin-bottom:0;">
+    <div class="wick" style="height:15px;"></div>
+    <div class="body" style="height:15px; width:20px;"></div>
+    <div class="wick" style="height:45px;"></div>
+    <div class="candle-label">T자형 합성봉</div>
+  </div>
+  <div style="margin-left:20px; font-size:0.8em; color:var(--accent2);">→ 하락 시도 후 반등 성공<br>→ 매수 우위 전환 신호</div>
+</div>
+
+<h3>1.5 꼬리의 의미: 싸움의 흔적</h3>
+<p>꼬리(심지)는 한때 그 가격까지 갔다가 되돌아왔다는 뜻이다. 즉, 한쪽이 밀어붙였지만 결국 밀려난 '패배의 흔적'이다.</p>
+
+<div class="compare-box">
+  <div class="compare-side right">
+    <div class="compare-label">긴 아래꼬리 (양봉)</div>
+    <p>매도세가 크게 밀어내렸지만, 매수세가 다시 끌어올림. <strong>하방 지지 강함</strong>.</p>
+    <p>바닥권에서 출현 → 반전 신호.</p>
+  </div>
+  <div class="compare-side wrong">
+    <div class="compare-label">긴 윗꼬리 (음봉)</div>
+    <p>매수세가 크게 밀어올렸지만, 매도세가 다시 끌어내림. <strong>상방 저항 강함</strong>.</p>
+    <p>고점권에서 출현 → 반전 신호.</p>
+  </div>
+</div>
+
+<details>
+<summary>심화: 상위/하위 타임프레임 연계 분석</summary>
+<div class="detail-body">
+  <p>캔들 분석의 정밀도를 높이려면, 반드시 <strong>다중 타임프레임</strong>으로 확인해야 한다.</p>
+  <ul>
+    <li><strong>일봉에서 장대양봉</strong> → 4시간봉으로 내려가면 어느 시점에 급등했는지 보인다</li>
+    <li><strong>일봉에서 도지</strong> → 4시간봉에서 보면 상승→급락→반등의 격렬한 싸움이 있었다</li>
+    <li><strong>주봉에서 캔들 합치기</strong> → 일봉 5개를 하나로 합쳐 주봉을 만들면 주간 힘의 방향이 한눈에</li>
+  </ul>
+  <p>단일 타임프레임만 보면 속임수에 당하기 쉽다. 항상 상위 타임프레임에서 방향을 확인하고, 하위 타임프레임에서 진입 타점을 잡아라.</p>
+</div>
+</details>
+
+<h3>1.6 캔들 분석의 핵심 원칙</h3>
+<div class="insight">
+캔들은 계산적 영역이 아니라 감각의 영역이다. 단일 캔들에 집착하지 말고, 쪼개고 합치며 힘의 우위를 느껴야 한다. 여러 캔들을 하나로 합쳐보고, 하나의 캔들을 쪼개보는 연습을 반복하라.
+</div>
+
+<details>
+<summary>연습 문제: 다음 캔들 조합의 합성봉은?</summary>
+<div class="detail-body">
+  <p><strong>문제 1:</strong> 장대양봉 + 작은 음봉 → 합성봉은? <br>→ 답: 윗꼬리 달린 양봉. 매수 우위지만 저항 존재.</p>
+  <p><strong>문제 2:</strong> 장대음봉 + 장대양봉 (음봉보다 큼) → 합성봉은? <br>→ 답: 긴 아래꼬리 양봉. 큰 하락 후 더 큰 반등. 매수 전환.</p>
+  <p><strong>문제 3:</strong> 작은 양봉 3개 연속 → 합성봉은? <br>→ 답: 중간 크기 양봉. 꾸준한 매수 우위.</p>
+  <p>이런 식으로 매일 2~3개의 캔들 조합을 합성봉으로 변환하는 연습을 하라.</p>
+</div>
+</details>
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.2 거래량                                                       -->
+<!-- ================================================================ -->
+<section id="ch2">
+<h2><span class="num">2</span>거래량: 시세의 진실을 꿰뚫다</h2>
+<p class="meta">영상 5, 6, 10, 38, 39 기반</p>
+
+<h3>2.1 거래량의 본질</h3>
+<p>거래량은 시장 참여자의 투표수다. 가격 변동이 진짜인지 가짜인지를 거래량이 증명한다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">건강한 상승의 조건 <span class="badge badge-core">핵심</span></div>
+  <ul>
+    <li>상승 구간: 거래량 <strong>증가</strong> → 매수 참여자가 늘어나며 가격을 밀어올림</li>
+    <li>조정 구간: 거래량 <strong>감소</strong> → 차익 실현자만 빠져나가고, 매도 압력 약함</li>
+    <li>거꾸로 상승 시 거래량 감소 + 하락 시 거래량 증가 → <strong>추세 약화 경고</strong></li>
+  </ul>
+</div>
+
+<h3>2.2 차트 강도의 3요소</h3>
+<table>
+<thead>
+<tr><th>요소</th><th>의미</th><th>강할 때</th><th>약할 때</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>거래량</strong></td>
+  <td>참여도 = 매물 소화 능력</td>
+  <td>대량 거래 동반 상승</td>
+  <td>거래 없이 오르는 공허한 상승</td>
+</tr>
+<tr>
+  <td><strong>속도 (기울기)</strong></td>
+  <td>세력의 힘 = 추진력</td>
+  <td>가파른 각도의 상승</td>
+  <td>완만한 기어오름</td>
+</tr>
+<tr>
+  <td><strong>심리 (파동의 흔듦)</strong></td>
+  <td>개미 털기 여부</td>
+  <td>N자로 흔들며 올라감 (가장 강력)</td>
+  <td>일직선 상승 (지속성 의심)</td>
+</tr>
+</tbody>
+</table>
+
+<div class="insight">
+N자 파동으로 흔들면서 올라가는 차트가 가장 강하다. 직선 상승은 화려하지만 갑작스럽게 무너질 위험이 크고, 흔들림 없이 오른 만큼 지지대가 없다.
+</div>
+
+<h3>2.3 고점 대량 거래의 의미</h3>
+<p>시세가 크게 분출된 후 고점 부근에서 거래량이 폭발하면, 다음 세 가지 중 하나다.</p>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">시나리오 1: 매물 소화</div>
+    <div class="value">저항대의 매도 물량을 매수세가 전부 흡수. 돌파 후 추가 상승.</div>
+  </div>
+  <div class="def-item">
+    <div class="label">시나리오 2: 재매집</div>
+    <div class="value">세력이 의도적으로 가격을 눌러 개미 물량을 빼앗은 후 재상승.</div>
+  </div>
+  <div class="def-item sell">
+    <div class="label">시나리오 3: 물량 넘기기 (패대기)</div>
+    <div class="value">세력이 보유 물량을 개미에게 넘기고 이탈. 급락 시작.</div>
+  </div>
+</div>
+
+<div class="concept-card danger">
+  <div class="card-title">경고: 고점 대량 거래 시 추격 매수 금지 <span class="badge badge-danger">위험</span></div>
+  <p>시세가 이미 크게 분출된 후 저항선 부근에서 거래량이 폭발하면, 보유 물량을 줄이고 관망하라. 어떤 시나리오인지 확인이 될 때까지 신규 매수는 절대 금지.</p>
+</div>
+
+<h3>2.4 거래량과 세력의 심리</h3>
+
+<h4>바닥 대량 거래 후 전략</h4>
+<div class="visual-flow">
+  <span class="vf-step key">바닥에서 대량 거래 출현</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step neutral">급등 발생</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">거래량 감소 + 눌림</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">재차 양봉 출현 = 진입!</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">2차 상승</span>
+</div>
+
+<div class="concept-card warning">
+  <div class="card-title">규칙: 바닥 대량 거래에 바로 뛰어들지 마라 <span class="badge badge-rule">규칙</span></div>
+  <p>바닥에서 거래량이 터져도 즉시 추격 진입하면 안 된다. 반드시 <strong>거래량이 마른 눌림목</strong>을 기다린 후, 재차 양봉이 나올 때 진입하라. 조급함이 손실의 시작이다.</p>
+</div>
+
+<details>
+<summary>심화: 거래량 판독 체크리스트</summary>
+<div class="detail-body">
+  <p>거래량을 볼 때 반드시 확인해야 할 5가지:</p>
+  <ol>
+    <li><strong>절대량</strong>: 평소 대비 몇 배인가? 2배 이상이면 주목, 5배 이상이면 세력 참여 의심</li>
+    <li><strong>위치</strong>: 바닥인가, 고점인가, 중간인가? 위치에 따라 해석이 완전히 달라진다</li>
+    <li><strong>캔들과의 관계</strong>: 양봉에 대량 거래 vs 음봉에 대량 거래는 반대 의미</li>
+    <li><strong>추세 방향</strong>: 추세와 같은 방향의 거래량 증가는 건강, 반대 방향은 경고</li>
+    <li><strong>후속 거래량</strong>: 대량 거래 후 거래량이 마르면 건강한 눌림, 계속 높으면 세력 교체 의심</li>
+  </ol>
+</div>
+</details>
+
+<h4>고점 대량 거래 후 전략</h4>
+<div class="visual-flow">
+  <span class="vf-step sell">고점 대량 거래 (패대기 의심)</span>
+  <span class="vf-arrow down">→</span>
+  <span class="vf-step neutral">관망</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">긴 시간 조정</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">기준봉 재출현 확인</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">눌림 후 재진입</span>
+</div>
+
+<!-- 거래량 연동 캔들 차트 -->
+<div class="candle-chart" style="min-height:160px; padding-bottom:50px;">
+  <span class="chart-label">거래량과 캔들의 관계</span>
+  <div style="display:flex; flex-direction:column; align-items:center;">
+    <div class="candle bear" style="margin-bottom:0;">
+      <div class="wick" style="height:8px;"></div>
+      <div class="body" style="height:30px;"></div>
+      <div class="wick" style="height:5px;"></div>
+    </div>
+    <div class="vol-bar"><div class="bar mid" style="height:15px;"></div></div>
+  </div>
+  <div style="display:flex; flex-direction:column; align-items:center;">
+    <div class="candle bear" style="margin-bottom:0;">
+      <div class="wick" style="height:5px;"></div>
+      <div class="body" style="height:25px;"></div>
+      <div class="wick" style="height:10px;"></div>
+    </div>
+    <div class="vol-bar"><div class="bar mid" style="height:12px;"></div></div>
+  </div>
+  <div style="display:flex; flex-direction:column; align-items:center;">
+    <div class="candle bull" style="margin-bottom:0;">
+      <div class="wick" style="height:3px;"></div>
+      <div class="body" style="height:45px;"></div>
+      <div class="wick" style="height:15px;"></div>
+    </div>
+    <div class="vol-bar"><div class="bar high" style="height:35px;"></div></div>
+    <div style="font-size:0.55em; color:var(--orange);">대량 거래!</div>
+  </div>
+  <div style="display:flex; flex-direction:column; align-items:center;">
+    <div class="candle bull" style="margin-bottom:0;">
+      <div class="wick" style="height:5px;"></div>
+      <div class="body" style="height:30px;"></div>
+      <div class="wick" style="height:3px;"></div>
+    </div>
+    <div class="vol-bar"><div class="bar mid" style="height:20px;"></div></div>
+  </div>
+  <div style="display:flex; flex-direction:column; align-items:center;">
+    <div class="candle bull" style="margin-bottom:0;">
+      <div class="wick" style="height:8px;"></div>
+      <div class="body" style="height:20px;"></div>
+      <div class="wick" style="height:5px;"></div>
+    </div>
+    <div class="vol-bar"><div class="bar low" style="height:8px;"></div></div>
+    <div style="font-size:0.55em; color:var(--text2);">거래량 감소</div>
+  </div>
+  <div style="display:flex; flex-direction:column; align-items:center;">
+    <div class="candle bear" style="margin-bottom:0;">
+      <div class="wick" style="height:5px;"></div>
+      <div class="body" style="height:12px;"></div>
+      <div class="wick" style="height:8px;"></div>
+    </div>
+    <div class="vol-bar"><div class="bar low" style="height:6px;"></div></div>
+    <div style="font-size:0.55em; color:var(--text2);">눌림</div>
+  </div>
+  <div style="display:flex; flex-direction:column; align-items:center;">
+    <div class="candle bull" style="margin-bottom:0;">
+      <div class="wick" style="height:3px;"></div>
+      <div class="body" style="height:35px;"></div>
+      <div class="wick" style="height:5px;"></div>
+    </div>
+    <div class="vol-bar"><div class="bar high" style="height:28px;"></div></div>
+    <div style="font-size:0.55em; color:var(--accent2);">진입 타점!</div>
+  </div>
+  <div style="display:flex; flex-direction:column; align-items:center;">
+    <div class="candle bull" style="margin-bottom:0;">
+      <div class="wick" style="height:5px;"></div>
+      <div class="body" style="height:40px;"></div>
+      <div class="wick" style="height:3px;"></div>
+    </div>
+    <div class="vol-bar"><div class="bar high" style="height:25px;"></div></div>
+  </div>
+</div>
+
+<h3>2.5 거래량 분석의 실전 정리</h3>
+
+<div class="concept-card">
+  <div class="card-title">거래량 해석 종합표</div>
+  <table>
+  <thead>
+  <tr><th>가격 방향</th><th>거래량</th><th>위치</th><th>해석</th></tr>
+  </thead>
+  <tbody>
+  <tr><td>상승</td><td>증가</td><td>바닥/중간</td><td>건강한 매수세. 추세 시작 또는 가속</td></tr>
+  <tr><td>상승</td><td>감소</td><td>중간/고점</td><td>매수 동력 약화. 조정 임박 가능</td></tr>
+  <tr><td>상승</td><td>폭발</td><td>고점</td><td>패대기 또는 매물 소화. 관망 필수</td></tr>
+  <tr><td>하락</td><td>증가</td><td>고점/중간</td><td>강한 매도세. 추세 전환 가능</td></tr>
+  <tr><td>하락</td><td>감소</td><td>바닥</td><td>매도 에너지 소진. 반등 임박 가능</td></tr>
+  <tr><td>하락</td><td>폭발</td><td>바닥</td><td>세력 매집 또는 공포 투매. 반전 후보</td></tr>
+  <tr><td>횡보</td><td>감소</td><td>중간</td><td>에너지 축적 중. 폭발 임박</td></tr>
+  <tr><td>횡보</td><td>증가</td><td>중간</td><td>방향 결정 전 세력의 포지션 구축</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<div class="visual-flow">
+  <span class="vf-step neutral">거래량 감소 횡보<br><small>(에너지 축적)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">이평선 수렴</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">거래량 폭발!</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">방향 결정 = 시세 분출</span>
+</div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.3 지지와 저항                                                  -->
+<!-- ================================================================ -->
+<section id="ch3">
+<h2><span class="num">3</span>지지와 저항: 매매의 기준선</h2>
+<p class="meta">영상 7, 8 기반</p>
+
+<h3>3.1 지지/저항의 심리적 메커니즘</h3>
+
+<p>지지/저항은 단순한 선이 아니라, 그 가격대에서 매수·매도한 사람들의 <strong>심리</strong>가 만들어낸 벽이다. 가격이 특정 레벨에 접근하면, 과거에 그 가격에서 거래한 사람들의 감정(후회, 기대, 두려움)이 집단적으로 작동한다.</p>
+
+<div class="concept-card">
+  <div class="card-title">세 종류의 참여자와 심리</div>
+  <ul>
+    <li><strong>매수자</strong>: 해당 가격에서 산 사람. 손실이면 본전 회복 시 팔고 싶고, 수익이면 더 사고 싶다.</li>
+    <li><strong>매도자</strong>: 해당 가격에서 판 사람. 가격이 다시 오면 "그때 잘 팔았다" 확인, 내리면 "더 팔아야 하나" 고민.</li>
+    <li><strong>관망자</strong>: 못 산 사람. 가격이 돌아오면 "이번엔 사야지" 대기 → 지지가 형성된다.</li>
+  </ul>
+</div>
+
+<div class="concept-card highlight">
+  <div class="card-title">역할 전환 원리 <span class="badge badge-core">핵심</span></div>
+  <p><strong>저항선이 돌파되면 → 지지선으로 바뀐다.</strong> 그 반대도 마찬가지다. 돌파 전에는 매도 벽이었지만, 돌파 후에는 그 가격에서 산 매수자들이 "본전에서 팔지 않겠다"고 버티기 때문이다.</p>
+</div>
+
+<!-- 역할 전환 캔들 차트 -->
+<div class="candle-chart" style="min-height:180px;">
+  <span class="chart-label">저항 → 지지 역할 전환</span>
+  <div class="price-level resistance" style="bottom:100px;">저항선 (전고점)</div>
+  <div class="candle bull" style="margin-bottom:20px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bull" style="margin-bottom:30px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:30px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bear" style="margin-bottom:50px;"><div class="wick" style="height:20px;"></div><div class="body" style="height:15px;"></div><div class="wick" style="height:5px;"></div><div class="candle-label">저항 맞음</div></div>
+  <div class="candle bear" style="margin-bottom:30px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:10px;"></div></div>
+  <div class="candle bull" style="margin-bottom:25px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:8px;"></div></div>
+  <div class="candle bull" style="margin-bottom:40px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:40px;"></div><div class="wick" style="height:5px;"></div><div class="candle-label">돌파!</div></div>
+  <div class="candle bear" style="margin-bottom:55px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:15px;"></div><div class="wick" style="height:15px;"></div><div class="candle-label">지지 확인</div></div>
+  <div class="candle bull" style="margin-bottom:60px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:30px;"></div><div class="wick" style="height:3px;"></div><div class="candle-label">반등</div></div>
+  <div class="candle bull" style="margin-bottom:75px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:5px;"></div></div>
+</div>
+
+<h3>3.2 핵심 기준점 5가지</h3>
+
+<div class="def-grid">
+  <div class="def-item">
+    <div class="label">1. 전고점·전저점</div>
+    <div class="value">가장 기본적인 지지/저항. 이전에 가격이 반전된 자리는 다시 반전될 확률이 높다.</div>
+  </div>
+  <div class="def-item">
+    <div class="label">2. 횡보 박스권 상·하단</div>
+    <div class="value">오래 머무른 가격대의 상단/하단. 거래가 누적된 만큼 돌파/이탈 시 큰 에너지를 분출한다.</div>
+  </div>
+  <div class="def-item">
+    <div class="label">3. 대량 거래 캔들의 시가/종가</div>
+    <div class="value">세력이 대량 매매한 가격. 세력 자신이 그 가격을 지키려는 동기가 있다.</div>
+  </div>
+  <div class="def-item">
+    <div class="label">4. 라운드 피겨</div>
+    <div class="value">10,000원, 50,000원, 100,000원 등 심리적 의미를 가진 둥근 숫자. 주문이 집중된다.</div>
+  </div>
+  <div class="def-item" style="grid-column: 1 / -1;">
+    <div class="label">5. 갭 가격대</div>
+    <div class="value">갭 상승/하락이 발생한 가격대. 미체결 거래의 공백지대로, 재방문 시 강한 지지/저항 작용.</div>
+  </div>
+</div>
+
+<h3>3.3 지지/저항의 강도 판별</h3>
+
+<p>모든 지지/저항이 동일한 강도를 가지지 않는다. 강도를 결정하는 핵심 요인:</p>
+
+<ul>
+  <li><strong>접촉 횟수</strong>: 여러 번 지지/저항받은 가격대일수록 강하다</li>
+  <li><strong>거래량 누적</strong>: 오래 횡보하며 거래가 누적된 매물대는 단순 고점/저점보다 훨씬 강하다</li>
+  <li><strong>시간 프레임</strong>: 주봉/월봉의 지지/저항이 분봉보다 압도적으로 강하다</li>
+  <li><strong>최근성</strong>: 최근에 형성된 지지/저항이 오래전 것보다 유효하다</li>
+</ul>
+
+<div class="concept-card highlight">
+  <div class="card-title">두꺼운 매물대의 이중성 <span class="badge badge-core">핵심</span></div>
+  <p>오래 횡보하며 거래가 쌓인 두꺼운 매물대는 <strong>돌파 전에는 강력한 저항</strong>이지만, <strong>돌파 후에는 강력한 지지</strong>가 된다. 매물대가 두꺼울수록 돌파에 시간이 걸리지만, 한번 돌파하면 쉽게 무너지지 않는다.</p>
+</div>
+
+<h3>3.4 지지/저항 실전 작도법</h3>
+
+<div class="concept-card">
+  <div class="card-title">지지/저항선 작도 순서</div>
+  <ol>
+    <li><strong>주봉/월봉부터 시작</strong>: 가장 큰 그림에서 핵심 지지/저항을 먼저 그린다</li>
+    <li><strong>일봉으로 세밀화</strong>: 주봉의 큰 지지/저항 사이에서 일봉의 세부 레벨을 추가한다</li>
+    <li><strong>분봉으로 타점 확정</strong>: 일봉의 지지/저항 부근에서 분봉의 정밀한 진입가를 잡는다</li>
+    <li><strong>선이 아닌 영역</strong>: 지지/저항은 정확한 한 줄이 아니라 약간의 폭을 가진 '영역'으로 인식한다</li>
+  </ol>
+</div>
+
+<div class="concept-card warning">
+  <div class="card-title">흔한 실수: 선 긋기 과잉 <span class="badge badge-rule">규칙</span></div>
+  <p>차트에 지지/저항선을 너무 많이 그으면 오히려 판단이 흐려진다. 핵심 레벨 3~5개만 남기고 나머지는 지운다. <strong>적을수록 명확하다.</strong></p>
+</div>
+
+<details>
+<summary>실전 연습: 지지/저항 5가지 기준점 찾기</summary>
+<div class="detail-body">
+  <p>아무 종목의 일봉 차트를 열고, 다음 순서로 연습하라:</p>
+  <ol>
+    <li>최근 3개월 내 전고점, 전저점을 표시한다 (빨간선/초록선)</li>
+    <li>횡보 구간이 있다면 박스 상단/하단을 표시한다</li>
+    <li>거래량이 특별히 많은 캔들을 찾아 그 시가/종가를 표시한다</li>
+    <li>라운드 피겨(만원 단위)를 표시한다</li>
+    <li>갭이 있다면 갭 가격대를 표시한다</li>
+    <li>5가지가 겹치는 구간이 있는가? → 그곳이 가장 강한 지지/저항</li>
+  </ol>
+</div>
+</details>
+<div class="insight">
+    <strong>💡 핵심 격언:</strong> 지지와 저항은 벽이 아니라 문이다 — 깨지면 역할이 뒤바뀐다.
+</div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.4 기준봉·기준마디·허리                                         -->
+<!-- ================================================================ -->
+<section id="ch4">
+<h2><span class="num">4</span>기준봉·기준마디·허리: 추세의 뼈대를 세우다</h2>
+<p class="meta">영상 11, 12, 23 기반</p>
+
+<h3>4.1 기준봉의 정의와 3가지 조건</h3>
+
+<p>기준봉은 새로운 추세가 시작됨을 알리는 '봉화'와 같은 캔들이다. 다음 세 조건을 <strong>모두</strong> 충족해야 한다.</p>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">조건 1: 장대 양봉 + 저항선 돌파</div>
+    <div class="value">단순히 큰 양봉이 아니라, 명확한 저항 라인을 종가 기준으로 돌파해야 한다.</div>
+  </div>
+  <div class="def-item buy">
+    <div class="label">조건 2: 거래량 급증</div>
+    <div class="value">이전 캔들들보다 확연히 많은 거래량. 세력의 본격적 참여를 의미한다.</div>
+  </div>
+  <div class="def-item buy">
+    <div class="label">조건 3: 이평선 우상향 + 종가 유지</div>
+    <div class="value">이동평균선이 정배열로 전환 중이거나 이미 정배열이고, 종가가 돌파선 위에서 마감.</div>
+  </div>
+</div>
+
+<div class="concept-card danger">
+  <div class="card-title">1차 기준봉은 트랩 위험이 높다 <span class="badge badge-danger">위험</span></div>
+  <p>처음 나타나는 기준봉은 세력의 속임수(트랩)일 수 있다. 초보자는 <strong>2차 기준봉</strong>을 기다리는 것이 안전하다. 2차 기준봉 = 1차 기준봉 이후 조정을 거친 뒤 다시 나타나는 기준봉.</p>
+</div>
+
+<h4>기준봉 무효화 조건</h4>
+<ul>
+  <li>이동평균선과의 이격도가 지나치게 클 때 (이미 너무 많이 올랐다)</li>
+  <li>직전의 강한 저항선을 종가 기준으로 돌파하지 못했을 때</li>
+  <li>종가가 기준선 아래로 되돌아갔을 때 (회선)</li>
+</ul>
+
+<h3>4.2 기준마디의 정의</h3>
+
+<p>기준봉이 출현한 후 거래량이 실리며 상승이 이어지다가 조정이 시작되기 직전까지의 <strong>'상승 파동 덩어리'</strong>를 기준마디라 한다.</p>
+
+<div class="concept-card">
+  <div class="card-title">기준마디의 시작점</div>
+  <p>주의: 기준마디의 시작점은 기준봉이 아니라, <strong>그 상승의 최저점</strong>부터다. 기준봉 출현 전 저점까지 포함해야 전체 파동의 크기를 정확히 측정할 수 있다.</p>
+</div>
+
+<!-- 기준마디 캔들 차트 -->
+<div class="candle-chart" style="min-height:200px;">
+  <span class="chart-label">기준봉 → 기준마디 형성</span>
+  <!-- 하락 구간 -->
+  <div class="candle bear" style="margin-bottom:60px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bear" style="margin-bottom:40px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:8px;"></div></div>
+  <div class="candle bear" style="margin-bottom:15px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:18px;"></div><div class="wick" style="height:12px;"></div><div class="candle-label">최저점</div></div>
+  <!-- 기준봉 -->
+  <div class="candle bull" style="margin-bottom:10px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:55px; width:20px;"></div><div class="wick" style="height:5px;"></div><div class="candle-label">기준봉!</div></div>
+  <!-- 상승 구간 = 기준마디 -->
+  <div class="candle bull" style="margin-bottom:50px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bull" style="margin-bottom:65px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bull" style="margin-bottom:75px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:22px;"></div><div class="wick" style="height:3px;"></div><div class="candle-label">기준마디 끝</div></div>
+  <!-- 조정 시작 -->
+  <div class="candle bear" style="margin-bottom:70px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:18px;"></div><div class="wick" style="height:8px;"></div><div class="candle-label">조정 시작</div></div>
+  <div class="candle bear" style="margin-bottom:55px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:15px;"></div><div class="wick" style="height:5px;"></div></div>
+</div>
+
+<h3>4.3 허리의 정의와 찾는 법</h3>
+
+<p>허리는 기준마디의 <strong>중심 부근에 위치한 핵심 지지/저항 가격대</strong>다.</p>
+
+<div class="concept-card warning">
+  <div class="card-title">허리 ≠ 산술적 50% <span class="badge badge-rule">규칙</span></div>
+  <p>허리는 기준마디의 정확한 절반 지점이 아니다. 캔들이 실제로 지지/저항을 받았던 매물대를 <strong>눈으로 찾아야</strong> 한다. 계산기가 아니라 차트를 보라.</p>
+</div>
+
+<h4>허리의 활용법</h4>
+<table>
+<thead>
+<tr><th>가격 위치</th><th>해석</th><th>매매 전략</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>허리 위</strong></td>
+  <td>매수세 우위, 추세 건재</td>
+  <td>매수만 집중. 공매도 생각 말 것</td>
+</tr>
+<tr>
+  <td><strong>허리 아래</strong></td>
+  <td>매도세 우위, 추세 사망 가능성</td>
+  <td>매수 보류. 추가 하락 대비</td>
+</tr>
+<tr>
+  <td><strong>허리 이탈 후 즉시 전고점 돌파</strong></td>
+  <td>트랩! (강력 매수 신호)</td>
+  <td>세력의 속임수 후 강력 상승. 과감한 매수 타점</td>
+</tr>
+</tbody>
+</table>
+
+<div class="insight">
+허리를 찾으면 한쪽 방향만 집중할 수 있다. 매매가 편해지고, 확률이 극대화된다. "위냐 아래냐"를 고민하는 시간이 줄어든다.
+</div>
+
+<h3>4.4 기준봉 → 기준마디 → 허리 완결 흐름</h3>
+
+<div class="visual-flow">
+  <span class="vf-step key">기준봉 출현<br><small>(장대양봉+거래량+돌파)</small></span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step neutral">거래량 동반 상승<br><small>(기준마디 형성)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">조정 시작<br><small>(거래량 감소)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">허리 지지 확인</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">2차 진입 타점!</span>
+</div>
+
+<details>
+<summary>심화: 기준봉 신뢰도 등급</summary>
+<div class="detail-body">
+  <table>
+  <thead>
+  <tr><th>등급</th><th>조건</th><th>신뢰도</th><th>대응</th></tr>
+  </thead>
+  <tbody>
+  <tr><td><strong>A급</strong></td><td>3조건 모두 충족 + 이평선 정배열 완성 + 복수 저항 돌파</td><td>최고</td><td>즉시 진입 가능</td></tr>
+  <tr><td><strong>B급</strong></td><td>3조건 충족 + 이평선 수렴 중</td><td>높음</td><td>소량 진입 후 추가 확인</td></tr>
+  <tr><td><strong>C급</strong></td><td>3조건 중 1개 부족 (거래량 부족 등)</td><td>보통</td><td>관망 → 2차 기준봉 대기</td></tr>
+  <tr><td><strong>D급</strong></td><td>역배열 + 무효화 조건 해당</td><td>낮음</td><td>매매 금지. 트랩 가능성</td></tr>
+  </tbody>
+  </table>
+</div>
+</details>
+
+<details>
+<summary>심화: 허리를 이용한 실전 손절 전략</summary>
+<div class="detail-body">
+  <p>허리는 손절 라인으로도 활용된다. 허리 아래에 손절을 놓으면:</p>
+  <ul>
+    <li><strong>장점</strong>: 추세가 정말로 죽었을 때만 손절 → 불필요한 손절 방지</li>
+    <li><strong>단점</strong>: 손절 폭이 클 수 있음 → 사이징으로 조절 필수</li>
+  </ul>
+  <p><strong>실전 팁</strong>: 허리 바로 아래가 아니라, 허리에서 약간의 여유를 두고 손절 라인을 잡아라. 세력이 허리를 살짝 깨뜨렸다가 다시 올리는 트랩이 흔하기 때문이다.</p>
+  <div class="arrow-annotation">
+    <span class="arr arr-info">→</span>
+    손절 라인 = 허리 - (기준마디 진폭의 3~5%) 정도가 적정
+  </div>
+</div>
+</details>
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.5 이동평균선                                                    -->
+<!-- ================================================================ -->
+<section id="ch5">
+<h2><span class="num">5</span>이동평균선: 시장 심리의 평균값</h2>
+<p class="meta">영상 13, 14, 15 기반</p>
+
+<h3>5.1 이평선의 기본 개념</h3>
+
+<p>이동평균선은 과거 N일간 종가의 평균을 이은 선이다. 시장 참여자들의 <strong>평균 매수 단가</strong>를 나타내며, 그 자체가 지지/저항 역할을 한다.</p>
+
+<table>
+<thead>
+<tr><th>기간</th><th>명칭</th><th>의미</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>5일선</strong></td><td>단기 이평선</td><td>최근 1주간 매수자의 평균 단가. 단기 추세 파악</td></tr>
+<tr><td><strong>20일선</strong></td><td>중단기 이평선</td><td>최근 1개월 매수자의 평균 단가. 스윙 매매 기준</td></tr>
+<tr><td><strong>60일선</strong></td><td>중기 이평선</td><td>최근 3개월 매수자의 평균 단가. 추세 방향 확인</td></tr>
+<tr><td><strong>120일선</strong></td><td>장기 이평선</td><td>최근 6개월 매수자의 평균 단가. 대추세 확인</td></tr>
+<tr><td><strong>240일선</strong></td><td>초장기 이평선</td><td>최근 1년 매수자의 평균 단가. 생사선</td></tr>
+</tbody>
+</table>
+
+<p><strong>이평선의 기울기</strong> = 시장 참여자의 심리 강도. 기울기가 가파를수록 해당 방향의 힘이 강하다. 수평에 가까우면 힘이 팽팽한 균형 상태, 아래를 향하면 매도세가 우위한 상태다.</p>
+
+<div class="concept-card">
+  <div class="card-title">이평선을 보는 3가지 관점</div>
+  <ul>
+    <li><strong>방향</strong>: 위를 향하면 상승 추세, 아래를 향하면 하락 추세, 수평이면 횡보</li>
+    <li><strong>기울기</strong>: 가파를수록 추세의 힘이 강하다. 기울기가 꺾이면 추세 약화 신호</li>
+    <li><strong>배열 순서</strong>: 단기선이 위에 있으면 정배열(상승), 아래에 있으면 역배열(하락)</li>
+  </ul>
+</div>
+
+<h3>5.2 정배열과 역배열</h3>
+
+<div class="compare-box">
+  <div class="compare-side right">
+    <div class="compare-label">정배열 — 매수 1순위</div>
+    <p><strong>5일 > 20일 > 60일 > 120일</strong></p>
+    <ul>
+      <li>모든 기간의 매수자가 수익 중</li>
+      <li>위에서 누르는 저항이 없음</li>
+      <li>눌림 시 이평선이 지지 역할</li>
+      <li>추세가 살아있는 최적의 매매 환경</li>
+    </ul>
+  </div>
+  <div class="compare-side wrong">
+    <div class="compare-label">역배열 — 매수 금지</div>
+    <p><strong>120일 > 60일 > 20일 > 5일</strong></p>
+    <ul>
+      <li>모든 기간의 매수자가 손실 중</li>
+      <li>반등할 때마다 본전 매도 쏟아짐</li>
+      <li>위에 이평선들이 저항으로 작용</li>
+      <li>매수 시도 자체가 위험</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 정배열 캔들 차트 -->
+<div class="candle-chart" style="min-height:160px;">
+  <span class="chart-label">정배열 상승 차트 (이평선 순서: 5일 > 20일 > 60일)</span>
+  <div class="candle bull" style="margin-bottom:20px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:18px;"></div><div class="wick" style="height:8px;"></div></div>
+  <div class="candle bull" style="margin-bottom:25px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:22px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bear" style="margin-bottom:30px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:12px;"></div><div class="wick" style="height:10px;"></div></div>
+  <div class="candle bull" style="margin-bottom:35px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:12px;"></div></div>
+  <div class="candle bull" style="margin-bottom:45px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bear" style="margin-bottom:50px;"><div class="wick" style="height:10px;"></div><div class="body" style="height:10px;"></div><div class="wick" style="height:8px;"></div></div>
+  <div class="candle bull" style="margin-bottom:55px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:22px;"></div><div class="wick" style="height:10px;"></div></div>
+  <div class="candle bull" style="margin-bottom:65px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bull" style="margin-bottom:80px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:5px;"></div></div>
+</div>
+
+<h3>5.3 골든크로스와 데드크로스</h3>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">골든크로스</div>
+    <div class="value">단기 이평선이 장기 이평선을 위로 돌파하는 순간. 상승 전환 신호. 단기 매수자의 평균 단가가 장기 매수자를 넘었다는 뜻.</div>
+  </div>
+  <div class="def-item sell">
+    <div class="label">데드크로스</div>
+    <div class="value">단기 이평선이 장기 이평선을 아래로 돌파하는 순간. 하락 전환 신호. 단기 매수자가 장기 매수자보다 손실이 크다는 뜻.</div>
+  </div>
+</div>
+
+<h4>왜 정배열 매매가 유리한가?</h4>
+<p>정배열에서는 모든 기간의 매수자가 수익 중이므로, 본전에서 던지는 매도 물량이 없다. 가격이 떨어져도 이평선이 지지 역할을 하며, 눌림이 오면 추가 매수자가 유입된다. 역배열에서는 정반대다. 조금만 올라가면 물린 사람들의 본전 매도가 쏟아져서 상승이 막힌다.</p>
+
+<h4>정배열 중 데드크로스의 역설</h4>
+<p>정배열 상태에서 일시적으로 데드크로스가 발생하면, 상승 추세의 관성이 남아 있어 <strong>오히려 리바운드 기회</strong>가 된다. 대추세가 살아있는 한, 단기 데드크로스는 눌림 매수의 신호다.</p>
+
+<div class="concept-card success">
+  <div class="card-title">최적의 매수 급소 <span class="badge badge-core">핵심</span></div>
+  <p>이평선이 한 점으로 <strong>수렴</strong>한 후 → <strong>골든크로스</strong> + <strong>정배열</strong> + <strong>거래량 동반</strong>이 동시에 충족되는 순간 = 가장 강력한 매수 타점. 이 세 가지가 동시에 일어나는 곳에서 시세가 터진다.</p>
+</div>
+
+<h3>5.4 캔들 카운팅</h3>
+
+<p>5일 이동평균선은 최근 5일간 종가의 평균이다. 따라서 <strong>5일 전 종가</strong>가 오늘 빠지고 <strong>오늘 종가</strong>가 새로 들어온다.</p>
+
+<div class="concept-card">
+  <div class="card-title">캔들 카운팅의 원리</div>
+  <p>5일 전 종가가 현재보다 매우 낮다면, 그 낮은 값이 빠져나가면서 이평선이 오히려 <strong>하락</strong>할 수 있다. 반대로 5일 전 종가가 매우 높았다면, 그 높은 값이 빠져나가면서 이평선이 <strong>상승</strong>할 수 있다.</p>
+  <p>세력은 이를 이용하여 주가를 횡보시키면서, 과거의 높은 종가가 자연스럽게 빠져나가 이평선이 정배열로 전환되기를 기다린다.</p>
+</div>
+
+<div class="visual-flow">
+  <span class="vf-step neutral">횡보 (가격 정체)</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">과거 높은 종가 탈락</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">이평선 자연 수렴</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">정배열 전환 임박</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">시세 분출!</span>
+</div>
+
+<h3>5.5 이평선 활용의 실전 원칙</h3>
+
+<div class="concept-card">
+  <div class="card-title">이평선 지지/저항 위계</div>
+  <p>이평선도 지지/저항 역할을 한다. 기간이 길수록 강력하다.</p>
+  <table>
+  <thead>
+  <tr><th>이평선</th><th>지지/저항 강도</th><th>이탈 시 의미</th></tr>
+  </thead>
+  <tbody>
+  <tr><td>5일선</td><td>약함</td><td>단기 조정 시작. 눌림 기회일 수 있음</td></tr>
+  <tr><td>20일선</td><td>보통</td><td>중기 추세 흔들림. 관찰 필요</td></tr>
+  <tr><td>60일선</td><td>강함</td><td>추세 약화 심각. 매수 보류</td></tr>
+  <tr><td>120일선</td><td>매우 강함</td><td>추세 전환 가능성. 포지션 축소</td></tr>
+  <tr><td>240일선</td><td>최강</td><td>장기 추세 붕괴. 시장 전체 위험</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<div class="concept-card warning">
+  <div class="card-title">이격도 과대 주의 <span class="badge badge-rule">규칙</span></div>
+  <p>가격이 이평선에서 너무 멀어지면(이격도 과대), 이평선 쪽으로 되돌아오려는 힘(평균 회귀)이 작동한다. 이평선 대비 20~30% 이상 벌어졌다면 추격 매수를 자제하고 눌림을 기다려라.</p>
+</div>
+
+<details>
+<summary>심화: 이평선 설정 — 어떤 기간을 써야 하나?</summary>
+<div class="detail-body">
+  <p>이평선 기간 설정에 절대적 정답은 없다. 다만 차트프로의 표준 설정은:</p>
+  <ul>
+    <li><strong>5, 20, 60, 120, 240</strong>: 가장 많이 사용되는 조합. 영업일 기준 1주/1개월/3개월/6개월/1년</li>
+    <li>크립토(24시간 시장)에서는 7, 25, 50, 100, 200 등으로 조정하기도 함</li>
+    <li>핵심: 어떤 설정을 쓰든 <strong>일관성</strong>이 중요. 자주 바꾸면 혼란만 가중</li>
+  </ul>
+  <p>지수이동평균(EMA)과 단순이동평균(SMA)의 차이도 있으나, 초보 단계에서는 SMA로 통일해서 연습하는 것을 추천한다.</p>
+</div>
+</details>
+<div class="insight">
+    <strong>💡 핵심 격언:</strong> 이평선은 추세의 나침반이다. 방향을 읽되, 맹신하지 마라.
+</div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.6 추세 분석                                                    -->
+<!-- ================================================================ -->
+<section id="ch6">
+<h2><span class="num">6</span>추세 분석: 큰 그림 읽기</h2>
+<p class="meta">영상 20, 21, 22, 28 기반</p>
+
+<h3>6.1 추세선 작도법</h3>
+
+<div class="concept-card">
+  <div class="card-title">추세선 그리기 3단계</div>
+  <ol>
+    <li><strong>1번 점 설정</strong>: 기준마디의 시작점(저점)을 첫 번째 점으로 잡는다</li>
+    <li><strong>2번 점 설정</strong>: 전고점 돌파 후 형성된 높아진 저점(눌림의 바닥)을 두 번째 점으로 잡는다</li>
+    <li><strong>연결</strong>: 두 점을 이어 우상향 선을 그린다. 이것이 상승 추세선이다</li>
+  </ol>
+</div>
+
+<p>추세선은 하나가 아니다. 5일 이평선을 따라가는 <strong>단기 추세선</strong>, 20일선을 따르는 <strong>중기 추세선</strong>, 60일선을 따르는 <strong>장기 추세선</strong>을 각각 그려야 한다.</p>
+
+<div class="concept-card warning">
+  <div class="card-title">추세선 일시 이탈 규칙 <span class="badge badge-rule">규칙</span></div>
+  <p>추세선을 일시적으로 이탈하더라도 <strong>5일 이내에 복귀</strong>하면 추세는 유지된 것으로 본다. 세력의 일시적 흔들기(트랩)일 수 있으므로, 이탈 즉시 패닉하지 말고 복귀 여부를 관찰하라.</p>
+</div>
+
+<!-- 추세선 캔들 차트 -->
+<div class="candle-chart" style="min-height:200px;">
+  <span class="chart-label">상승 추세: 높은 저점의 연속</span>
+  <div class="candle bull" style="margin-bottom:10px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:8px;"></div><div class="candle-label">1번 점</div></div>
+  <div class="candle bull" style="margin-bottom:20px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bull" style="margin-bottom:35px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:22px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bear" style="margin-bottom:40px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:15px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bear" style="margin-bottom:30px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:12px;"></div><div class="wick" style="height:10px;"></div><div class="candle-label">2번 점</div></div>
+  <div class="candle bull" style="margin-bottom:35px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:8px;"></div></div>
+  <div class="candle bull" style="margin-bottom:50px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:28px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bull" style="margin-bottom:65px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:22px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bear" style="margin-bottom:60px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:15px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bull" style="margin-bottom:55px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:12px;"></div><div class="candle-label">3번 점</div></div>
+  <div class="candle bull" style="margin-bottom:65px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:30px;"></div><div class="wick" style="height:3px;"></div></div>
+</div>
+
+<h3>6.2 추세 전환의 매매 타이밍 3가지</h3>
+
+<div class="concept-card">
+  <div class="card-title">타이밍 1: 하락 추세선 돌파 후 지지 확인</div>
+  <p>하락 추세선을 위로 돌파한 후, 상승 추세 상단선 위에서 지지를 받으며 방향을 틀 때(턴) 매수한다. 돌파만으로는 부족하고, <strong>지지 확인이 핵심</strong>이다.</p>
+</div>
+
+<div class="concept-card">
+  <div class="card-title">타이밍 2: 짝궁뎅이 트랩 <span class="badge badge-adv">고급</span></div>
+  <p>전저점을 의도적으로 이탈시켜 개미의 손절을 유발한 뒤, 즉시 전고점을 강하게 돌파하는 패턴. 세력이 저점에서 물량을 수거한 후 급등시키는 전형적 속임수. <strong>강력한 반전 급소</strong>다.</p>
+</div>
+
+<div class="visual-flow">
+  <span class="vf-step neutral">전저점 형성</span>
+  <span class="vf-arrow down">→</span>
+  <span class="vf-step trap">전저점 이탈 (트랩!)</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">개미 손절 유발</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">전고점 강한 돌파!</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">강력 반전 상승</span>
+</div>
+
+<div class="concept-card">
+  <div class="card-title">타이밍 3: 시간차 돌파 — 가장 안전한 매수</div>
+  <p>추세선 밖에서 오랜 기간 횡보하며 이평선이 수렴한 후, 전고점을 돌파하는 패턴. 충분한 에너지가 축적되었기 때문에 <strong>가장 안전하고 강력한 매수 타점</strong>이다.</p>
+</div>
+
+<!-- 3가지 타이밍 비교 -->
+<table>
+<thead>
+<tr><th>타이밍</th><th>패턴</th><th>안전성</th><th>수익 잠재력</th><th>난이도</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>1. 추세선 돌파+지지</strong></td><td>하락→상승 전환</td><td>보통</td><td>높음</td><td>중급</td></tr>
+<tr><td><strong>2. 짝궁뎅이 트랩</strong></td><td>전저점 이탈→급반전</td><td>낮음(빠른 판단 필요)</td><td>매우 높음</td><td>고급</td></tr>
+<tr><td><strong>3. 시간차 돌파</strong></td><td>오랜 횡보→돌파</td><td>높음</td><td>높음</td><td>초~중급 추천</td></tr>
+</tbody>
+</table>
+
+<h3>6.3 왜 추세매매를 해야 하는가?</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">추세매매의 압도적 장점</div>
+  <ul>
+    <li><strong>승률이 압도적</strong>: 큰 흐름을 따르므로 방향이 맞을 확률이 높다</li>
+    <li><strong>심리가 편안</strong>: 추세 방향과 같은 포지션이므로 스트레스가 적다</li>
+    <li><strong>물려도 버틸 수 있다</strong>: 추세가 살아있으면 시간이 해결해준다</li>
+    <li><strong>손익비가 우수</strong>: 작게 잃고 크게 벌 수 있는 구조</li>
+  </ul>
+</div>
+
+<div class="concept-card danger">
+  <div class="card-title">초보자의 가장 큰 유혹: 박스권 예측 매매 <span class="badge badge-danger">위험</span></div>
+  <p>박스권에서 "여기가 바닥이겠지" 하고 예측 매수하는 것은 극도로 위험하다. 초보자는 박스권 매매의 유혹을 버리고, 오직 <strong>추세 방향의 매매만 훈련</strong>하라.</p>
+</div>
+
+<h3>6.4 상방 추세 확정 4가지 지표</h3>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">지표 1: 거래량의 폭발적 증가</div>
+    <div class="value">참여자가 급증하며 매수 에너지가 집중. 진짜 세력의 참여를 증명.</div>
+  </div>
+  <div class="def-item buy">
+    <div class="label">지표 2: 이평선의 우상향 전환</div>
+    <div class="value">이평선이 하나씩 위를 향하기 시작. 평균 매수 단가가 올라가는 중.</div>
+  </div>
+  <div class="def-item buy">
+    <div class="label">지표 3: 연속 장대봉 (몸통 확대)</div>
+    <div class="value">양봉의 몸통이 점점 커짐. 매수세의 힘이 강해지고 있다는 증거.</div>
+  </div>
+  <div class="def-item buy">
+    <div class="label">지표 4: 살아있는 기준마디 (허리 지지)</div>
+    <div class="value">기준마디의 허리가 지지되고 있음. 추세의 뼈대가 건재하다는 확인.</div>
+  </div>
+</div>
+
+<h3>6.5 추세 사망 판별: 언제 추세가 끝나는가?</h3>
+
+<p>추세를 따르는 것이 핵심이지만, 추세의 끝을 인지하는 것도 못지않게 중요하다.</p>
+
+<div class="concept-card danger">
+  <div class="card-title">추세 사망 5가지 징후 <span class="badge badge-danger">위험</span></div>
+  <ol>
+    <li><strong>저점이 높아지지 않음</strong>: 상승 추세에서 직전 저점보다 낮은 저점이 등장</li>
+    <li><strong>고점이 높아지지 않음</strong>: 새로운 고점을 만들지 못하고 하락</li>
+    <li><strong>거래량 다이버전스</strong>: 가격은 신고가인데 거래량은 이전 고점보다 적음</li>
+    <li><strong>허리 이탈</strong>: 기준마디의 허리를 깨고 내려감 (즉시 복구되지 않는 경우)</li>
+    <li><strong>이평선 역배열 전환</strong>: 정배열이 무너지고 데드크로스 연쇄 발생</li>
+  </ol>
+</div>
+
+<div class="visual-flow">
+  <span class="vf-step neutral">고점 갱신 실패</span>
+  <span class="vf-arrow down">→</span>
+  <span class="vf-step trap">저점 이탈</span>
+  <span class="vf-arrow down">→</span>
+  <span class="vf-step sell">허리 붕괴</span>
+  <span class="vf-arrow down">→</span>
+  <span class="vf-step sell">이평선 역배열</span>
+  <span class="vf-arrow down">→</span>
+  <span class="vf-step sell">추세 사망 확정</span>
+</div>
+
+<details>
+<summary>심화: 추세선 팬(Fan) 작도법</summary>
+<div class="detail-body">
+  <p>하나의 기점에서 여러 개의 추세선을 부채꼴로 그리는 기법이다.</p>
+  <ol>
+    <li>기준마디의 최저점을 고정 기점으로 설정</li>
+    <li>첫 번째 눌림 저점으로 1번 추세선 (가장 가파름)</li>
+    <li>두 번째 눌림 저점으로 2번 추세선 (중간 기울기)</li>
+    <li>세 번째 눌림 저점으로 3번 추세선 (가장 완만)</li>
+  </ol>
+  <p>1번 추세선 이탈 = 단기 조정, 2번 이탈 = 중기 조정, 3번 이탈 = <strong>추세 전환 가능성</strong>. 3번 추세선이 마지막 방어선이다.</p>
+</div>
+</details>
+<div class="insight">
+    <strong>💡 핵심 격언:</strong> 추세를 거스르는 것은 파도를 거슬러 수영하는 것과 같다.
+</div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.7 매매의 종류                                                  -->
+<!-- ================================================================ -->
+<section id="ch7">
+<h2><span class="num">7</span>매매의 종류: 눌림목 vs 돌파</h2>
+<p class="meta">영상 16, 17, 18, 19 기반</p>
+
+<h3>7.1 두 가지 매매 분류</h3>
+
+<p>모든 매매는 크게 두 가지로 나뉜다: <strong>눌림목 매매</strong>(예측 매매)와 <strong>돌파 매매</strong>(확인 매매).</p>
+
+<table>
+<thead>
+<tr><th>항목</th><th>눌림목 매매 (예측)</th><th>돌파 매매 (확인)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>진입 시점</strong></td><td>저점(눌림)에서 미리 진입</td><td>저항 돌파 시 추격 진입</td></tr>
+<tr><td><strong>속도</strong></td><td>느림 (기다림 필요)</td><td>빠름 (즉시 반응)</td></tr>
+<tr><td><strong>수익률</strong></td><td>높음 (저점 매수)</td><td>보통 (이미 올라간 후)</td></tr>
+<tr><td><strong>리스크</strong></td><td>높음 (추가 하락 가능)</td><td>보통 (방향 확인 후)</td></tr>
+<tr><td><strong>손절선</strong></td><td>애매할 수 있음</td><td>명확 (돌파선 하회)</td></tr>
+<tr><td><strong>심리 부담</strong></td><td>높음 (역방향 진입)</td><td>낮음 (방향 일치)</td></tr>
+<tr><td><strong>난이도</strong></td><td>고급</td><td>초~중급</td></tr>
+</tbody>
+</table>
+
+<h3>7.2 눌림목 매매의 정석</h3>
+
+<h4>건강한 눌림의 조건</h4>
+<ul>
+  <li>가격이 <strong>허리 위</strong>에서 지지받고 있다</li>
+  <li>거래량이 <strong>감소</strong>하고 있다 (차익 실현자만 빠져나가는 중)</li>
+  <li>이평선 정배열이 <strong>유지</strong>되고 있다</li>
+</ul>
+
+<div class="concept-card highlight">
+  <div class="card-title">시간 조정 (고가놀이) = 최강 눌림 <span class="badge badge-core">핵심</span></div>
+  <p>가격 조정이 얕고 기간이 긴 형태를 '시간 조정' 또는 '고가놀이'라 한다. 가격을 크게 떨어뜨리지 않고 횡보하며 시간만 보내는 것으로, 이는 <strong>세력이 물량을 놓지 않겠다는 의지</strong>의 표현이다. 시간 조정 후에는 2차 시세가 폭발적으로 나온다.</p>
+</div>
+
+<div class="concept-card danger">
+  <div class="card-title">떨어지는 칼날을 잡지 마라 <span class="badge badge-danger">위험</span></div>
+  <p>초보자는 급락 중에 "여기가 바닥이겠지" 하며 진입하면 안 된다. 반드시 <strong>지지가 확인된 후</strong>, 재차 눌림이 와서 두 번째 지지를 확인한 다음에 진입하라. 이것이 '눌림 확인 매매'다.</p>
+</div>
+
+<!-- 눌림목 매매 캔들 차트 -->
+<div class="candle-chart" style="min-height:180px;">
+  <span class="chart-label">건강한 눌림목 매매</span>
+  <div class="candle bull" style="margin-bottom:20px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:35px;"></div><div class="wick" style="height:5px;"></div><div class="candle-label">기준봉</div></div>
+  <div class="candle bull" style="margin-bottom:45px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:22px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bull" style="margin-bottom:55px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:18px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bear" style="margin-bottom:55px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:12px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bear" style="margin-bottom:45px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:10px;"></div><div class="wick" style="height:8px;"></div><div class="candle-label">눌림 (허리 위)</div></div>
+  <div class="candle doji" style="margin-bottom:42px;"><div class="wick" style="height:10px;"></div><div class="body" style="height:3px;"></div><div class="wick" style="height:8px;"></div></div>
+  <div class="candle bull" style="margin-bottom:45px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:8px;"></div><div class="candle-label">진입!</div></div>
+  <div class="candle bull" style="margin-bottom:60px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:28px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bull" style="margin-bottom:80px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:22px;"></div><div class="wick" style="height:5px;"></div></div>
+</div>
+
+<h3>7.3 돌파 매매의 정석</h3>
+
+<h4>돌파의 3가지 조건</h4>
+<ol>
+  <li><strong>대량 거래 동반</strong>: 진짜 돌파는 거래량이 터져야 한다</li>
+  <li><strong>장대양봉</strong>: 몸통이 커야 세력의 의지가 확인된다</li>
+  <li><strong>저항 라인 돌파</strong>: 명확한 저항선을 종가 기준으로 넘어야 한다</li>
+</ol>
+
+<div class="concept-card highlight">
+  <div class="card-title">콘크리트 천장 돌파 = 최강 시세 <span class="badge badge-core">핵심</span></div>
+  <p>오랫동안 횡보하며 여러 번 막힌 저항선('콘크리트 천장')을 돌파하면 최강의 시세가 나온다. 그동안 눌려있던 에너지가 한 번에 분출되기 때문이다.</p>
+</div>
+
+<div class="concept-card warning">
+  <div class="card-title">속임수(트랩) 주의 <span class="badge badge-rule">규칙</span></div>
+  <p>돌파 매매에서 속임수(가짜 돌파)는 매우 잦다. 따라서 <strong>과감한 손절이 필수</strong>다. 초보자는 '돌파 직후 매수' 대신 <strong>'돌파 후 눌림'</strong>을 기다려 확인 매수하는 것이 안전하다.</p>
+</div>
+
+<h3>7.4 두 매매의 결합 (믹스 전략)</h3>
+
+<div class="visual-flow">
+  <span class="vf-step neutral">상위 타임프레임 (일봉)<br><small>눌림목 구간 확인</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">눌림 지지 확인</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">하위 타임프레임 (분봉)<br><small>돌파 패턴 탐색</small></span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">분봉 돌파 시 진입!</span>
+</div>
+
+<div class="insight">
+뇌동매매가 아닌 '확신 매매'를 하라. 명확한 손절 라인을 감당할 수 있는 근거가 있어야 한다. 근거 없이 들어가면 그것은 매매가 아니라 도박이다.
+</div>
+
+<details>
+<summary>심화: 눌림목 vs 돌파 — 상황별 선택 기준</summary>
+<div class="detail-body">
+  <table>
+  <thead>
+  <tr><th>시장 상황</th><th>추천 매매 유형</th><th>이유</th></tr>
+  </thead>
+  <tbody>
+  <tr><td>강한 정배열 + 거래량 증가</td><td>눌림목 매매</td><td>추세가 명확하므로 눌림에서 진입이 유리. 손익비 극대화</td></tr>
+  <tr><td>장기 횡보 후 수렴</td><td>돌파 매매</td><td>방향이 불확실하므로 돌파를 확인한 후 진입이 안전</td></tr>
+  <tr><td>추세 전환 초기</td><td>돌파 매매</td><td>새 추세의 시작을 확인해야 하므로 돌파 확인 필수</td></tr>
+  <tr><td>이미 상승 중인 종목</td><td>눌림목 매매</td><td>돌파 매수는 이미 늦음. 조정을 기다려 눌림에서 진입</td></tr>
+  <tr><td>거래량 부족한 종목</td><td>관망</td><td>어느 쪽도 위험. 활성화될 때까지 대기</td></tr>
+  </tbody>
+  </table>
+</div>
+</details>
+
+<details>
+<summary>실전: 두 매매 결합 — 멀티 타임프레임 매매 예시</summary>
+<div class="detail-body">
+  <div class="arrow-annotation">
+    <span class="arr arr-info">1</span>
+    <strong>일봉 확인:</strong> 정배열 + 눌림 중 + 허리 위 지지 → "여기는 눌림 매수 구간이다"
+  </div>
+  <div class="arrow-annotation">
+    <span class="arr arr-info">2</span>
+    <strong>4시간봉 확인:</strong> 하락 추세선에 접근 중 → "아직 하락 추세선 돌파 전이다"
+  </div>
+  <div class="arrow-annotation">
+    <span class="arr arr-up">3</span>
+    <strong>1시간봉 진입:</strong> 하락 추세선을 거래량 동반 돌파 + 장대양봉 → "돌파 확인! 진입!"
+  </div>
+  <div class="arrow-annotation">
+    <span class="arr arr-warn">4</span>
+    <strong>손절:</strong> 1시간봉 돌파 캔들의 저점 아래 → 명확하고 짧은 손절
+  </div>
+  <p>이처럼 상위 타임프레임에서 눌림 구간(예측)을 확인하고, 하위 타임프레임에서 돌파(확인)를 기다리면 두 매매의 장점을 결합할 수 있다.</p>
+</div>
+</details>
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.8 핵심 패턴                                                    -->
+<!-- ================================================================ -->
+<section id="ch8">
+<h2><span class="num">8</span>핵심 패턴: 실전에서 반복되는 형태들</h2>
+<p class="meta">영상 25, 26, 27, 30, 31, 32 기반</p>
+
+<h3>8.1 밥그릇 패턴</h3>
+
+<p>급락 후 둥근 바닥을 그리며 회복한 뒤, 뚜껑(저항선)을 돌파하며 급등하는 패턴.</p>
+
+<h4>전제 조건</h4>
+<ul>
+  <li>대추세가 <strong>상승</strong>이어야 한다</li>
+  <li>기준마디의 <strong>허리 아래</strong>에서 형성되어야 한다</li>
+  <li>바닥에서 거래량이 <strong>증가</strong>해야 한다</li>
+</ul>
+
+<p>밥그릇의 본질은 <strong>트랩 + 역매매</strong>다. 세력이 개미를 속여 매도시킨 후, 저점에서 물량을 수거하고 반등시킨다. 밥그릇의 좌측(하락)은 빠르고, 바닥은 느리며, 우측(상승)은 다시 빠르다. 이 비대칭적 속도 변화를 인지하는 것이 핵심이다.</p>
+
+<!-- 밥그릇 패턴 캔들 차트 -->
+<div class="candle-chart" style="min-height:200px;">
+  <span class="chart-label">밥그릇 패턴</span>
+  <!-- 급락 -->
+  <div class="candle bear" style="margin-bottom:80px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bear" style="margin-bottom:55px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:30px;"></div><div class="wick" style="height:8px;"></div></div>
+  <div class="candle bear" style="margin-bottom:25px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:10px;"></div></div>
+  <!-- 둥근 바닥 -->
+  <div class="candle bear" style="margin-bottom:12px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:8px;"></div><div class="wick" style="height:8px;"></div></div>
+  <div class="candle doji" style="margin-bottom:8px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:2px;"></div><div class="wick" style="height:8px;"></div></div>
+  <div class="candle bull" style="margin-bottom:5px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:8px;"></div><div class="wick" style="height:10px;"></div></div>
+  <div class="candle bull" style="margin-bottom:8px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:10px;"></div><div class="wick" style="height:8px;"></div><div class="candle-label">둥근 바닥</div></div>
+  <div class="candle bull" style="margin-bottom:12px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:12px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bull" style="margin-bottom:18px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:15px;"></div><div class="wick" style="height:5px;"></div></div>
+  <!-- 돌파 -->
+  <div class="candle bull" style="margin-bottom:25px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bull" style="margin-bottom:40px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:40px; width:20px;"></div><div class="wick" style="height:5px;"></div><div class="candle-label">뚜껑 돌파!</div></div>
+  <div class="candle bull" style="margin-bottom:70px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:30px;"></div><div class="wick" style="height:3px;"></div></div>
+</div>
+
+<h4>진입 타이밍</h4>
+<ul>
+  <li><strong>뚜껑(저항선) 돌파 시</strong>: 거래량 동반 확인 후 진입</li>
+  <li><strong>돌파 후 눌림</strong>: 보다 안전한 진입. 뚜껑이 지지로 전환됨을 확인</li>
+</ul>
+
+<div class="visual-flow">
+  <span class="vf-step sell">급락 시작</span>
+  <span class="vf-arrow down">→</span>
+  <span class="vf-step neutral">둥근 바닥 형성<br><small>(작은 캔들, 거래량 증가)</small></span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step key">뚜껑(저항선) 접근</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">거래량 동반 돌파!</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">급등</span>
+</div>
+
+<div class="concept-card warning">
+  <div class="card-title">밥그릇 vs 단순 바닥 구별법 <span class="badge badge-rule">규칙</span></div>
+  <ul>
+    <li><strong>밥그릇</strong>: 바닥이 둥글게 곡선을 그린다. 캔들이 점점 작아졌다가 다시 커진다. 거래량도 감소 후 증가하는 U자형</li>
+    <li><strong>단순 V자 반등</strong>: 급락 후 즉시 급반등. 지속성 불확실. 밥그릇이 아님</li>
+    <li><strong>쌍바닥(W)</strong>: 밥그릇과 다르게 두 번 저점을 찍음. 밥그릇보다 트랩 위험 높음</li>
+  </ul>
+</div>
+
+<h3>8.2 AF 패턴</h3>
+
+<p><strong>A자</strong>(치열한 공방, 거래량 폭발) + <strong>F자</strong>(횡보, 거래량 감소, 이평선 수렴) 복합 패턴.</p>
+
+<div class="concept-card">
+  <div class="card-title">AF 패턴의 4가지 조건</div>
+  <ol>
+    <li>대추세 및 중추세가 <strong>상승</strong></li>
+    <li>가격 진폭이 갑자기 <strong>확대</strong> (A자 구간)</li>
+    <li>이후 거래량 감소 + 횡보 (F자 구간)</li>
+    <li>F자 구간이 <strong>허리 위</strong>에 위치</li>
+  </ol>
+</div>
+
+<!-- AF 패턴 캔들 차트 -->
+<div class="candle-chart" style="min-height:220px;">
+  <span class="chart-label">AF 패턴</span>
+  <!-- A자 구간: 공방 -->
+  <div class="candle bull" style="margin-bottom:30px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:35px;"></div><div class="wick" style="height:8px;"></div></div>
+  <div class="candle bear" style="margin-bottom:40px;"><div class="wick" style="height:15px;"></div><div class="body" style="height:30px;"></div><div class="wick" style="height:10px;"></div></div>
+  <div class="candle bull" style="margin-bottom:25px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:45px;"></div><div class="wick" style="height:12px;"></div><div class="candle-label">A자 (공방)</div></div>
+  <div class="candle bear" style="margin-bottom:50px;"><div class="wick" style="height:20px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:8px;"></div></div>
+  <!-- F자 구간: 횡보 -->
+  <div class="candle bull" style="margin-bottom:45px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:10px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bear" style="margin-bottom:43px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:8px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bull" style="margin-bottom:45px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:8px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bear" style="margin-bottom:42px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:6px;"></div><div class="wick" style="height:3px;"></div><div class="candle-label">F자 (횡보)</div></div>
+  <div class="candle bull" style="margin-bottom:44px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:8px;"></div><div class="wick" style="height:5px;"></div></div>
+  <!-- 돌파 -->
+  <div class="candle bull" style="margin-bottom:50px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:40px; width:20px;"></div><div class="wick" style="height:5px;"></div><div class="candle-label">돌파!</div></div>
+  <div class="candle bull" style="margin-bottom:80px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:30px;"></div><div class="wick" style="height:3px;"></div></div>
+</div>
+
+<h4>진입과 손절</h4>
+<ul>
+  <li><strong>진입</strong>: F자 횡보 구간의 상단을 거래량 동반 돌파 시</li>
+  <li><strong>손절</strong>: F자 박스의 최하단 이탈 시 → 매우 짧고 명확한 손절선</li>
+</ul>
+
+<h4>변형과 짝퉁 주의</h4>
+<table>
+<thead>
+<tr><th>유형</th><th>설명</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>좌우 비대칭 A자</strong></td><td>A자의 좌측과 우측 길이가 다른 변형. 기본 원리는 동일</td></tr>
+<tr><td><strong>AlF형</strong></td><td>A자가 한쪽으로 길게 늘어진 변형</td></tr>
+<tr><td><strong>VL 패턴</strong></td><td>AF 패턴의 하락 버전. V자 급락 + L자 횡보</td></tr>
+</tbody>
+</table>
+
+<div class="concept-card danger">
+  <div class="card-title">짝퉁 AF 패턴 주의 <span class="badge badge-danger">위험</span></div>
+  <ul>
+    <li>F자 구간이 <strong>허리 아래</strong>에 걸치면 → 짝퉁. 추세 사망 가능성</li>
+    <li>F자 없이 바로 급등 → 지속성 의심. 트랩 가능성 높음</li>
+  </ul>
+</div>
+
+<details>
+<summary>심화: AF 패턴 체크리스트 (진입 전 확인)</summary>
+<div class="detail-body">
+  <ol>
+    <li>대추세 상승인가? (주봉/월봉 확인) → 아니면 매매 금지</li>
+    <li>A자 구간에서 거래량이 평소의 3배 이상 터졌는가?</li>
+    <li>F자 구간이 허리 위에 있는가? → 아래면 짝퉁</li>
+    <li>F자 구간에서 이평선이 수렴하고 있는가?</li>
+    <li>F자 기간이 최소 5일 이상인가? → 너무 짧으면 아직 수렴 부족</li>
+    <li>F자 상단 돌파 시 거래량이 동반되는가?</li>
+  </ol>
+  <p>6개 중 5개 이상 충족해야 진입. 4개 이하면 관망.</p>
+</div>
+</details>
+
+<h3>8.3 원웨이 패턴 4가지</h3>
+
+<p>한 방향으로 지속 상승하는 시세의 4가지 유형. 각 유형마다 공략법이 다르다.</p>
+
+<table>
+<thead>
+<tr><th>패턴</th><th>특징</th><th>공략법</th><th>난이도</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>일자 패턴</strong></td>
+  <td>조정 거의 없이 수직 상승</td>
+  <td>음봉 1~2개만 나와도 분할 매수. 초보는 관망</td>
+  <td>최고난도</td>
+</tr>
+<tr>
+  <td><strong>계단식 패턴</strong></td>
+  <td>얕은 가격+시간 조정 후 재상승</td>
+  <td>첫 기준가에서 눌림 예측 매수, 외바닥에서 과감히</td>
+  <td>중급</td>
+</tr>
+<tr>
+  <td><strong>N자 패턴</strong></td>
+  <td>시간 조정 길게, 박스권 형성</td>
+  <td>박스 하단 예측 매수 또는 박스 상단 돌파 확인 매수. 어설픈 상단 매수 금지</td>
+  <td>초~중급</td>
+</tr>
+<tr>
+  <td><strong>톱니 패턴</strong></td>
+  <td>허리를 잔인하게 넘나들며 방향 속임</td>
+  <td>허리 이탈 시 오히려 매수(역발상). 선물은 역진입</td>
+  <td>최고난도</td>
+</tr>
+</tbody>
+</table>
+
+<!-- 원웨이 패턴 시각화: 계단식 -->
+<div class="candle-chart" style="min-height:180px;">
+  <span class="chart-label">계단식 원웨이 패턴</span>
+  <div class="candle bull" style="margin-bottom:10px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bull" style="margin-bottom:25px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bear" style="margin-bottom:30px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:8px;"></div><div class="wick" style="height:5px;"></div><div class="candle-label">얕은 조정</div></div>
+  <div class="candle bull" style="margin-bottom:32px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:22px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bull" style="margin-bottom:45px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bear" style="margin-bottom:50px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:10px;"></div><div class="wick" style="height:5px;"></div><div class="candle-label">얕은 조정</div></div>
+  <div class="candle bull" style="margin-bottom:52px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bull" style="margin-bottom:68px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:22px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bear" style="margin-bottom:72px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:8px;"></div><div class="wick" style="height:5px;"></div><div class="candle-label">얕은 조정</div></div>
+  <div class="candle bull" style="margin-bottom:75px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:28px;"></div><div class="wick" style="height:3px;"></div></div>
+</div>
+
+<h3>8.4 E자형·N자형 패턴 (목표가 산출)</h3>
+
+<div class="def-grid">
+  <div class="def-item">
+    <div class="label">N자형 패턴 목표가</div>
+    <div class="value">조정 전 상승 파동의 진폭(높이)을 측정한다. 조정이 끝난 저점에서 그 진폭만큼을 더한 가격이 다음 목표가.</div>
+  </div>
+  <div class="def-item">
+    <div class="label">E자형 패턴 목표가</div>
+    <div class="value">횡보 박스권의 진폭(높이)을 측정한다. 박스 상단 돌파 시 그 진폭만큼을 더한 가격이 상승 목표가.</div>
+  </div>
+</div>
+
+<div class="concept-card warning">
+  <div class="card-title">목표가의 올바른 활용법 <span class="badge badge-rule">규칙</span></div>
+  <p>N자형/E자형 목표가는 <strong>매수 타점</strong>이 아니라 <strong>익절 목표가를 가늠하는 도구</strong>다. 목표치에 도달했을 때 추격 매수하면 안 되고, 다음 조정을 기다려야 한다.</p>
+</div>
+
+<!-- N자형 목표가 시각화 -->
+<div class="candle-chart" style="min-height:220px;">
+  <span class="chart-label">N자형 목표가 산출 예시</span>
+  <!-- 1차 상승 -->
+  <div class="candle bull" style="margin-bottom:10px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:5px;"></div><div class="candle-label">시작</div></div>
+  <div class="candle bull" style="margin-bottom:25px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bull" style="margin-bottom:45px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:22px;"></div><div class="wick" style="height:5px;"></div><div class="candle-label">1차 고점</div></div>
+  <!-- 조정 -->
+  <div class="candle bear" style="margin-bottom:40px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:12px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bear" style="margin-bottom:30px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:10px;"></div><div class="wick" style="height:8px;"></div><div class="candle-label">조정 저점</div></div>
+  <!-- 2차 상승 = 목표가 -->
+  <div class="candle bull" style="margin-bottom:35px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bull" style="margin-bottom:55px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:22px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bull" style="margin-bottom:72px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:8px;"></div><div class="candle-label">N자 목표가</div></div>
+</div>
+<p style="font-size:0.85em; color:var(--text2); text-align:center;">1차 상승 진폭 = (1차 고점 - 시작점). N자 목표가 = 조정 저점 + 1차 상승 진폭</p>
+
+<details>
+<summary>심화: 원웨이 패턴별 실전 대응 정리</summary>
+<div class="detail-body">
+  <h4>일자 패턴 대응</h4>
+  <p>가장 강력하지만 가장 대응하기 어렵다. 진입 못 했으면 <strong>절대 추격하지 마라</strong>. 초보자는 관망이 정답이다. 숙련자만 작은 음봉(1~2개)에서 분할 진입.</p>
+
+  <h4>계단식 패턴 대응</h4>
+  <p>가장 매매하기 좋은 패턴. 얕은 눌림이 반복되므로 매 눌림마다 진입 기회가 온다. 첫 번째 기준가에서 눌림이 끝나는 경우가 많으며, 외바닥(V자 반등)에서 과감히 진입한다.</p>
+
+  <h4>N자 패턴 대응</h4>
+  <p>시간 조정(횡보)이 길므로 인내심이 핵심이다. 두 가지 전략 중 선택:</p>
+  <ul>
+    <li>박스 하단 예측 매수 (손절 박스 하단 이탈)</li>
+    <li>박스 상단 돌파 확인 매수 (손절 박스 내부 복귀)</li>
+  </ul>
+  <p>주의: 박스 상단 근처에서 애매하게 사면 안 된다. 명확한 돌파가 아니면 기다려라.</p>
+
+  <h4>톱니 패턴 대응</h4>
+  <p>최고 난도. 허리를 넘나들며 개미를 두 번 세 번 속인다. 역발상이 핵심: 허리 이탈로 "끝났다" 싶을 때가 오히려 매수 타점이다. 경험이 쌓일 때까지 피하는 것이 현명하다.</p>
+</div>
+</details>
+<div class="insight">
+    <strong>💡 핵심 격언:</strong> 패턴은 반복되지만 똑같지 않다. 맥락 없는 패턴 매매는 도박이다.
+</div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.9 세력가와 기준가                                              -->
+<!-- ================================================================ -->
+<section id="ch9">
+<h2><span class="num">9</span>세력가와 기준가: 타점의 핵심</h2>
+<p class="meta">영상 33, 34 기반</p>
+
+<h3>9.1 기준가의 중요성</h3>
+
+<div class="concept-card danger">
+  <div class="card-title">기준가 없이 매매 = 뇌동매매 <span class="badge badge-danger">위험</span></div>
+  <p>"대충 이 근처에서 사야지"는 매매가 아니다. 반드시 자신만의 기준가를 정해놓고, 그 가격에 도달했을 때만 행동해야 한다. 기준가는 하나가 아닐 수 있으며, 여러 개를 박스(가격 범위)로 유연하게 설정한다.</p>
+</div>
+
+<h3>9.2 접점 기준가 (캔들 기준가)</h3>
+
+<p>캔들의 시가, 종가, 고가, 저가가 가장 많이 <strong>겹쳐 부딪힌 자리</strong>가 접점 기준가다.</p>
+
+<div class="concept-card">
+  <div class="card-title">3초 만에 접점 기준가 찾기</div>
+  <ol>
+    <li>차트에 수평선을 하나 놓는다</li>
+    <li>위아래로 천천히 움직인다</li>
+    <li>캔들의 시가/종가/고가/저가와 <strong>가장 많이 접하는 곳</strong>이 접점 기준가</li>
+  </ol>
+  <p>최근 형성된 접점에 더 높은 가중치를 둔다.</p>
+</div>
+
+<!-- 접점 기준가 시각화 -->
+<div class="candle-chart" style="min-height:180px;">
+  <span class="chart-label">접점 기준가: 캔들이 가장 많이 겹치는 가격대</span>
+  <div class="price-level support" style="bottom:65px;">접점 기준가</div>
+  <div class="candle bull" style="margin-bottom:20px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:30px;"></div><div class="wick" style="height:8px;"></div></div>
+  <div class="candle bear" style="margin-bottom:35px;"><div class="wick" style="height:10px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:15px;"></div></div>
+  <div class="candle bull" style="margin-bottom:25px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:12px;"></div></div>
+  <div class="candle bear" style="margin-bottom:40px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:15px;"></div><div class="wick" style="height:20px;"></div></div>
+  <div class="candle bull" style="margin-bottom:30px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:22px;"></div><div class="wick" style="height:15px;"></div></div>
+  <div class="candle bear" style="margin-bottom:38px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:12px;"></div><div class="wick" style="height:18px;"></div></div>
+  <div class="candle bull" style="margin-bottom:28px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:28px;"></div><div class="wick" style="height:10px;"></div></div>
+</div>
+
+<h3>9.3 거래량 기준가</h3>
+
+<p>대량 거래가 발생한 캔들의 고가~저가 범위 안에 세력가가 숨어있다.</p>
+
+<div class="concept-card">
+  <div class="card-title">거래량 기준가 찾는 법</div>
+  <ol>
+    <li>거래량이 폭발한 캔들을 찾는다</li>
+    <li>그 캔들의 고가~저가 범위를 표시한다</li>
+    <li>이후 캔들이 그 범위 내에서 <strong>어느 가격에서 지지/저항</strong>받는지 관찰한다</li>
+    <li>해당 가격이 거래량 기준가</li>
+    <li>더 디테일하게 찾으려면 <strong>분봉으로 쪼개서</strong> 확인한다</li>
+  </ol>
+</div>
+
+<h3>9.4 접점+거래량 오버랩 = 최강 기준가</h3>
+
+<div class="concept-card success">
+  <div class="card-title">절대 기준가: 두 기준가의 만남 <span class="badge badge-core">핵심</span></div>
+  <p>접점 기준가와 거래량 기준가가 <strong>같은 가격대에서 일치</strong>하는 곳이 '절대 기준가'다. 이 가격은 절대 뚫리면 안 되는 핵심 타점이며, 여기서의 지지/저항은 신뢰도가 극도로 높다. <strong>접점 기준가와 거래량 기준가가 만나는 곳에서 매매하라.</strong></p>
+</div>
+
+<div class="visual-flow">
+  <span class="vf-step neutral">접점 기준가 도출<br><small>(캔들 겹침 분석)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">거래량 기준가 도출<br><small>(대량 거래 캔들 범위)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">오버랩 지점 확인<br><small>(두 기준가 일치?)</small></span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">절대 기준가 = 최강 타점</span>
+</div>
+
+<h3>9.5 기준가 활용의 실전 원칙</h3>
+
+<div class="concept-card">
+  <div class="card-title">기준가 활용 3원칙</div>
+  <ol>
+    <li><strong>복수 기준가 설정</strong>: 하나의 기준가에 올인하지 마라. 1차, 2차, 3차 기준가를 정해두고 분할 매수</li>
+    <li><strong>기준가 도달 시 자동 반응</strong>: 미리 주문을 넣어두거나, 도달 시 기계적으로 행동한다. 그때 가서 고민하면 늦는다</li>
+    <li><strong>기준가 이탈 시 즉시 인정</strong>: 기준가가 깨지면 시나리오가 틀린 것이다. 미련 없이 손절하라</li>
+  </ol>
+</div>
+
+<details>
+<summary>실전 연습: 기준가 찾기 3단계 훈련</summary>
+<div class="detail-body">
+  <p><strong>1단계 — 접점 기준가 훈련 (1주간):</strong></p>
+  <ul>
+    <li>매일 3개 종목의 일봉 차트를 열고 접점 기준가를 찾는다</li>
+    <li>수평선을 위아래로 움직이며 캔들이 가장 많이 접하는 곳을 표시</li>
+    <li>3초 이내에 찾는 것이 목표. 처음에는 1분 걸려도 괜찮다</li>
+  </ul>
+  <p><strong>2단계 — 거래량 기준가 훈련 (1주간):</strong></p>
+  <ul>
+    <li>대량 거래 캔들을 찾고, 그 범위를 박스로 표시</li>
+    <li>이후 캔들이 박스 안 어디에서 반응하는지 관찰</li>
+    <li>분봉으로 쪼개서 더 정밀한 기준가를 찾는 연습</li>
+  </ul>
+  <p><strong>3단계 — 절대 기준가 훈련 (1주간):</strong></p>
+  <ul>
+    <li>1단계와 2단계의 결과를 겹쳐 놓는다</li>
+    <li>겹치는 곳이 있다면 표시. 없다면 각각의 기준가를 1차, 2차로 등급 매기기</li>
+    <li>실제 매매 계획에 기준가를 적용하여 시뮬레이션</li>
+  </ul>
+</div>
+</details>
+
+<div class="concept-card warning">
+  <div class="card-title">기준가 흔한 실수 <span class="badge badge-rule">규칙</span></div>
+  <ul>
+    <li><strong>기준가를 너무 많이 설정</strong>: 5개 이상이면 의미가 희석된다. 핵심 2~3개로 압축</li>
+    <li><strong>기준가에 도달했는데 진입하지 못함</strong>: 사전에 주문을 넣어두지 않아서. 기준가를 정했으면 미리 행동을 준비하라</li>
+    <li><strong>기준가가 깨졌는데 버티기</strong>: 가장 위험한 실수. 기준가는 '이 가격이 지지되면 산다/이 가격이 깨지면 손절한다'의 양면이다</li>
+  </ul>
+</div>
+<div class="insight">
+    <strong>💡 핵심 격언:</strong> 세력이 만든 가격을 읽는 것이 차트 분석의 본질이다.
+</div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.10 매매 실전                                                   -->
+<!-- ================================================================ -->
+<section id="ch10">
+<h2><span class="num">10</span>매매 실전: 진입·청산·스타일·훈련법</h2>
+<p class="meta">영상 9, 24, 29, 35, 36, 37 기반</p>
+
+<h3>10.1 매매 급소 — 돌파의 3요소</h3>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">요소 1: 대량 거래 동반</div>
+    <div class="value">거래량이 터지지 않은 돌파는 가짜 돌파일 확률이 높다. 진짜 돌파는 거래량이 증명한다.</div>
+  </div>
+  <div class="def-item buy">
+    <div class="label">요소 2: 장대양봉</div>
+    <div class="value">몸통이 크고 꼬리가 짧은 양봉. 세력의 강한 의지 표현. 몸통이 작으면 의지가 약한 것.</div>
+  </div>
+  <div class="def-item buy">
+    <div class="label">요소 3: 가파른 기울기</div>
+    <div class="value">돌파 각도가 가파를수록 추진력이 강하다. 완만한 돌파는 에너지 부족.</div>
+  </div>
+</div>
+
+<div class="concept-card highlight">
+  <div class="card-title">대시세 전조: 극심한 흔들기 <span class="badge badge-adv">고급</span></div>
+  <p>돌파 직전 극심한 가격 흔들기(심리전)가 벌어지면, 그 뒤에 오는 시세는 대시세일 확률이 높다. 세력이 개미의 물량을 최대한 털어내고 가볍게 상승하려는 준비 작업이다.</p>
+</div>
+
+<!-- 돌파 3요소 캔들 차트 -->
+<div class="candle-chart" style="min-height:200px;">
+  <span class="chart-label">돌파 3요소 충족 예시</span>
+  <!-- 횡보 구간 -->
+  <div class="candle bear" style="margin-bottom:40px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:10px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bull" style="margin-bottom:42px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:8px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bear" style="margin-bottom:38px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:12px;"></div><div class="wick" style="height:8px;"></div></div>
+  <div class="candle bull" style="margin-bottom:40px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:10px;"></div><div class="wick" style="height:5px;"></div><div class="candle-label">횡보</div></div>
+  <div class="candle bear" style="margin-bottom:35px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:15px;"></div><div class="wick" style="height:10px;"></div><div class="candle-label">흔들기</div></div>
+  <div class="candle bull" style="margin-bottom:32px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:18px;"></div><div class="wick" style="height:12px;"></div></div>
+  <!-- 돌파! -->
+  <div class="candle bull" style="margin-bottom:40px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:50px; width:22px;"></div><div class="wick" style="height:5px;"></div><div class="candle-label">돌파!</div></div>
+  <div class="candle bull" style="margin-bottom:75px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:30px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bull" style="margin-bottom:95px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:5px;"></div><div class="candle-label">대시세!</div></div>
+</div>
+
+<h3>10.2 매매 스타일 3가지</h3>
+
+<table>
+<thead>
+<tr><th>스타일</th><th>보유 기간</th><th>목표</th><th>장점</th><th>단점</th><th>추천 대상</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>단타 (스캘핑)</strong></td>
+  <td>수 분~수 시간</td>
+  <td>시세 분출 시 짧게 끊기</td>
+  <td>빠른 수익 확정</td>
+  <td>고난도, 수수료 부담, 체력 소모</td>
+  <td>숙련자</td>
+</tr>
+<tr>
+  <td><strong>마디 매매</strong></td>
+  <td>수 일~수 주</td>
+  <td>한 파동(마디)을 온전히</td>
+  <td>손익비 우수, 심리적 여유</td>
+  <td>인내심 필요</td>
+  <td>초보 추천</td>
+</tr>
+<tr>
+  <td><strong>추세 매매</strong></td>
+  <td>수 주~수 개월</td>
+  <td>추세가 꺾일 때까지 홀딩</td>
+  <td>가장 편안, 대시세 수익</td>
+  <td>일시적 평가 손실 감내</td>
+  <td>모든 레벨</td>
+</tr>
+</tbody>
+</table>
+
+<h3>10.2.1 매매 스타일 선택 가이드</h3>
+
+<div class="concept-card">
+  <div class="card-title">스타일 선택 기준</div>
+  <ul>
+    <li><strong>성격이 급하고 즉각적 피드백을 원한다면</strong> → 단타. 단, 승률 60% 이상 + 빠른 손절 습관이 필수</li>
+    <li><strong>차분하게 분석하고 기다릴 수 있다면</strong> → 마디 매매. 한 파동을 온전히 먹는 쾌감이 크다</li>
+    <li><strong>매일 차트를 보기 어렵거나 직장인이라면</strong> → 추세 매매. 큰 그림만 확인하면 된다</li>
+    <li><strong>초보라면</strong> → 마디 매매 또는 추세 매매로 시작. 단타는 경험이 쌓인 후에</li>
+  </ul>
+</div>
+
+<div class="concept-card warning">
+  <div class="card-title">혼합 스타일 주의 <span class="badge badge-rule">규칙</span></div>
+  <p>한 매매 안에서 스타일을 바꾸면 안 된다. 단타로 들어갔는데 물려서 마디 매매로 전환하고, 그래도 안 되니까 추세 매매로 전환하는 것은 <strong>뇌동매매의 전형</strong>이다. 진입 전에 스타일을 확정하고, 해당 스타일의 청산 기준에 맞춰 일관되게 행동하라.</p>
+</div>
+
+<h3>10.3 성공적 매수의 4원칙</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">매수 4원칙 체크리스트</div>
+  <ol>
+    <li><strong>매매 스타일 확정</strong>: 이 매매는 단타인가, 마디인가, 추세인가? 미리 정해야 청산 기준이 명확해진다</li>
+    <li><strong>매매 유형 파악</strong>: 확인 매매(돌파)인가, 예측 매매(눌림목)인가? 리스크 관리가 달라진다</li>
+    <li><strong>활성 구간 확인</strong>: 시세가 분출되는 구간에서만 매매한다. 죽어있는 차트에서 매매하지 마라</li>
+    <li><strong>손절 라인 최우선 설정</strong>: 수익 목표보다 <strong>손절 라인을 먼저</strong> 정하라. 얼마를 벌 것인가보다 얼마를 잃을 수 있는가가 먼저다</li>
+  </ol>
+</div>
+
+<!-- 매수 원칙 visual-flow -->
+<div class="visual-flow">
+  <span class="vf-step key">스타일 확정<br><small>(단타/마디/추세)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">유형 파악<br><small>(확인/예측)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">활성 구간 확인<br><small>(시세 분출 중?)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step sell">손절 라인 설정<br><small>(최우선!)</small></span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">진입!</span>
+</div>
+
+<h3>10.4 익절의 5원칙</h3>
+
+<table>
+<thead>
+<tr><th>순서</th><th>익절 원칙</th><th>설명</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>1</strong></td>
+  <td>기준가 기계적 익절</td>
+  <td>다음 저항 기준가(접점/거래량/절대 기준가)에 도달하면 기계적으로 익절한다</td>
+</tr>
+<tr>
+  <td><strong>2</strong></td>
+  <td>패턴 목표가 분할 익절</td>
+  <td>E자형/N자형 패턴 목표가 도달 시 전체의 일부를 익절한다</td>
+</tr>
+<tr>
+  <td><strong>3</strong></td>
+  <td>과열 양봉 분할 익절</td>
+  <td>대량 거래를 동반한 과열 양봉이 나타나면 시세 끝물 가능성. 일부 익절한다</td>
+</tr>
+<tr>
+  <td><strong>4</strong></td>
+  <td>멘탈 마지노선 익절</td>
+  <td>심리적으로 흔들릴 때, 미리 정해둔 마지노선 수익률에서 전량 정리한다</td>
+</tr>
+<tr>
+  <td><strong>5</strong></td>
+  <td>트랩 발생 즉시 익절</td>
+  <td>세력의 트랩(가짜 돌파/이탈) 신호가 확인되면 즉시 전량 정리한다</td>
+</tr>
+</tbody>
+</table>
+
+<h3>10.5 차트 공부법</h3>
+
+<div class="concept-card">
+  <div class="card-title">시뮬레이션 훈련법</div>
+  <ol>
+    <li><strong>과거 차트 준비</strong>: 차트를 과거 시점으로 되돌려놓는다</li>
+    <li><strong>캔들 하나씩 넘기기</strong>: 한 봉씩 넘기면서 다음 방향을 예상한다</li>
+    <li><strong>기록 필수</strong>: 예상 매수가, 손절가, 익절가, 거래량 판단을 직접 기록한다</li>
+    <li><strong>결과 비교</strong>: 실제 결과와 비교하며 판단 오류를 분석한다</li>
+    <li><strong>반복</strong>: 같은 차트라도 여러 번 반복한다. 볼 때마다 새로운 것이 보인다</li>
+  </ol>
+</div>
+
+<h4>차트 캡처 + 필기의 중요성</h4>
+<p>좋은 진입과 나쁜 진입을 모두 캡처하여 보관하라. 캡처에 직접 손으로 기준가, 허리, 이평선 방향, 진입점, 손절점을 표시한다. 시간이 지나면 자신만의 패턴 인식 능력이 생긴다.</p>
+
+<div class="concept-card">
+  <div class="card-title">차트 복기 노트 양식</div>
+  <table>
+  <thead>
+  <tr><th>항목</th><th>기록 내용</th></tr>
+  </thead>
+  <tbody>
+  <tr><td>날짜/종목</td><td>2026-03-22 / 비트코인 일봉</td></tr>
+  <tr><td>추세 방향</td><td>상승 추세 (정배열)</td></tr>
+  <tr><td>기준가</td><td>접점 기준가: 85,000 / 거래량 기준가: 84,500</td></tr>
+  <tr><td>허리 위치</td><td>83,000 (허리 위에서 진행 중)</td></tr>
+  <tr><td>진입 근거</td><td>눌림목 + 허리 지지 + 5일선 터치</td></tr>
+  <tr><td>손절 라인</td><td>허리 아래 82,500</td></tr>
+  <tr><td>목표가</td><td>N자형 목표가 92,000</td></tr>
+  <tr><td>결과</td><td>진입 후 3일만에 목표가 도달. 분할 익절</td></tr>
+  <tr><td>교훈</td><td>허리 지지 + 정배열의 조합은 신뢰도가 매우 높았다</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<h4>손절선 단계적 상향 조정 (Trailing Stop) 연습</h4>
+<p>수익이 나기 시작하면 손절선을 매수가 → 허리 → 직전 저점 순으로 올리는 연습을 한다. 이를 통해 수익은 키우고 손실은 제한하는 습관을 몸에 익힌다.</p>
+
+<div class="visual-flow">
+  <span class="vf-step neutral">매수 진입</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step neutral">손절선: 매수가 아래</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step key">수익 발생 시<br>손절선 → 매수가</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step key">추가 상승 시<br>손절선 → 허리</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">계속 상승 시<br>손절선 → 직전 저점</span>
+</div>
+
+<div class="insight">
+차트 실력은 눈이 아니라 손으로 키운다. 머리로 이해했다고 실력이 되는 것이 아니다. 직접 기록하고, 캡처하고, 복기하라. 100번 보는 것보다 10번 직접 그려보는 것이 낫다.
+</div>
+
+<h3>10.6 초보자의 10대 실수</h3>
+
+<table>
+<thead>
+<tr><th>순서</th><th>실수</th><th>해결책</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>손절 라인 없이 진입</td><td>진입 전 반드시 손절가 먼저 결정. 감당할 수 있는 금액인지 확인</td></tr>
+<tr><td>2</td><td>고점 추격 매수</td><td>이미 크게 오른 후에는 눌림을 기다린다. 올라가는 것을 보고 사면 늦다</td></tr>
+<tr><td>3</td><td>역배열에서 매수</td><td>이평선 정배열 확인 필수. 역배열 = 매수 금지 구간</td></tr>
+<tr><td>4</td><td>거래량 무시</td><td>가격만 보면 속임수에 당한다. 거래량이 진위를 증명한다</td></tr>
+<tr><td>5</td><td>한 종목에 올인</td><td>분산 투자 + 분할 매수. 한 방에 전재산 넣지 않는다</td></tr>
+<tr><td>6</td><td>매매일지 미작성</td><td>매 매매마다 진입 근거, 손절가, 결과를 기록. 기록 없이는 성장 없다</td></tr>
+<tr><td>7</td><td>남의 종목 따라사기</td><td>자신의 기준가와 근거로 매매. 남의 타점은 나의 타점이 아니다</td></tr>
+<tr><td>8</td><td>손절을 못 함 (물타기)</td><td>손절은 비용이 아니라 보험료. 물타기는 최악의 습관</td></tr>
+<tr><td>9</td><td>과매매 (하루 10회 이상)</td><td>좋은 타점은 하루에 1~2번. 없으면 쉬는 것도 매매다</td></tr>
+<tr><td>10</td><td>복수매매 (손실 만회 시도)</td><td>잃은 돈을 바로 되찾으려 하면 더 잃는다. 하루 손실 한도 설정</td></tr>
+</tbody>
+</table>
+
+<h3>10.7 매매 전 체크리스트 (최종 정리)</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">진입 전 10초 체크리스트 <span class="badge badge-core">핵심</span></div>
+  <ol>
+    <li>상위 타임프레임의 추세 방향은? (추세 매매인지 역추세인지)</li>
+    <li>이평선 배열은? (정배열 = 매수 가능 / 역배열 = 매수 금지)</li>
+    <li>기준가에 도달했는가? (접점/거래량/절대 기준가)</li>
+    <li>거래량은 어떤가? (증가 = 건강 / 감소 = 관망)</li>
+    <li>허리 위에 있는가 아래에 있는가?</li>
+    <li>매매 스타일은? (단타/마디/추세)</li>
+    <li>매매 유형은? (눌림목/돌파)</li>
+    <li>손절 라인은 정했는가? (구체적 가격)</li>
+    <li>목표 수익은? (기준가 또는 패턴 목표가)</li>
+    <li>사이징은 적절한가? (전재산의 몇 %까지 감당 가능?)</li>
+  </ol>
+  <p>10개 중 8개 이상 명확하게 답할 수 있어야 진입 자격이 있다. 답할 수 없으면 <strong>쉬는 것이 정답</strong>이다.</p>
+</div>
+
+<details>
+<summary>부록: 단계별 학습 로드맵</summary>
+<div class="detail-body">
+  <h4>1단계 — 관찰기 (1~2개월)</h4>
+  <ul>
+    <li>캔들 구조, 거래량, 지지/저항 이해</li>
+    <li>실전 매매 금지. 차트만 관찰하고 기록</li>
+    <li>매일 3개 종목의 캔들 합치기/쪼개기 연습</li>
+  </ul>
+
+  <h4>2단계 — 시뮬레이션기 (2~3개월)</h4>
+  <ul>
+    <li>기준봉, 기준마디, 허리 찾기 연습</li>
+    <li>이평선 정배열/역배열 판별</li>
+    <li>과거 차트 시뮬레이션으로 가상 매매 100회 이상</li>
+    <li>기준가 찾기 훈련 (접점 + 거래량)</li>
+  </ul>
+
+  <h4>3단계 — 소액 실전기 (3~6개월)</h4>
+  <ul>
+    <li>극소량으로 실전 매매 시작 (잃어도 아프지 않은 금액)</li>
+    <li>매매일지 작성 의무화</li>
+    <li>눌림목 매매 또는 돌파 후 눌림 매매만 집중</li>
+    <li>승률 50%, 손익비 1.5:1 이상 달성 목표</li>
+  </ul>
+
+  <h4>4단계 — 본격 실전기 (6개월 이후)</h4>
+  <ul>
+    <li>패턴 매매 (AF, 밥그릇 등) 도입</li>
+    <li>멀티 타임프레임 결합 매매</li>
+    <li>사이징 단계적 확대</li>
+    <li>주간/월간 복기 루틴화</li>
+  </ul>
+</div>
+</details>
+
+<!-- 전체 정리 캔들 차트 -->
+<div class="candle-chart" style="min-height:220px;">
+  <span class="chart-label">실전 종합 — 기준봉 → 눌림 → 재진입 → 익절</span>
+  <!-- 하락 -->
+  <div class="candle bear" style="margin-bottom:70px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:20px;"></div><div class="wick" style="height:8px;"></div></div>
+  <div class="candle bear" style="margin-bottom:50px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:18px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bear" style="margin-bottom:30px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:15px;"></div><div class="wick" style="height:12px;"></div></div>
+  <!-- 바닥 + 기준봉 -->
+  <div class="candle bull" style="margin-bottom:20px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:50px; width:20px;"></div><div class="wick" style="height:10px;"></div><div class="candle-label">기준봉</div></div>
+  <!-- 상승 (기준마디) -->
+  <div class="candle bull" style="margin-bottom:55px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:22px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bull" style="margin-bottom:68px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:18px;"></div><div class="wick" style="height:5px;"></div></div>
+  <!-- 눌림 -->
+  <div class="candle bear" style="margin-bottom:65px;"><div class="wick" style="height:8px;"></div><div class="body" style="height:12px;"></div><div class="wick" style="height:5px;"></div></div>
+  <div class="candle bear" style="margin-bottom:55px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:10px;"></div><div class="wick" style="height:8px;"></div><div class="candle-label">눌림(허리)</div></div>
+  <!-- 재진입 -->
+  <div class="candle bull" style="margin-bottom:58px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:25px;"></div><div class="wick" style="height:8px;"></div><div class="candle-label">재진입!</div></div>
+  <!-- 상승 -->
+  <div class="candle bull" style="margin-bottom:75px;"><div class="wick" style="height:5px;"></div><div class="body" style="height:28px;"></div><div class="wick" style="height:3px;"></div></div>
+  <div class="candle bull" style="margin-bottom:92px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:22px;"></div><div class="wick" style="height:5px;"></div></div>
+  <!-- 과열 양봉 = 익절 -->
+  <div class="candle bull" style="margin-bottom:100px;"><div class="wick" style="height:3px;"></div><div class="body" style="height:40px; width:22px;"></div><div class="wick" style="height:15px;"></div><div class="candle-label">과열 = 익절!</div></div>
+</div>
+
+<details>
+<summary>부록: 핵심 공식 총정리</summary>
+<div class="detail-body">
+  <table>
+  <thead>
+  <tr><th>공식</th><th>산출법</th><th>활용</th></tr>
+  </thead>
+  <tbody>
+  <tr><td><strong>N자형 목표가</strong></td><td>조정 저점 + 1차 상승 진폭</td><td>익절 목표가 설정</td></tr>
+  <tr><td><strong>E자형 목표가</strong></td><td>박스 상단 + 박스 진폭</td><td>돌파 후 익절 목표가</td></tr>
+  <tr><td><strong>허리 추정</strong></td><td>기준마디 내 매물 집중 가격대 (눈으로 확인)</td><td>매수/매도 방향 결정</td></tr>
+  <tr><td><strong>이격도</strong></td><td>(현재가 - 이평선) / 이평선 × 100%</td><td>과열/과매도 판단</td></tr>
+  <tr><td><strong>손절 라인</strong></td><td>허리 - (기준마디 진폭 × 3~5%)</td><td>진입 전 필수 설정</td></tr>
+  <tr><td><strong>손익비</strong></td><td>(목표가 - 진입가) / (진입가 - 손절가)</td><td>1.5:1 이상일 때만 진입</td></tr>
+  </tbody>
+  </table>
+</div>
+</details>
+
+<details>
+<summary>부록: 자주 묻는 질문 (FAQ)</summary>
+<div class="detail-body">
+  <h4>Q1. 어떤 타임프레임으로 시작해야 하나요?</h4>
+  <p>일봉부터 시작하라. 분봉은 노이즈가 많아 초보자에게 혼란을 준다. 일봉에서 캔들, 거래량, 이평선을 충분히 익힌 후에 4시간봉 → 1시간봉 순서로 내려간다.</p>
+
+  <h4>Q2. 기준봉이 맞는지 확신이 안 서요.</h4>
+  <p>3가지 조건(장대양봉+거래량+돌파)을 체크하라. 하나라도 부족하면 기준봉이 아니다. 확신이 없으면 관망이 답이다. 기준봉은 "이건 확실하다"는 느낌이 들어야 진짜다.</p>
+
+  <h4>Q3. 허리를 어떻게 정확하게 찾나요?</h4>
+  <p>산술적 50%가 아닌, 캔들의 시가/종가가 집중된 가격대를 찾는다. 기준마디 내에서 수평선을 위아래로 움직이며 가장 많이 접하는 곳이 허리다. 처음에는 시간이 걸리지만 100개 이상 찾다 보면 감이 잡힌다.</p>
+
+  <h4>Q4. 눌림목 매매와 돌파 매매 중 어떤 것부터?</h4>
+  <p>돌파 후 눌림 매매(돌파+눌림 결합)가 초보자에게 가장 안전하다. 순수 눌림목 매매는 바닥 잡기의 위험이 있고, 순수 돌파 매매는 트랩 위험이 있다. 돌파를 확인한 후 눌림에서 진입하면 두 위험을 모두 줄인다.</p>
+
+  <h4>Q5. 언제 매매를 쉬어야 하나요?</h4>
+  <p>이평선이 수렴도 발산도 아닌 지저분한 상태, 거래량이 극도로 적은 상태, 또는 자신의 기준가가 하나도 보이지 않을 때. 매매 기회가 없는 시장에서 억지로 매매하면 반드시 손실이 난다. <strong>"쉬는 것도 매매다"</strong>를 체화하라.</p>
+</div>
+</details>
+
+<div class="concept-card success" style="margin-top:30px;">
+  <div class="card-title">교재 정리: 차트 매매의 본질</div>
+  <p>차트는 매수자와 매도자의 심리전 기록이다. 캔들을 읽고, 거래량으로 진위를 판별하고, 지지/저항에서 기준가를 잡고, 추세 방향으로 매매하라. 기준봉이 뼈대를 세우고, 허리가 방향을 알려주고, 기준가가 타점을 제공한다.</p>
+  <p><strong>기록하지 않으면 성장하지 않는다. 매일 차트를 그리고, 매매일지를 쓰고, 복기하라.</strong></p>
+</div>
+
+</section>
+
+</div><!-- .container -->
+
+<!-- ================================================================ -->
+<!-- 최종 요약 Visual Flow                                             -->
+<!-- ================================================================ -->
+<section style="padding:40px 0; border-bottom:1px solid var(--border);">
+<h2 style="border-bottom-color:var(--orange);"><span class="num" style="background:var(--orange); font-size:0.5em;">★</span>전체 교재 핵심 흐름 요약</h2>
+
+<div class="visual-flow" style="flex-wrap:wrap; justify-content:center; gap:4px;">
+  <span class="vf-step neutral">캔들 읽기<br><small>(Ch.1)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">거래량 판별<br><small>(Ch.2)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">지지/저항 설정<br><small>(Ch.3)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">기준봉·허리 확인<br><small>(Ch.4)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">이평선 배열 확인<br><small>(Ch.5)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">추세 방향 파악<br><small>(Ch.6)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">매매 유형 결정<br><small>(Ch.7)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">패턴 확인<br><small>(Ch.8)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">기준가 설정<br><small>(Ch.9)</small></span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">진입·청산 실행<br><small>(Ch.10)</small></span>
+</div>
+
+<div class="insight" style="margin-top:24px;">
+이 10단계를 거치지 않은 매매는 '분석'이 아니라 '추측'이다. 10단계가 몸에 익을 때까지 반복 훈련하라. 처음에는 30분 걸리던 과정이, 나중에는 30초 만에 직관적으로 판단된다. 그것이 실력이다.
+</div>
+
+<div class="concept-card" style="margin-top:20px;">
+  <div class="card-title">마지막 한마디</div>
+  <p>차트 공부의 목적은 <strong>100% 적중률</strong>이 아니라, <strong>확률적 우위</strong>를 확보하는 것이다. 10번 중 6번 맞추되 수익은 크고 손실은 작게 만들면, 시간이 지날수록 자산은 복리로 성장한다.</p>
+  <p>기록하라. 복기하라. 반복하라. 이것이 프로 트레이더가 되는 유일한 길이다.</p>
+</div>
+</section>
+
+<!-- ================================================================ -->
+<!-- 중급 차트편 구분 배너                                               -->
+<!-- ================================================================ -->
+<section id="intermediate" style="padding:60px 0 40px; border-bottom:none; text-align:center;">
+<div style="background: linear-gradient(135deg, #1a0a2e 0%, #2a1f0d 50%, #1a0a2e 100%); border:2px solid var(--purple); border-radius:16px; padding:40px 20px; margin:0 auto; max-width:700px;">
+  <p style="font-size:0.85em; color:var(--purple); letter-spacing:3px; text-transform:uppercase; margin-bottom:8px; font-weight:700;">INTERMEDIATE COURSE</p>
+  <h2 style="font-size:2em; border-bottom:none; justify-content:center; background: linear-gradient(135deg, var(--purple), var(--orange)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">중급 차트편 — 심화 과정</h2>
+  <p style="color:var(--text2); margin-top:12px;">초급 10개 챕터를 마스터한 후 도전하는 실전 심화 과정.<br>손절 기술, 돌파 전략, 패턴 심화, 매매 정체성까지.</p>
+</div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.11 손절의 기술                                                   -->
+<!-- ================================================================ -->
+<section id="ch11" style="padding:50px 0; border-bottom:1px solid var(--border);">
+<h2><span class="num">11</span>손절의 기술 — 절대 기준가와 트레일링 스탑</h2>
+
+<h3>11.1 절대 기준가 vs 일반 기준가</h3>
+
+<div class="compare-box">
+  <div class="compare-side right">
+    <div class="compare-label">절대 기준가</div>
+    <p>추세가 전환될 수 있는 <strong>핵심 가격대</strong>. 상승 마디의 '허리 라인'에 해당한다. 이 가격을 잃으면 추세 자체가 무너질 수 있으므로, 손절 기준으로 가장 신뢰할 수 있다.</p>
+  </div>
+  <div class="compare-side wrong">
+    <div class="compare-label">일반 기준가</div>
+    <p>전고점, 전저점 등 시각적으로 잘 보이는 자리. 진입 타점으로는 좋지만, 손절선으로 두기엔 <strong>너무 애매</strong>하다. 잠깐 이탈 후 되돌아오는 속임수에 당하기 쉽다.</p>
+  </div>
+</div>
+
+<h3>11.2 일반 기준가를 절대 기준가로 승격하는 조건</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">승격 3가지 조건 <span class="badge badge-core">핵심</span></div>
+  <ol>
+    <li><strong>돌파 시 대량 거래 캔들의 시가</strong> — 유의미한 거래량 폭증과 함께 가격이 돌파되었을 때, 해당 장대봉의 시가가 절대 기준가가 된다</li>
+    <li><strong>하락 추세 예측매매 시 타이트 손절</strong> — 하락 추세에서 반등을 노리는 예측매매일 경우, 직전 저점 바로 아래를 절대 기준가로 설정하여 손절을 짧게 잡는다</li>
+    <li><strong>횡보 후 새 상승 마디의 지지라인</strong> — 충분한 횡보 후 새로운 상승 마디가 시작되면, 그 마디의 하단이 새로운 절대 기준가가 된다</li>
+  </ol>
+</div>
+
+<div class="visual-flow">
+  <span class="vf-step neutral">일반 기준가</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">대량 거래 발생</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step buy">절대 기준가로 승격</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">손절 라인 확정</span>
+</div>
+
+<h3>11.3 트레일링 스탑</h3>
+
+<p>트레일링 스탑은 수익이 나는 방향으로 손절선을 끌어올리는 기법이다. 가격이 새 기준 마디를 형성할 때마다 손절선을 위로 이동시킨다.</p>
+
+<div class="concept-card">
+  <div class="card-title">트레일링 스탑 원칙</div>
+  <ul>
+    <li><strong>새 기준 마디 출현 시</strong> — 손절선을 새 마디의 허리(중간값) 이하로 이동</li>
+    <li><strong>대량 거래로 허리 급락 시</strong> — 즉시 손절하지 말고, 반등에서 본전 탈출을 시도</li>
+    <li><strong>반등 없이 계속 하락 시</strong> — 절대 기준가 이탈 확인 후 즉시 손절</li>
+  </ul>
+</div>
+
+<h3>11.4 추매(물타기) 시 손절 기준</h3>
+
+<p>추매할 때 평단가를 기준으로 손절하는 것은 <strong>잘못된 접근</strong>이다. 1차 매수와 2차 매수의 성격을 구분하여, 각각의 매수에 대해 별도의 손절 기준을 설정해야 한다.</p>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">1차 매수 손절</div>
+    <div class="value">최초 진입 근거가 무너지는 자리 (절대 기준가 이탈)</div>
+  </div>
+  <div class="def-item info">
+    <div class="label">2차 매수 손절</div>
+    <div class="value">추매 근거가 된 새 기준 마디 이탈 시 해당 물량만 정리</div>
+  </div>
+</div>
+
+<div class="insight">
+수익이 아니라 손절을 먼저 생각하라. 진입 전에 "이 자리가 뚫리면 추세가 무너지는가?"를 확인하고, 그 가격을 손절 라인으로 확정한 뒤에야 진입 버튼을 누를 수 있다.
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.12 돌파매매 3형제와 4원칙                                        -->
+<!-- ================================================================ -->
+<section id="ch12" style="padding:50px 0; border-bottom:1px solid var(--border);">
+<h2><span class="num">12</span>돌파매매 3형제와 4원칙</h2>
+
+<h3>12.1 돌파매매 3형제</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">3가지 돌파 유형 <span class="badge badge-core">핵심</span></div>
+  <table>
+  <thead>
+  <tr><th>유형</th><th>설명</th><th>난이도</th><th>특징</th></tr>
+  </thead>
+  <tbody>
+  <tr><td><strong>돌파 확인</strong></td><td>저항선을 대량 거래로 돌파한 후 진입</td><td>중급</td><td>가장 안전하지만 진입 가격이 높다</td></tr>
+  <tr><td><strong>돌파 눌림</strong></td><td>돌파 후 첫 번째 눌림에서 진입</td><td>초보 추천</td><td>돌파를 확인하고 + 더 낮은 가격에 진입 가능</td></tr>
+  <tr><td><strong>돌파 예측</strong></td><td>돌파 전 박스 하단에서 미리 진입</td><td>고급</td><td>손절이 짧지만 돌파 실패 시 손실 확정</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<h3>12.2 진입 4원칙</h3>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">원칙 1 — AF 패턴</div>
+    <div class="value">세력이 물량을 흔들어 개미를 털어낸 후 본격 돌파. 흔들기 완료 후 진입이 가장 안전하다.</div>
+  </div>
+  <div class="def-item buy">
+    <div class="label">원칙 2 — 박스 수렴 돌파</div>
+    <div class="value">가격 파동이 점점 좁아지며 수렴한 후, 한쪽으로 터지는 순간 진입. 수렴이 길수록 돌파 에너지가 크다.</div>
+  </div>
+  <div class="def-item buy">
+    <div class="label">원칙 3 — 야금야금 패턴</div>
+    <div class="value">단봉(짧은 몸통) + 긴 꼬리 캔들이 반복되며 저항선을 서서히 갉아먹는 형태. 조용히 돌파가 진행 중이라는 신호.</div>
+  </div>
+  <div class="def-item buy">
+    <div class="label">원칙 4 — 트랩 후 돌파</div>
+    <div class="value">지지선을 일부러 깨는 속임수(트랩) 직후, 급격히 반등하며 돌파하는 형태. 트랩에 물린 매도세의 손절이 연료가 된다.</div>
+  </div>
+</div>
+
+<h3>12.3 돌파매매 금지 조건</h3>
+
+<div class="concept-card danger">
+  <div class="card-title">이럴 때는 돌파매매 금지 <span class="badge badge-danger">주의</span></div>
+  <ul>
+    <li><strong>속임수가 2번 이상 나온 지저분한 박스</strong> — 세력의 의도를 읽기 어렵다</li>
+    <li><strong>확장형 박스</strong> — 변동성이 커지는 방향이면 돌파가 아닌 변동성 확대일 가능성</li>
+    <li><strong>손절선이 너무 먼 경우</strong> — 리스크 대비 수익(손익비)이 맞지 않는다</li>
+    <li><strong>뜬금없는 급등</strong> — 전조 없이 갑자기 치솟는 것은 세력의 물량 던지기 직전일 수 있다</li>
+  </ul>
+</div>
+
+<div class="visual-flow">
+  <span class="vf-step neutral">박스 수렴</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">거래량 폭증</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step buy">저항 돌파</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">눌림</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">2차 상승</span>
+</div>
+
+<div class="insight">
+    <strong>💡 핵심 격언:</strong> 진짜 돌파는 거래량이 증명한다. 거래량 없는 돌파는 함정이다.
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.13 눌림목 심화 전략                                              -->
+<!-- ================================================================ -->
+<section id="ch13" style="padding:50px 0; border-bottom:1px solid var(--border);">
+<h2><span class="num">13</span>눌림목 심화 전략</h2>
+
+<h3>13.1 눌림목 3분류</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">눌림목 진입 방식 3가지 <span class="badge badge-core">핵심</span></div>
+  <table>
+  <thead>
+  <tr><th>유형</th><th>진입 타이밍</th><th>전제 조건</th><th>리스크</th></tr>
+  </thead>
+  <tbody>
+  <tr><td><strong>눌림 예측</strong></td><td>기준 마디의 힘을 믿고 분할 매수</td><td>직전 기준봉의 거래량이 압도적</td><td>지지 실패 시 추가 하락 가능</td></tr>
+  <tr><td><strong>눌림 확인</strong></td><td>허리 라인에서 지지 확인 후 재눌림 시 진입</td><td>허리 지지를 1회 이상 확인</td><td>진입가가 높아질 수 있다</td></tr>
+  <tr><td><strong>눌림 돌파</strong></td><td>지지 확인 + 하락 추세선 돌파 시 진입</td><td>하락 추세선이 명확</td><td>가장 안전하지만 진입가 최고</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<h3>13.2 눌림목 진입 조건</h3>
+
+<div class="concept-card">
+  <div class="card-title">필수 조건 체크리스트</div>
+  <ul>
+    <li><strong>기준 마디 선행 필수</strong> — 눌림목은 반드시 강한 상승(기준 마디)이 먼저 나와야 한다. 기준 마디 없는 눌림은 '하락 중간 반등'에 불과하다</li>
+    <li><strong>눌림 시 거래량 확연히 감소</strong> — 눌림 구간에서 거래량이 줄어야 한다. 이것은 매도 압력이 약하다는 뜻이다</li>
+    <li><strong>트랩 + 패턴 변화 = 최적 진입</strong> — 눌림 끝에서 속임수(트랩)가 나오거나 캔들 패턴이 변하면 반전 임박 신호</li>
+  </ul>
+</div>
+
+<h3>13.3 눌림목 주의사항</h3>
+
+<div class="concept-card danger">
+  <div class="card-title">위험 신호 <span class="badge badge-danger">경고</span></div>
+  <p><strong>고점부 눌림/조정 중 거래량 폭증</strong>은 단순한 눌림이 아니라 <strong>하락 전환 시그널</strong>이다. 대량 매도가 유입되고 있다는 뜻이므로, 눌림목 매수를 중단하고 관망해야 한다.</p>
+</div>
+
+<div class="insight">
+가격 조정이 얕고 시간 조정이 길수록 향후 시세가 크다. 급격한 가격 조정보다 오랜 시간 동안 좁은 범위에서 횡보하는 눌림이 더 강력한 돌파로 이어진다.
+</div>
+
+<!-- 눌림목 candle chart -->
+<div class="candle-chart" style="min-height:160px; padding-bottom:30px;">
+  <span class="chart-label">눌림목 진입 패턴</span>
+  <!-- 기준봉 (대량거래) -->
+  <div class="candle bull wide" style="margin-bottom:10px;">
+    <div class="wick" style="height:5px;"></div>
+    <div class="body" style="height:65px;"></div>
+    <div class="wick" style="height:8px;"></div>
+    <div class="candle-label">기준봉</div>
+  </div>
+  <!-- 소봉 -->
+  <div class="candle bull" style="margin-bottom:55px;">
+    <div class="wick" style="height:8px;"></div>
+    <div class="body" style="height:15px;"></div>
+    <div class="wick" style="height:5px;"></div>
+  </div>
+  <!-- 허리라인 부근 눌림 (거래 감소) -->
+  <div class="candle bear" style="margin-bottom:40px;">
+    <div class="wick" style="height:5px;"></div>
+    <div class="body" style="height:12px;"></div>
+    <div class="wick" style="height:10px;"></div>
+    <div class="candle-label">눌림</div>
+  </div>
+  <div class="candle bear" style="margin-bottom:35px;">
+    <div class="wick" style="height:4px;"></div>
+    <div class="body" style="height:10px;"></div>
+    <div class="wick" style="height:12px;"></div>
+  </div>
+  <div class="candle doji" style="margin-bottom:32px;">
+    <div class="wick" style="height:10px;"></div>
+    <div class="body" style="height:2px;"></div>
+    <div class="wick" style="height:14px;"></div>
+    <div class="candle-label">바닥</div>
+  </div>
+  <!-- 반전 시작 -->
+  <div class="candle bull" style="margin-bottom:35px;">
+    <div class="wick" style="height:3px;"></div>
+    <div class="body" style="height:18px;"></div>
+    <div class="wick" style="height:8px;"></div>
+  </div>
+  <!-- 돌파 급등 -->
+  <div class="candle bull wide" style="margin-bottom:50px;">
+    <div class="wick" style="height:4px;"></div>
+    <div class="body" style="height:45px;"></div>
+    <div class="wick" style="height:3px;"></div>
+    <div class="candle-label">돌파</div>
+  </div>
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.14 밥그릇 패턴 심화                                              -->
+<!-- ================================================================ -->
+<section id="ch14" style="padding:50px 0; border-bottom:1px solid var(--border);">
+<h2><span class="num">14</span>밥그릇 패턴 심화 — 9가지 매수 급소</h2>
+
+<h3>14.1 밥그릇 패턴 핵심 조건</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">밥그릇 성립 3조건 <span class="badge badge-core">핵심</span></div>
+  <ol>
+    <li><strong>대추세 상승</strong> — 큰 흐름에서 상승 추세가 살아 있어야 한다</li>
+    <li><strong>단기 하방 이탈(트랩)</strong> — 단기적으로 지지선 아래로 빠지면서 매도세를 유인한다</li>
+    <li><strong>허리 밑에서 바닥 형성</strong> — 기준 마디의 허리 아래에서 둥근 바닥을 만들며 매집이 이루어진다</li>
+  </ol>
+</div>
+
+<h3>14.2 9가지 매수 급소</h3>
+
+<table>
+<thead>
+<tr><th>#</th><th>급소 이름</th><th>진입 위치</th><th>설명</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td><strong>바닥 돌파</strong></td><td>밥그릇 바닥 탈출 시</td><td>바닥 횡보를 깨고 올라오는 최초 지점</td></tr>
+<tr><td>2</td><td><strong>트랩 돌파</strong></td><td>속임수 하락 직후 반등</td><td>트랩에 물린 매도세가 손절하며 연료 제공</td></tr>
+<tr><td>3</td><td><strong>바닥 돌파 후 눌림</strong></td><td>바닥 돌파 후 첫 조정</td><td>돌파 확인 + 저가 매수 기회</td></tr>
+<tr><td>4</td><td><strong>트랩 돌파 후 눌림</strong></td><td>트랩 반등 후 첫 조정</td><td>트랩 돌파 확인 + 눌림 매수</td></tr>
+<tr><td>5</td><td><strong>허리 눌림(예측)</strong></td><td>허리 라인 도달 전 선진입</td><td>허리까지 올라올 것을 예측하고 분할 매수</td></tr>
+<tr><td>6</td><td><strong>허리 눌림(확인)</strong></td><td>허리 라인 지지 확인 후</td><td>허리에서 한 번 튕기는 것을 확인 후 매수</td></tr>
+<tr><td>7</td><td><strong>눌림 돌파</strong></td><td>허리 위 하락 추세선 돌파</td><td>허리 지지 + 추세선 돌파의 이중 확인</td></tr>
+<tr><td>8</td><td><strong>전고 돌파 추격</strong></td><td>직전 고점 돌파 시 추격</td><td>가장 공격적. 거래량 폭증 필수 확인</td></tr>
+<tr><td>9</td><td><strong>전고 돌파 후 눌림</strong></td><td>전고 돌파 후 첫 눌림</td><td>가장 안전한 급소. 돌파 확인 + 저가 재진입</td></tr>
+</tbody>
+</table>
+
+<!-- 밥그릇 candle chart -->
+<div class="candle-chart" style="min-height:180px; padding-bottom:30px;">
+  <span class="chart-label">밥그릇 패턴</span>
+  <!-- 급락 구간 -->
+  <div class="candle bear wide" style="margin-bottom:60px;">
+    <div class="wick" style="height:8px;"></div>
+    <div class="body" style="height:50px;"></div>
+    <div class="wick" style="height:5px;"></div>
+    <div class="candle-label">급락</div>
+  </div>
+  <div class="candle bear" style="margin-bottom:30px;">
+    <div class="wick" style="height:5px;"></div>
+    <div class="body" style="height:20px;"></div>
+    <div class="wick" style="height:10px;"></div>
+  </div>
+  <!-- 바닥 횡보 (밥그릇) -->
+  <div class="candle bear" style="margin-bottom:15px;">
+    <div class="wick" style="height:8px;"></div>
+    <div class="body" style="height:8px;"></div>
+    <div class="wick" style="height:6px;"></div>
+  </div>
+  <div class="candle doji" style="margin-bottom:12px;">
+    <div class="wick" style="height:10px;"></div>
+    <div class="body" style="height:2px;"></div>
+    <div class="wick" style="height:12px;"></div>
+    <div class="candle-label">바닥</div>
+  </div>
+  <div class="candle bull" style="margin-bottom:10px;">
+    <div class="wick" style="height:6px;"></div>
+    <div class="body" style="height:6px;"></div>
+    <div class="wick" style="height:12px;"></div>
+  </div>
+  <!-- 트랩 (하방 속임수) -->
+  <div class="candle bear" style="margin-bottom:5px;">
+    <div class="wick" style="height:4px;"></div>
+    <div class="body" style="height:10px;"></div>
+    <div class="wick" style="height:15px;"></div>
+    <div class="candle-label">트랩</div>
+  </div>
+  <!-- 반등 시작 -->
+  <div class="candle bull" style="margin-bottom:15px;">
+    <div class="wick" style="height:3px;"></div>
+    <div class="body" style="height:20px;"></div>
+    <div class="wick" style="height:8px;"></div>
+  </div>
+  <div class="candle bull" style="margin-bottom:30px;">
+    <div class="wick" style="height:4px;"></div>
+    <div class="body" style="height:22px;"></div>
+    <div class="wick" style="height:5px;"></div>
+  </div>
+  <!-- 급등 (전고 돌파) -->
+  <div class="candle bull wide" style="margin-bottom:55px;">
+    <div class="wick" style="height:3px;"></div>
+    <div class="body" style="height:55px;"></div>
+    <div class="wick" style="height:4px;"></div>
+    <div class="candle-label">전고돌파</div>
+  </div>
+</div>
+
+<div class="insight">
+    <strong>💡 핵심 격언:</strong> 9급소는 매매의 지도다. 현재 어디에 있는지 알아야 어디로 갈지 안다.
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.15 이평선 실전 활용                                              -->
+<!-- ================================================================ -->
+<section id="ch15" style="padding:50px 0; border-bottom:1px solid var(--border);">
+<h2><span class="num">15</span>이평선 실전 활용 — 캔들 카운팅</h2>
+
+<h3>15.1 매수 급소 3조건</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">이평선 기반 매수 급소 <span class="badge badge-core">핵심</span></div>
+  <ol>
+    <li><strong>1차 상승 후 이평선 수렴</strong> — 강한 1차 상승이 나온 후, 가격이 조정되면서 단기·중기·장기 이동평균선이 한 점으로 수렴해야 한다</li>
+    <li><strong>단기 이평선 우하향에서 우상향 전환</strong> — 단기 이평선(5일, 10일)이 하락을 멈추고 방향을 위로 트는 순간이 진입 타이밍</li>
+    <li><strong>120일선까지 정배열 유지</strong> — 5일 > 20일 > 60일 > 120일 순서로 정배열이 형성되어야 중장기 추세가 살아 있다는 뜻</li>
+  </ol>
+</div>
+
+<div class="concept-card danger">
+  <div class="card-title">⚠️ 하락 추세 수렴 주의 <span class="badge badge-danger">경고</span></div>
+  <p>하락 추세에서 이동평균선이 수렴하는 것은 매수 급소가 아니다. 하락 추세의 수렴은 <strong>밑으로 쏟아질 확률이 높으므로</strong>, 반드시 '1차 상승이 확인된 후의 눌림(2차 상승 시작점)'을 노려야 한다. 하락 중 수렴만 보고 진입하면 물리게 된다.</p>
+</div>
+
+<h3>15.2 캔들 카운팅 기법</h3>
+
+<p>이동평균선은 과거 N일간 종가의 평균이다. 따라서 <strong>오늘의 종가</strong>와 <strong>N일 전의 종가</strong>를 비교하면, 내일 이평선이 올라갈지 내려갈지를 미리 예측할 수 있다.</p>
+
+<div class="concept-card">
+  <div class="card-title">캔들 카운팅 원리</div>
+  <div class="def-grid">
+    <div class="def-item buy">
+      <div class="label">오늘 종가 > N일 전 종가</div>
+      <div class="value">N일 이평선은 내일 우상향한다 (평균값이 올라간다)</div>
+    </div>
+    <div class="def-item sell">
+      <div class="label">오늘 종가 < N일 전 종가</div>
+      <div class="value">N일 이평선은 내일 우하향한다 (평균값이 내려간다)</div>
+    </div>
+  </div>
+  <p style="margin-top:12px;">이 방법으로 이평선의 방향 전환 시점을 <strong>1~2일 먼저</strong> 예측하여 매수 급소를 선점할 수 있다.</p>
+</div>
+
+<div class="insight">
+이동평균선은 후행지표가 아니라 캔들 카운팅으로 선행 활용이 가능하다. N일 전 캔들과 오늘 종가를 비교하는 습관만 들이면, 이평선 방향 전환을 남들보다 먼저 포착할 수 있다.
+</div>
+
+<div class="visual-flow">
+  <span class="vf-step neutral">N일 전 캔들 종가 확인</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">오늘 종가와 비교</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step buy">이평선 방향 예측</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">매수 급소 선점</span>
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.16 세력가·기준가 심화 활용                                       -->
+<!-- ================================================================ -->
+<section id="ch16" style="padding:50px 0; border-bottom:1px solid var(--border);">
+<h2><span class="num">16</span>세력가·기준가 심화 활용</h2>
+
+<h3>16.1 세력가 찾는 법</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">세력가 포착 원리 <span class="badge badge-core">핵심</span></div>
+  <p>시가, 종가, 고가, 저가가 <strong>여러 날에 걸쳐 겹치는 가격대</strong>가 세력가다. 세력이 물량을 사고파는 기준 가격이므로, 이 가격대에서 반복적으로 가격이 멈추고 반전한다.</p>
+  <p>대량 거래를 동반한 장대봉의 범위 안에는 <strong>반드시 세력가가 존재</strong>한다. 장대봉의 시가, 종가, 중간값(허리)을 세력가 후보로 마킹해두면 된다.</p>
+</div>
+
+<h3>16.2 상하위 타임프레임 크로스체크</h3>
+
+<p>일봉에서 대량 거래 기준봉을 발견하면, 해당 날짜의 3분봉이나 15분봉으로 들어가 분해해 본다. 분봉 차트에서 보이는 박스권의 지지·저항선이 세력가의 <strong>정밀한 가격</strong>이다.</p>
+
+<div class="visual-flow">
+  <span class="vf-step key">일봉 기준봉 발견</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">분봉으로 분해</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">세력가 확인</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step buy">돌파/이탈 대응</span>
+</div>
+
+<h3>16.3 세력가 기반 대응 전략</h3>
+
+<div class="concept-card">
+  <div class="card-title">대응 원칙</div>
+  <ul>
+    <li><strong>2번 이상 지지 확인 후 이탈 시</strong> — 즉시 손절. 세력가를 2번 이상 지켜줬다는 것은 중요한 가격이라는 뜻이고, 그걸 깨면 추세가 무너진다</li>
+    <li><strong>트랩으로 재돌파 시</strong> — 이탈이 속임수였다면 즉시 재매수. 트랩 후 재돌파는 가장 강력한 매수 신호 중 하나다</li>
+    <li><strong>세력가 사이 구간에서 매매</strong> — 하단 세력가에서 매수, 상단 세력가에서 익절하는 단순한 구간 매매 전략이 가능하다</li>
+  </ul>
+</div>
+
+<div class="insight">
+    <strong>💡 핵심 격언:</strong> 세력의 의도를 읽으면 차트가 소설처럼 읽힌다.
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.17 매매 스타일의 정체성                                          -->
+<!-- ================================================================ -->
+<section id="ch17" style="padding:50px 0; border-bottom:1px solid var(--border);">
+<h2><span class="num">17</span>매매 스타일의 정체성 — 스캘핑/단타/스윙 전환</h2>
+
+<h3>17.1 구분 기준: 시간이 아닌 차트의 구간</h3>
+
+<p>스캘핑, 단타, 스윙을 '보유 시간'으로 구분하는 것은 잘못된 접근이다. 올바른 구분은 <strong>차트에서 어떤 구간(Scale)을 먹으려 하는가</strong>로 결정된다.</p>
+
+<table>
+<thead>
+<tr><th>스타일</th><th>목표 구간</th><th>손절 기준</th><th>특징</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>단타</strong></td><td>짧은 돌파 한 구간만</td><td>타이트 (돌파 기준봉 시가)</td><td>빠른 진입, 빠른 청산. 수익도 짧다</td></tr>
+<tr><td><strong>마디 매매</strong></td><td>한 상승 마디 전체</td><td>허리 라인 이탈 시</td><td>기준 마디의 시작부터 끝까지 보유</td></tr>
+<tr><td><strong>추세 매매</strong></td><td>전체 파동 (여러 마디)</td><td>전저점 이탈 시</td><td>장기 보유. 손절이 넓지만 수익도 크다</td></tr>
+</tbody>
+</table>
+
+<h3>17.2 매매 스타일 전환 금지</h3>
+
+<div class="concept-card danger">
+  <div class="card-title">계좌 파괴의 근본 원인 <span class="badge badge-danger">경고</span></div>
+  <p>단타로 진입했는데 물리면 "스윙으로 가져가자"고 합리화하는 순간, 계좌가 무너진다. 진입 시 정한 매매 스타일을 <strong>절대 바꾸지 마라.</strong></p>
+  <p style="margin-top:10px;"><strong>유일한 예외</strong>: 보유 중 강력한 대량 거래 돌파 또는 트랩이 발생했을 때만, 익절 목표를 상향 조정할 수 있다. 단, 손절선은 절대 내리지 않는다.</p>
+</div>
+
+<div class="visual-flow">
+  <span class="vf-step neutral">진입 전 스타일 확정</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step buy">단타: 한 구간만</span>
+  <span class="vf-arrow">|</span>
+  <span class="vf-step key">마디: 한 마디 전체</span>
+  <span class="vf-arrow">|</span>
+  <span class="vf-step sell">추세: 여러 마디</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">청산까지 스타일 유지</span>
+</div>
+
+<div class="insight">
+매매 정체성이 흔들리면 계좌가 무너진다. 진입 전에 "나는 이 매매에서 어디까지 먹을 것인가"를 확정하고, 그 계획을 끝까지 지켜라. 스타일 변경은 다음 매매에서 하는 것이다.
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.18 차트 거꾸로 보기                                              -->
+<!-- ================================================================ -->
+<section id="ch18" style="padding:50px 0; border-bottom:1px solid var(--border);">
+<h2><span class="num">18</span>차트 거꾸로 보기 — 심리 제어 기법</h2>
+
+<h3>18.1 원리: 편향 극복</h3>
+
+<p>인간은 상승 차트는 잘 분석하면서도, 하락(손절)에 대해서는 두려움과 부정이 앞선다. 차트를 거꾸로 뒤집으면 이 <strong>심리적 편향</strong>을 제거할 수 있다.</p>
+
+<div class="concept-card">
+  <div class="card-title">차트 반전의 효과</div>
+  <ul>
+    <li><strong>손절 자리가 '매수 급소'로 보인다</strong> — 하락 차트를 뒤집으면 상승으로 보이므로, 객관적으로 "여기서 사겠는가?"를 판단할 수 있다</li>
+    <li><strong>뇌동 매수 방지</strong> — 상승에 흥분해서 추격 매수하려는 순간, 거꾸로 보면 "하락 중간에 매도하겠는가?"라는 질문이 된다</li>
+    <li><strong>객관적 익절 타점 확보</strong> — 수익 실현 시점을 감이 아닌 구조적 판단으로 결정할 수 있다</li>
+  </ul>
+</div>
+
+<div class="visual-flow">
+  <span class="vf-step neutral">원래 차트 분석</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">차트 반전(거꾸로)</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step buy">"여기서 사겠는가?"</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step sell">YES → 손절 / NO → 홀딩</span>
+</div>
+
+<h3>18.2 실전 활용법</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">차트 반전 실행 방법</div>
+  <p>트레이딩뷰(TradingView)에서 차트 Y축을 우클릭 → '반전 스케일' 또는 HTS의 차트 색상 반전 기능을 사용한다. 양봉/음봉 색상을 반대로 바꾸면 더 효과적이다.</p>
+  <p style="margin-top:10px;">매매 결정 전 30초만 거꾸로 보는 습관을 들이면, 감정적 매매를 구조적으로 차단할 수 있다.</p>
+</div>
+
+<div class="insight">
+거꾸로 봐서 매수 급소라면, 원래 차트에서는 손절이 맞다. 반대로, 거꾸로 봐서 절대 사지 않을 자리라면, 원래 차트에서 손절할 이유가 없다.
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.19 평생 기법 — AF/VL 패턴                                       -->
+<!-- ================================================================ -->
+<section id="ch19" style="padding:50px 0; border-bottom:1px solid var(--border);">
+<h2><span class="num">19</span>평생 기법 — AF/VL 패턴</h2>
+
+<h3>19.1 AF 패턴 (상승)</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">AF 패턴 — 가장 신뢰도 높은 매수 신호 <span class="badge badge-core">핵심</span></div>
+  <ol>
+    <li><strong>A (Advance, 급등)</strong> — 대추세 상승 중 거래량 폭증을 동반한 강한 상승 구간. 기준봉 또는 기준 마디에 해당한다</li>
+    <li><strong>F (Flag/Flat, 횡보)</strong> — A 구간의 허리 위에서 작은 캔들로 지루한 횡보. 거래량이 확연히 감소하고 이동평균선이 수렴한다</li>
+    <li><strong>돌파 시점</strong> — F 구간이 끝나고 거래량이 다시 폭증하면서 직전 고점을 돌파할 때 추격 매수</li>
+    <li><strong>손절 = F 구간 하단</strong> — F 구간이 좁으면 좁을수록 손절이 짧아지므로 손익비가 극도로 유리하다. 특히 F 횡보가 매우 짧으면 스캘핑·단타급의 타이트한 손익비 매매가 가능하다</li>
+  </ol>
+</div>
+
+<h3>19.2 VL 패턴 (하락)</h3>
+
+<div class="concept-card warning">
+  <div class="card-title">VL 패턴 — AF의 정확한 반전 <span class="badge badge-rule">매도 시그널</span></div>
+  <p>AF 패턴을 뒤집으면 VL 패턴이 된다. V자 급락 후 L자 횡보가 이어지고, 횡보를 하방 이탈하면 재하락이 시작된다.</p>
+  <ul>
+    <li><strong>V (Vertical drop)</strong> — 거래량 폭증과 함께 수직 급락</li>
+    <li><strong>L (Ledge, 선반)</strong> — 급락 후 좁은 범위에서 횡보. 반등 시도가 미약하다</li>
+    <li><strong>L 구간 하단 이탈 시</strong> — 추가 하락 시작. 숏 진입 또는 보유 물량 손절 시점</li>
+  </ul>
+</div>
+
+<h3>19.3 변형 패턴</h3>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">ALF 패턴</div>
+    <div class="value">A 후 L자 긴 횡보가 추가된 형태. 횡보가 길수록 에너지 축적이 크므로 돌파 시 더 강력한 상승이 나온다.</div>
+  </div>
+  <div class="def-item info">
+    <div class="label">VF 패턴</div>
+    <div class="value">V 후 F(짧은 횡보)가 바로 이어지는 형태. 횡보 기간이 짧아 빠르게 재하락으로 전환된다.</div>
+  </div>
+</div>
+
+<!-- AF 패턴 candle chart -->
+<div class="candle-chart" style="min-height:200px; padding-bottom:30px;">
+  <span class="chart-label">AF 패턴</span>
+  <!-- A 구간: 급등 -->
+  <div class="candle bull" style="margin-bottom:10px;">
+    <div class="wick" style="height:5px;"></div>
+    <div class="body" style="height:20px;"></div>
+    <div class="wick" style="height:8px;"></div>
+  </div>
+  <div class="candle bull wide" style="margin-bottom:25px;">
+    <div class="wick" style="height:3px;"></div>
+    <div class="body" style="height:40px;"></div>
+    <div class="wick" style="height:5px;"></div>
+    <div class="candle-label">A(급등)</div>
+  </div>
+  <div class="candle bull" style="margin-bottom:55px;">
+    <div class="wick" style="height:4px;"></div>
+    <div class="body" style="height:25px;"></div>
+    <div class="wick" style="height:3px;"></div>
+  </div>
+  <!-- F 구간: 횡보 (이평선 수렴) -->
+  <div class="candle bear narrow" style="margin-bottom:65px;">
+    <div class="wick" style="height:6px;"></div>
+    <div class="body" style="height:6px;"></div>
+    <div class="wick" style="height:5px;"></div>
+  </div>
+  <div class="candle bull narrow" style="margin-bottom:63px;">
+    <div class="wick" style="height:4px;"></div>
+    <div class="body" style="height:5px;"></div>
+    <div class="wick" style="height:6px;"></div>
+  </div>
+  <div class="candle doji" style="margin-bottom:62px;">
+    <div class="wick" style="height:5px;"></div>
+    <div class="body" style="height:2px;"></div>
+    <div class="wick" style="height:5px;"></div>
+    <div class="candle-label">F(횡보)</div>
+  </div>
+  <div class="candle bear narrow" style="margin-bottom:60px;">
+    <div class="wick" style="height:5px;"></div>
+    <div class="body" style="height:5px;"></div>
+    <div class="wick" style="height:7px;"></div>
+  </div>
+  <div class="candle bull narrow" style="margin-bottom:62px;">
+    <div class="wick" style="height:4px;"></div>
+    <div class="body" style="height:6px;"></div>
+    <div class="wick" style="height:4px;"></div>
+  </div>
+  <!-- 돌파 급등 -->
+  <div class="candle bull wide" style="margin-bottom:85px;">
+    <div class="wick" style="height:3px;"></div>
+    <div class="body" style="height:50px;"></div>
+    <div class="wick" style="height:4px;"></div>
+    <div class="candle-label">돌파!</div>
+  </div>
+  <div class="candle bull" style="margin-bottom:110px;">
+    <div class="wick" style="height:4px;"></div>
+    <div class="body" style="height:30px;"></div>
+    <div class="wick" style="height:3px;"></div>
+    <div class="candle-label">급등</div>
+  </div>
+</div>
+
+<div class="insight">
+AF 패턴은 "평생 기법"이라 불릴 만큼 높은 승률과 우수한 손익비를 제공한다. 핵심은 F 구간에서의 인내심이다. 지루한 횡보를 참고 기다렸다가, 거래량 재폭증과 함께 돌파가 나오는 순간 과감하게 진입하라.
+</div>
+
+<div class="insight">
+    <strong>💡 핵심 격언:</strong> 한 가지 기법을 10년 연마한 사람이 열 가지 기법을 1년씩 한 사람을 이긴다.
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- 중급편 전체 흐름 요약                                               -->
+<!-- ================================================================ -->
+<section style="padding:40px 0; border-bottom:1px solid var(--border);">
+<h2 style="border-bottom-color:var(--purple);"><span class="num" style="background:var(--purple); font-size:0.5em;">★</span>중급 차트편 핵심 흐름 요약</h2>
+
+<div class="visual-flow" style="flex-wrap:wrap; justify-content:center; gap:4px;">
+  <span class="vf-step neutral">손절 기준 확립<br><small>(Ch.11)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">돌파 유형 판단<br><small>(Ch.12)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">눌림목 급소 포착<br><small>(Ch.13)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">밥그릇 9급소<br><small>(Ch.14)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">이평선 선행 활용<br><small>(Ch.15)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">세력가 정밀 타점<br><small>(Ch.16)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step sell">매매 정체성 확립<br><small>(Ch.17)</small></span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">심리 편향 제거<br><small>(Ch.18)</small></span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">AF/VL 평생 기법<br><small>(Ch.19)</small></span>
+</div>
+
+<div class="insight" style="margin-top:24px;">
+초급편이 '차트를 읽는 눈'을 키웠다면, 중급편은 '실전에서 돈을 버는 기술'을 다듬는 과정이다. 손절을 먼저 세우고, 진입 유형을 정하고, 패턴을 확인하고, 매매 정체성을 지켜라. 이 순서가 무너지면 어떤 기법도 소용없다.
+</div>
+</section>
+
+<footer style="text-align:center; padding:40px 20px; border-top:1px solid var(--border); color:var(--text2); font-size:0.85em;">
+  <p>차트 기초 완벽 교재 — 차트프로 초급·중급 차트편 완벽 정리</p>
+  <p>출처: 차트프로 유튜브 채널 '초급 차트편' · '중급 차트편' 시리즈 기반</p>
+  <p style="margin-top:8px; color:var(--text2);">
+    Ch.0 용어 정리 | Ch.1 캔들 구조·합치기·쪼개기 |
+    Ch.2 거래량·차트 강도 3요소 | Ch.3 지지·저항·역할 전환 |
+    Ch.4 기준봉·기준마디·허리 | Ch.5 이평선·정배열·골든크로스 |
+    Ch.6 추세선·추세 전환·추세 사망 | Ch.7 눌림목·돌파·믹스 전략 |
+    Ch.8 밥그릇·AF·원웨이·목표가 패턴 | Ch.9 접점·거래량·절대 기준가 |
+    Ch.10 진입 원칙·익절 원칙·공부법·체크리스트
+  </p>
+  <p style="margin-top:4px; color:var(--text2);">
+    Ch.11 손절·절대 기준가·트레일링 | Ch.12 돌파매매 3형제·4원칙 |
+    Ch.13 눌림목 심화 3분류 | Ch.14 밥그릇 9가지 급소 |
+    Ch.15 이평선 캔들 카운팅 | Ch.16 세력가 심화 활용 |
+    Ch.17 매매 스타일 정체성 | Ch.18 차트 거꾸로 보기 |
+    Ch.19 AF/VL 평생 기법
+  </p>
+  <p style="margin-top:8px;">Last updated: 2026-03-22</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>트레이딩 교재 시리즈 — Chart Study</title>
+<meta name="description" content="크립토 & 해외선물 트레이딩 학습 교재 모음. 차트 분석, ICT, SMC, 오더플로우, 리스크 관리까지.">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .hero {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 3rem 1.5rem 2.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #58a6ff, #3fb950);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+  }
+  .hero p {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .hero .stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .hero .stat {
+    text-align: center;
+  }
+  .hero .stat-num {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .hero .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Filter */
+  .filter-bar {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-btn {
+    flex-shrink: 0;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  /* Card Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+  }
+  .card:active {
+    transform: scale(0.98);
+  }
+  .card-top {
+    padding: 1.2rem 1.2rem 0.8rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+  .card-info { flex: 1; min-width: 0; }
+  .card-info h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .card-info h3 .badge {
+    font-size: 0.6rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    flex-shrink: 0;
+  }
+  .badge-basic { background: #1a472a; color: #3fb950; }
+  .badge-inter { background: #1a3a5c; color: #58a6ff; }
+  .badge-adv { background: #5c1a1a; color: #f85149; }
+  .badge-ref { background: #3d2e00; color: #d29922; }
+
+  .card-info .subtitle {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+  .card-meta {
+    padding: 0.6rem 1.2rem 1rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .card-meta span {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  /* Section Headers */
+  .section-header {
+    padding: 1.5rem 1.5rem 0.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-header h2 {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* Tablet */
+  @media (min-width: 600px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .hero h1 { font-size: 2.4rem; }
+  }
+  /* Desktop */
+  @media (min-width: 960px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+    .hero { padding: 4rem 2rem 3rem; }
+  }
+
+  /* PWA-like touch */
+  @media (hover: none) {
+    .card:hover { transform: none; border-color: var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>Trading Textbook Series</h1>
+  <p>크립토 & 해외선물 트레이딩 학습 교재 모음 — 기초부터 고급까지 체계적으로</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-num">12</div><div class="stat-label">교재</div></div>
+    <div class="stat"><div class="stat-num">250+</div><div class="stat-label">챕터</div></div>
+    <div class="stat"><div class="stat-num">35K+</div><div class="stat-label">라인</div></div>
+  </div>
+</header>
+
+<nav class="filter-bar" role="tablist">
+  <button class="filter-btn active" onclick="filterCards('all')">전체</button>
+  <button class="filter-btn" onclick="filterCards('basic')">기초</button>
+  <button class="filter-btn" onclick="filterCards('inter')">중급</button>
+  <button class="filter-btn" onclick="filterCards('adv')">고급</button>
+  <button class="filter-btn" onclick="filterCards('ref')">참고</button>
+</nav>
+
+<!-- 기초 -->
+<div class="section-header"><h2>Part I — 기초 과정</h2></div>
+<div class="grid" id="grid-basic">
+
+  <a class="card" data-level="basic" href="CHART_BASICS_TEXTBOOK.html">
+    <div class="card-top">
+      <div class="card-icon" style="background:#e67e221a;color:#e67e22">📊</div>
+      <div class="card-info">
+        <h3>차트 기초편 <span class="badge badge-basic">기초</span></h3>
+        <div class="subtitle">캔들스틱, 추세선, 지지/저항, 패턴 — 차트 분석의 모든 것</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span>📖 20+ 챕터</span><span>🎨 Orange</span><span>⏱ ~2시간</span>
+    </div>
+  </a>
+
+  <a class="card" data-level="basic" href="PSYCHOLOGY_TEXTBOOK.html">
+    <div class="card-top">
+      <div class="card-icon" style="background:#8e44ad1a;color:#8e44ad">🧠</div>
+      <div class="card-info">
+        <h3>매매 심리편 <span class="badge badge-basic">기초</span></h3>
+        <div class="subtitle">감정 관리, 인지 편향, 규율 — 트레이더의 심리 게임</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span>📖 18+ 챕터</span><span>🎨 Purple</span><span>⏱ ~1.5시간</span>
+    </div>
+  </a>
+
+  <a class="card" data-level="basic" href="INDICATORS_TEXTBOOK.html">
+    <div class="card-top">
+      <div class="card-icon" style="background:#f39c121a;color:#f39c12">📈</div>
+      <div class="card-info">
+        <h3>보조지표편 <span class="badge badge-basic">기초</span></h3>
+        <div class="subtitle">RSI, MACD, 볼린저밴드, 스토캐스틱 — 보조지표 완벽 가이드</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span>📖 17+ 챕터</span><span>🎨 Gold</span><span>⏱ ~2시간</span>
+    </div>
+  </a>
+
+  <a class="card" data-level="basic" href="RISK_MANAGEMENT_TEXTBOOK.html">
+    <div class="card-top">
+      <div class="card-icon" style="background:#c0392b1a;color:#c0392b">🛡️</div>
+      <div class="card-info">
+        <h3>리스크 관리편 <span class="badge badge-basic">기초</span></h3>
+        <div class="subtitle">포지션 사이징, Kelly Criterion, Drawdown, Risk of Ruin</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span>📖 25 챕터</span><span>🎨 Crimson</span><span>⏱ ~2시간</span>
+    </div>
+  </a>
+
+</div>
+
+<!-- 중급 -->
+<div class="section-header"><h2>Part II — 중급 과정</h2></div>
+<div class="grid" id="grid-inter">
+
+  <a class="card" data-level="inter" href="PRACTICE_TEXTBOOK.html">
+    <div class="card-top">
+      <div class="card-icon" style="background:#27ae601a;color:#27ae60">🎯</div>
+      <div class="card-info">
+        <h3>실전 연습편 <span class="badge badge-inter">중급</span></h3>
+        <div class="subtitle">매매 계획, 진입/청산, 백테스트 — 이론에서 실전으로</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span>📖 18+ 챕터</span><span>🎨 Green</span><span>⏱ ~1.5시간</span>
+    </div>
+  </a>
+
+  <a class="card" data-level="inter" href="DAYTRADING_TEXTBOOK.html">
+    <div class="card-top">
+      <div class="card-icon" style="background:#e74c3c1a;color:#e74c3c">⚡</div>
+      <div class="card-info">
+        <h3>데이트레이딩편 <span class="badge badge-inter">중급</span></h3>
+        <div class="subtitle">데이트레이딩 전략, 타이밍, 세션별 특성</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span>📖 18 챕터</span><span>🎨 Red</span><span>⏱ ~2시간</span>
+    </div>
+  </a>
+
+  <a class="card" data-level="inter" href="FUTURES_TEXTBOOK.html">
+    <div class="card-top">
+      <div class="card-icon" style="background:#2980b91a;color:#2980b9">🌐</div>
+      <div class="card-info">
+        <h3>해외선물편 <span class="badge badge-inter">중급</span></h3>
+        <div class="subtitle">NQ, ES, CL — 해외선물 시장 구조와 전략</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span>📖 20+ 챕터</span><span>🎨 Blue</span><span>⏱ ~2시간</span>
+    </div>
+  </a>
+
+  <a class="card" data-level="inter" href="CRYPTO_ADVANCED_TEXTBOOK.html">
+    <div class="card-top">
+      <div class="card-icon" style="background:#00bcd41a;color:#00bcd4">🔗</div>
+      <div class="card-info">
+        <h3>크립토 심화편 <span class="badge badge-inter">중급</span></h3>
+        <div class="subtitle">Funding Rate, OI, Liquidation, 온체인 분석, 시장 사이클</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span>📖 27 챕터</span><span>🎨 Cyan</span><span>⏱ ~2.5시간</span>
+    </div>
+  </a>
+
+</div>
+
+<!-- 고급 -->
+<div class="section-header"><h2>Part III — 고급 과정</h2></div>
+<div class="grid" id="grid-adv">
+
+  <a class="card" data-level="adv" href="SMC_TEXTBOOK.html">
+    <div class="card-top">
+      <div class="card-icon" style="background:#1abc9c1a;color:#1abc9c">🏗️</div>
+      <div class="card-info">
+        <h3>SMC 전략편 <span class="badge badge-adv">고급</span></h3>
+        <div class="subtitle">Smart Money Concepts — OB, FVG, BOS, CHoCH</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span>📖 19 챕터</span><span>🎨 Teal</span><span>⏱ ~2시간</span>
+    </div>
+  </a>
+
+  <a class="card" data-level="adv" href="ICT_TEXTBOOK.html">
+    <div class="card-top">
+      <div class="card-icon" style="background:#e67e221a;color:#e67e22">🎓</div>
+      <div class="card-info">
+        <h3>ICT 마스터편 <span class="badge badge-adv">고급</span></h3>
+        <div class="subtitle">ICT 컨셉 완전정복 — PD Array, Killzone, Market Maker Model</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span>📖 31 챕터</span><span>🎨 Orange-Brown</span><span>⏱ ~3시간</span>
+    </div>
+  </a>
+
+  <a class="card" data-level="adv" href="ORDERFLOW_TEXTBOOK.html">
+    <div class="card-top">
+      <div class="card-icon" style="background:#9b59b61a;color:#9b59b6">🔬</div>
+      <div class="card-info">
+        <h3>오더플로우 심화편 <span class="badge badge-adv">고급</span></h3>
+        <div class="subtitle">Footprint, Volume Profile, Delta, Price Ladder, DOM</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span>📖 30 챕터</span><span>🎨 Purple</span><span>⏱ ~3시간</span>
+    </div>
+  </a>
+
+</div>
+
+<!-- 참고 자료 -->
+<div class="section-header"><h2>Part IV — 참고 자료</h2></div>
+<div class="grid" id="grid-ref">
+
+  <a class="card" data-level="ref" href="PLATFORM_RESOURCES.html">
+    <div class="card-top">
+      <div class="card-icon" style="background:#d299221a;color:#d29922">🔧</div>
+      <div class="card-info">
+        <h3>플랫폼 리소스 <span class="badge badge-ref">참고</span></h3>
+        <div class="subtitle">Bybit, Tradovate, NinjaTrader, TradingView 튜토리얼 링크 모음</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span>🔗 40+ 링크</span><span>📱 플랫폼 가이드</span>
+    </div>
+  </a>
+
+  <a class="card" data-level="ref" href="QUIZ_100.html">
+    <div class="card-top">
+      <div class="card-icon" style="background:#58a6ff1a;color:#58a6ff">❓</div>
+      <div class="card-info">
+        <h3>퀴즈 100제 <span class="badge badge-ref">참고</span></h3>
+        <div class="subtitle">학습 내용 점검 — 100문제 퀴즈</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span>📝 100문제</span><span>🧪 자가 테스트</span>
+    </div>
+  </a>
+
+</div>
+
+<footer>
+  <p>Trading Textbook Series &copy; 2026 | 학습 목적 전용</p>
+  <p style="margin-top:0.5rem">Powered by <a href="https://notebooklm.google.com" target="_blank">NotebookLM</a> + <a href="https://claude.ai" target="_blank">Claude</a></p>
+</footer>
+
+<script>
+function filterCards(level) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  const allCards = document.querySelectorAll('.card');
+  const allHeaders = document.querySelectorAll('.section-header');
+  const allGrids = document.querySelectorAll('.grid');
+
+  if (level === 'all') {
+    allCards.forEach(c => c.style.display = '');
+    allHeaders.forEach(h => h.style.display = '');
+    allGrids.forEach(g => g.style.display = '');
+    return;
+  }
+
+  allCards.forEach(c => {
+    c.style.display = c.dataset.level === level ? '' : 'none';
+  });
+
+  // Hide empty sections
+  allGrids.forEach((g, i) => {
+    const visible = g.querySelectorAll('.card:not([style*="display: none"])');
+    const header = allHeaders[i];
+    if (visible.length === 0) {
+      g.style.display = 'none';
+      if (header) header.style.display = 'none';
+    } else {
+      g.style.display = '';
+      if (header) header.style.display = '';
+    }
+  });
+}
+</script>
+
+</body>
+</html>

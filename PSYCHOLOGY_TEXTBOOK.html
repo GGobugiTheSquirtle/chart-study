@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>트레이딩 심리편 — 차트는 심리다</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #1c2333;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --accent: #58a6ff;
+  --accent2: #3fb950;
+  --warn: #d29922;
+  --danger: #f85149;
+  --purple: #bc8cff;
+  --cyan: #39d2c0;
+  --orange: #f0883e;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  font-size: 15px;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 20px; }
+
+/* Header */
+.hero {
+  text-align: center;
+  padding: 60px 20px 40px;
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  border-bottom: 1px solid var(--border);
+}
+.hero h1 {
+  font-size: 2.4em;
+  background: linear-gradient(135deg, #e8d5f5, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+.hero .subtitle { color: rgba(255,255,255,0.85); font-size: 1.1em; }
+.hero .meta { color: rgba(255,255,255,0.6); font-size: 0.85em; margin-top: 15px; }
+
+/* Navigation */
+nav.toc {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13,17,23,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+nav.toc .container { display: flex; gap: 4px; flex-wrap: nowrap; }
+nav.toc a {
+  color: var(--text2);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8em;
+  font-weight: 500;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+nav.toc a:hover, nav.toc a.active {
+  background: var(--surface);
+  color: var(--purple);
+}
+
+/* Sections */
+section { padding: 50px 0; border-bottom: 1px solid var(--border); }
+section:last-child { border-bottom: none; }
+
+h2 {
+  font-size: 1.8em;
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--purple);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+h2 .num {
+  background: var(--purple);
+  color: var(--bg);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6em;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+h3 {
+  font-size: 1.25em;
+  color: var(--purple);
+  margin: 30px 0 12px;
+  padding-left: 12px;
+  border-left: 3px solid var(--purple);
+}
+h4 {
+  font-size: 1.05em;
+  color: var(--cyan);
+  margin: 20px 0 8px;
+}
+
+p { margin-bottom: 12px; color: var(--text); }
+
+/* Cards */
+.concept-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 16px 0;
+}
+.concept-card.highlight {
+  border-color: var(--purple);
+  background: linear-gradient(135deg, rgba(155,89,182,0.08), rgba(142,68,173,0.05));
+}
+.concept-card.warning {
+  border-color: var(--warn);
+  background: rgba(210,153,34,0.05);
+}
+.concept-card.danger {
+  border-color: var(--danger);
+  background: rgba(248,81,73,0.05);
+}
+.concept-card.success {
+  border-color: var(--accent2);
+  background: rgba(63,185,80,0.05);
+}
+
+.card-title {
+  font-weight: 700;
+  font-size: 1.05em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title .badge {
+  font-size: 0.7em;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+.badge-core { background: var(--purple); color: #fff; }
+.badge-adv { background: var(--cyan); color: var(--bg); }
+.badge-rule { background: var(--warn); color: var(--bg); }
+.badge-danger { background: var(--danger); color: #fff; }
+
+/* Definition lists */
+.def-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+@media (max-width: 700px) { .def-grid { grid-template-columns: 1fr; } }
+
+.def-item {
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 3px solid var(--purple);
+}
+.def-item.sell { border-left-color: var(--danger); }
+.def-item.buy { border-left-color: var(--accent2); }
+.def-item.info { border-left-color: var(--accent); }
+.def-item .label {
+  font-size: 0.8em;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.def-item .value { font-weight: 600; font-size: 1.05em; }
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.9em;
+}
+th {
+  background: var(--surface2);
+  color: var(--purple);
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--border);
+}
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+tr:hover { background: rgba(155,89,182,0.03); }
+
+/* Lists */
+ul, ol { margin: 8px 0 16px 20px; }
+li { margin-bottom: 6px; }
+li strong { color: var(--purple); }
+
+/* Flow diagrams (text-based) */
+.flow {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 16px 0;
+  text-align: center;
+  font-family: 'Consolas', monospace;
+  font-size: 0.95em;
+  line-height: 2;
+  overflow-x: auto;
+}
+.flow .arrow { color: var(--purple); font-weight: bold; }
+.flow .stage {
+  display: inline-block;
+  background: var(--surface2);
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  margin: 2px;
+}
+.flow .stage.active {
+  border-color: var(--purple);
+  color: var(--purple);
+}
+
+/* Key insight boxes */
+.insight {
+  background: linear-gradient(135deg, rgba(155,89,182,0.1), rgba(57,210,192,0.08));
+  border: 1px solid var(--purple);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+.insight::before {
+  content: '핵심 격언';
+  display: block;
+  font-size: 0.8em;
+  color: var(--purple);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+/* Flow arrow diagrams */
+.visual-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 16px 0;
+  font-size: 0.9em;
+  overflow-x: auto;
+}
+.vf-step {
+  background: var(--surface2);
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  text-align: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.vf-step.buy { border-color: var(--accent2); color: var(--accent2); }
+.vf-step.sell { border-color: var(--danger); color: var(--danger); }
+.vf-step.trap { border-color: var(--warn); color: var(--warn); background: rgba(210,153,34,0.08); }
+.vf-step.key { border-color: var(--purple); color: var(--purple); }
+.vf-step.neutral { border-color: var(--text2); }
+.vf-arrow {
+  color: var(--text2);
+  font-size: 1.2em;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+.vf-arrow.down { color: var(--danger); }
+.vf-arrow.up { color: var(--accent2); }
+
+/* Comparison side by side */
+.compare-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+@media (max-width: 600px) { .compare-box { grid-template-columns: 1fr; } }
+.compare-side {
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.compare-side.wrong {
+  background: rgba(248,81,73,0.05);
+  border-color: var(--danger);
+}
+.compare-side.right {
+  background: rgba(63,185,80,0.05);
+  border-color: var(--accent2);
+}
+.compare-label {
+  font-size: 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.compare-side.wrong .compare-label { color: var(--danger); }
+.compare-side.right .compare-label { color: var(--accent2); }
+
+/* Collapsible */
+details {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 12px 0;
+  overflow: hidden;
+}
+details summary {
+  padding: 14px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--purple);
+  background: var(--surface2);
+  list-style: none;
+}
+details summary::before { content: '▸ '; }
+details[open] summary::before { content: '▾ '; }
+details .detail-body { padding: 16px 20px; }
+
+/* Scenario */
+.scenario {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 16px 0;
+  position: relative;
+}
+.scenario .scenario-title {
+  font-size: 0.75em;
+  color: var(--purple);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.scenario.bullish { border-left: 4px solid var(--accent2); }
+.scenario.bearish { border-left: 4px solid var(--danger); }
+
+/* Arrow annotation */
+.arrow-annotation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  margin: 6px 0;
+  background: var(--surface2);
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+.arrow-annotation .arr { font-size: 1.3em; }
+.arr-up { color: var(--accent2); }
+.arr-down { color: var(--danger); }
+.arr-warn { color: var(--warn); }
+.arr-info { color: var(--purple); }
+
+/* Print */
+@media print {
+  body { background: #fff; color: #000; font-size: 11pt; }
+  .hero { background: none; border-bottom: 2px solid #000; }
+  .hero h1 { -webkit-text-fill-color: #000; color: #000; }
+  nav.toc { display: none; }
+  .concept-card, details, .flow, .insight {
+    background: #f5f5f5; border-color: #ccc;
+    break-inside: avoid;
+  }
+  th { background: #eee; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero">
+  <h1>트레이딩 심리편</h1>
+  <p class="subtitle">차트는 심리다 — 기술 50% + 심리 50%의 균형을 찾아가는 여정</p>
+  <p class="meta">차트프로 초급·중급 심리편 강의 기반 | 2026</p>
+</header>
+
+<!-- ==================== NAV ==================== -->
+<nav class="toc">
+  <div class="container">
+    <a href="#ch0">Ch.0 서문</a>
+    <a href="#ch1">Ch.1 기본 원칙</a>
+    <a href="#ch2">Ch.2 감정 관리</a>
+    <a href="#ch3">Ch.3 손실 대응</a>
+    <a href="#ch4">Ch.4 루틴·멘탈</a>
+    <a href="#ch5">Ch.5 뇌동매매 방지</a>
+    <a href="#ch6">Ch.6 수익 실현</a>
+    <a href="#ch7">Ch.7 연패·연승</a>
+    <a href="#ch8">Ch.8 프로 사고</a>
+    <a href="#ch9">Ch.9 심화 전략</a>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- ================================================================ -->
+<!-- CH.0 서문: 차트는 심리다                                         -->
+<!-- ================================================================ -->
+<section id="ch0">
+<h2><span class="num">0</span>서문: 차트는 심리다</h2>
+
+<div class="concept-card highlight">
+  <div class="card-title">왜 심리가 매매의 절반인가 <span class="badge badge-core">핵심</span></div>
+  <p>차트 분석 기술이 아무리 뛰어나도, 실전에서 원칙을 지키지 못하면 무용지물이다. 기술적 분석은 "어디서 사고팔 것인가"를 알려주지만, 실제로 그 자리에서 <strong>매수 버튼을 누를 수 있는가</strong>, 손절 라인에서 <strong>진짜로 잘라낼 수 있는가</strong>는 순전히 심리의 영역이다.</p>
+  <p>많은 트레이더가 공부는 충분히 했는데 실전에서 망하는 이유가 바로 여기에 있다. 차트를 읽는 능력과 차트 앞에서 냉정함을 유지하는 능력은 <strong>완전히 다른 스킬</strong>이다.</p>
+</div>
+
+<div class="compare-box">
+  <div class="compare-side wrong">
+    <div class="compare-label">기술만 있는 트레이더</div>
+    <ul>
+      <li>분석은 정확하지만 진입 타이밍에 망설임</li>
+      <li>손절 라인을 정해놓고도 "조금만 더" 버팀</li>
+      <li>수익 나면 조급하게 익절, 손실은 끝까지 버팀</li>
+      <li>감정적으로 복수 매매, 물타기 반복</li>
+    </ul>
+  </div>
+  <div class="compare-side right">
+    <div class="compare-label">기술 + 심리를 갖춘 트레이더</div>
+    <ul>
+      <li>시나리오대로 담담하게 진입</li>
+      <li>손절 라인 도달 시 기계적으로 청산</li>
+      <li>수익은 계획대로 분할 매도, 손실은 빠르게 인정</li>
+      <li>연패 후에도 원칙 유지, 금액만 줄여서 진행</li>
+    </ul>
+  </div>
+</div>
+
+<div class="visual-flow">
+  <span class="vf-step key">기술 50%</span>
+  <span class="vf-arrow">+</span>
+  <span class="vf-step key">심리 50%</span>
+  <span class="vf-arrow">=</span>
+  <span class="vf-step buy">생존하는 트레이더</span>
+</div>
+
+<div class="insight">
+  <p><strong>"차트는 사람들의 심리가 만든 그림이다. 그 그림을 읽으려면, 먼저 내 심리부터 다스려야 한다."</strong></p>
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.1 매매 심리의 기본 원칙                                        -->
+<!-- ================================================================ -->
+<section id="ch1">
+<h2><span class="num">1</span>매매 심리의 기본 원칙</h2>
+
+<h3>예측이 아닌 대응의 영역</h3>
+<p>시장은 어느 누구도 100% 예측할 수 없다. "오를 것 같다"는 생각은 <strong>가설</strong>일 뿐이며, 가설이 틀렸을 때 어떻게 대응할 것인가가 진짜 실력이다. 예측에 집착하면 틀렸을 때 인정하지 못하고, 손절을 미루고, 결국 큰 손실로 이어진다.</p>
+
+<div class="concept-card">
+  <div class="card-title">예측 vs 대응 <span class="badge badge-core">핵심</span></div>
+  <p><strong>예측:</strong> "여기서 반등할 거야" → 안 반등하면 멘탈 붕괴</p>
+  <p><strong>대응:</strong> "반등하면 매수, 이탈하면 손절" → 어떤 결과든 준비됨</p>
+</div>
+
+<h3>수비(리스크 관리)의 최우선화</h3>
+<p>프로 트레이더와 아마추어의 가장 큰 차이는 <strong>공격이 아니라 수비</strong>에 있다. 큰 수익을 노리기 전에, 얼마를 잃을 수 있는지를 먼저 계산하라. 시장에서 오래 살아남는 것이 곧 수익이다.</p>
+
+<div class="def-grid">
+  <div class="def-item sell">
+    <div class="label">아마추어</div>
+    <div class="value">"얼마나 벌 수 있을까?"</div>
+    <p style="font-size:0.85em; margin-top:6px;">수익 환상에 사로잡혀 리스크를 무시</p>
+  </div>
+  <div class="def-item buy">
+    <div class="label">프로</div>
+    <div class="value">"얼마나 잃지 않을 수 있을까?"</div>
+    <p style="font-size:0.85em; margin-top:6px;">리스크를 먼저 계산하고, 수익은 따라온다</p>
+  </div>
+</div>
+
+<h3>결과가 아닌 과정으로 평가</h3>
+<p>원칙을 지키고 손절 당했다면, 그것은 <strong>좋은 매매</strong>다. 원칙 없이 운 좋게 수익을 냈다면, 그것은 <strong>나쁜 매매</strong>다. 트레이더는 매매를 결과(수익/손실)가 아니라 <strong>과정(원칙 준수 여부)</strong>으로 평가해야 한다.</p>
+
+<div class="concept-card success">
+  <div class="card-title">과정 중심 평가 기준</div>
+  <ul>
+    <li>시나리오를 작성하고 진입했는가?</li>
+    <li>정해진 손절 라인을 지켰는가?</li>
+    <li>감정이 아닌 근거로 매매했는가?</li>
+    <li>매매일지에 복기를 남겼는가?</li>
+  </ul>
+  <p>위 4가지를 모두 지켰다면, 손절이어도 <strong>"잘 싸운 매매"</strong>다.</p>
+</div>
+
+<h4>예측 → 실패 → 감정적 대응 vs 대응 → 손절 인정 → 냉정한 재진입</h4>
+
+<div class="compare-box">
+  <div class="compare-side wrong">
+    <div class="compare-label">예측 중심 (악순환)</div>
+    <div class="visual-flow" style="margin:8px 0; border:none; padding:8px 0;">
+      <span class="vf-step sell">예측: "오른다!"</span>
+      <span class="vf-arrow down">→</span>
+      <span class="vf-step sell">하락 시작</span>
+      <span class="vf-arrow down">→</span>
+      <span class="vf-step trap">손절 거부</span>
+      <span class="vf-arrow down">→</span>
+      <span class="vf-step sell">대폭 손실</span>
+      <span class="vf-arrow down">→</span>
+      <span class="vf-step trap">복수 매매</span>
+    </div>
+  </div>
+  <div class="compare-side right">
+    <div class="compare-label">대응 중심 (선순환)</div>
+    <div class="visual-flow" style="margin:8px 0; border:none; padding:8px 0;">
+      <span class="vf-step key">시나리오 수립</span>
+      <span class="vf-arrow up">→</span>
+      <span class="vf-step neutral">하락 시작</span>
+      <span class="vf-arrow up">→</span>
+      <span class="vf-step buy">손절 실행</span>
+      <span class="vf-arrow up">→</span>
+      <span class="vf-step neutral">냉정한 분석</span>
+      <span class="vf-arrow up">→</span>
+      <span class="vf-step buy">재진입</span>
+    </div>
+  </div>
+</div>
+
+<div class="insight">
+    <strong>💡 핵심 격언:</strong> 감정은 신호일 뿐, 행동의 근거가 아니다. 흥분하면 쉬고, 두려우면 원칙을 확인하라.
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.2 감정 관리법 — 두려움, 탐욕, FOMO                             -->
+<!-- ================================================================ -->
+<section id="ch2">
+<h2><span class="num">2</span>감정 관리법 — 두려움, 탐욕, FOMO</h2>
+
+<h3>손익 창 가리기</h3>
+<p>실시간으로 손익 금액을 보면 심리가 요동친다. 수익이 나면 "지금 팔아야 하나?" 조급해지고, 손실이 나면 "더 빠지면 어쩌지?" 두려워진다. <strong>물리적으로 손익 창을 가리거나 숨기는 것</strong>만으로도 감정 개입을 크게 줄일 수 있다.</p>
+
+<div class="concept-card warning">
+  <div class="card-title">실전 팁: 손익 창 관리 <span class="badge badge-rule">규칙</span></div>
+  <ul>
+    <li>거래소 앱에서 실시간 수익률 표시 끄기</li>
+    <li>포지션 진입 후 차트만 보고, 금액 탭은 닫기</li>
+    <li>정해놓은 익절/손절 라인에서만 확인</li>
+    <li>특히 큰 금액일수록 반드시 가리기 실천</li>
+  </ul>
+</div>
+
+<h3>"팔기 전까지는 내 돈이 아니다" 마인드</h3>
+<p>포지션이 수익 중이어도, 그것은 아직 확정된 수익이 아니다. 미실현 수익에 집착하면 "내 돈을 빼앗기는 기분"이 되어 조급한 익절을 하거나, 반대로 더 큰 수익을 탐해 홀딩하다가 수익을 토해낸다. <strong>청산 버튼을 누르기 전까지 그 수익은 시장의 것</strong>이라고 생각하라.</p>
+
+<h3>줬다 뺏는 고통의 수용</h3>
+<p>수익이 나고 있던 포지션이 다시 본전으로 돌아오거나 손실로 전환될 때, 인간은 <strong>처음부터 손실이었던 것보다 훨씬 더 큰 고통</strong>을 느낀다. 이것이 "줬다 뺏는 고통"이다. 이 고통을 견디지 못하면 계획에 없던 매도를 하거나, 분노에 차서 물타기를 한다.</p>
+
+<div class="concept-card danger">
+  <div class="card-title">줬다 뺏는 고통이 만드는 뇌동매매 패턴</div>
+  <ol>
+    <li>포지션 진입 → 수익 +5% 도달</li>
+    <li>익절하지 않고 더 큰 수익 기대</li>
+    <li>가격 반전 → 수익 0% → 손실 -2% 전환</li>
+    <li>"5%를 빼앗겼다!"는 분노 → 물타기 or 복수 매매</li>
+    <li>결과: 훨씬 큰 손실로 마감</li>
+  </ol>
+</div>
+
+<div class="insight">
+  <p><strong>"줬다 뺏는 고통을 받아들이는 자만이 고수가 된다."</strong></p>
+  <p>수익이 줄어드는 것은 매매의 자연스러운 일부다. 바닥에서 사서 꼭대기에서 파는 것은 불가능하다. 일부를 시장에 돌려주는 것을 받아들여야 추세를 끝까지 탈 수 있다.</p>
+</div>
+
+<h4>감정의 3대 적: 두려움, 탐욕, FOMO</h4>
+
+<div class="visual-flow">
+  <span class="vf-step sell">두려움</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">진입 망설임 / 조기 익절</span>
+  <span class="vf-arrow">|</span>
+  <span class="vf-step trap">탐욕</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">과도한 홀딩 / 레버리지</span>
+  <span class="vf-arrow">|</span>
+  <span class="vf-step sell">FOMO</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">추격 매수 / 무계획 진입</span>
+</div>
+
+<table>
+  <tr>
+    <th>감정</th>
+    <th>증상</th>
+    <th>대처법</th>
+  </tr>
+  <tr>
+    <td><strong>두려움</strong></td>
+    <td>좋은 자리에서 진입 못함, 조기 익절</td>
+    <td>소액으로 시작, 시나리오 사전 작성</td>
+  </tr>
+  <tr>
+    <td><strong>탐욕</strong></td>
+    <td>과도한 레버리지, 익절 안 함</td>
+    <td>분할 매도 원칙, 목표가 사전 설정</td>
+  </tr>
+  <tr>
+    <td><strong>FOMO</strong></td>
+    <td>급등 추격, 계획 없는 진입</td>
+    <td>"놓친 열차는 잊어라" — 다음 기회 대기</td>
+  </tr>
+</table>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.3 손실 대응 심리                                               -->
+<!-- ================================================================ -->
+<section id="ch3">
+<h2><span class="num">3</span>손실 대응 심리</h2>
+
+<h3>진입 전 손절 라인 탐색</h3>
+<p>매매는 본질적으로 <strong>"어디서 손절할 것인가"를 찾는 게임</strong>이다. 좋은 진입은 손절 라인이 명확하고, 손절 시 감수해야 할 손실이 감당 가능한 자리다. 진입 전에 반드시 "여기가 무너지면 내 시나리오는 틀린 것"이라는 가격 수준을 정해야 한다.</p>
+
+<div class="concept-card">
+  <div class="card-title">손절 라인 설정 프로세스</div>
+  <div class="visual-flow">
+    <span class="vf-step key">차트 분석</span>
+    <span class="vf-arrow">→</span>
+    <span class="vf-step neutral">지지/저항 확인</span>
+    <span class="vf-arrow">→</span>
+    <span class="vf-step sell">손절 라인 설정</span>
+    <span class="vf-arrow">→</span>
+    <span class="vf-step neutral">손실 금액 계산</span>
+    <span class="vf-arrow">→</span>
+    <span class="vf-step buy">감당 가능? → 진입</span>
+  </div>
+  <p style="margin-top:12px;">이 순서가 아니라 "진입 → 나중에 손절 고민"은 이미 늦었다.</p>
+</div>
+
+<h3>손실 폭의 심리적 감당 여부</h3>
+<p>차트상으로 완벽한 자리여도, 손절 시 발생할 손실 금액이 심리적으로 감당이 안 된다면 <strong>그 매매는 하면 안 된다</strong>. 감당 불가능한 금액을 걸면 손절 라인에서 "조금만 더 기다려보자"는 합리화가 시작되고, 결국 원칙이 무너진다.</p>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">감당 가능한 손실</div>
+    <div class="value">잃어도 평정심 유지 가능</div>
+    <p style="font-size:0.85em; margin-top:6px;">→ 원칙대로 손절 실행 가능</p>
+  </div>
+  <div class="def-item sell">
+    <div class="label">감당 불가능한 손실</div>
+    <div class="value">"이만큼 못 잃어" 심리 발동</div>
+    <p style="font-size:0.85em; margin-top:6px;">→ 손절 거부 → 더 큰 손실</p>
+  </div>
+</div>
+
+<div class="insight">
+  <p><strong>"얼마나 벌까보다 얼마나 잃지 않을까를 먼저 계산하라."</strong></p>
+  <p>리스크 관리가 먼저다. 손실을 통제할 수 있는 금액 안에서만 매매하라. 그래야 손절 라인에서 진짜로 칼같이 자를 수 있다.</p>
+</div>
+
+<h4>손실 대응 단계별 가이드</h4>
+
+<div class="visual-flow">
+  <span class="vf-step neutral">손절 라인 도달</span>
+  <span class="vf-arrow down">→</span>
+  <span class="vf-step sell">즉시 청산</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">5분 냉각</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">복기: 왜 틀렸나?</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step buy">다음 시나리오 탐색</span>
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.4 매매 루틴과 멘탈 관리                                        -->
+<!-- ================================================================ -->
+<section id="ch4">
+<h2><span class="num">4</span>매매 루틴과 멘탈 관리</h2>
+
+<h3>매매일지와 제3자적 복기</h3>
+<p>매매일지는 단순한 기록이 아니라 <strong>자기 객관화의 도구</strong>다. 자신의 매매를 마치 다른 사람의 매매를 분석하듯 제3자 시점으로 복기하라. "이 트레이더는 왜 여기서 진입했을까?" "이 손절은 적절했을까?" — 감정을 빼고 사실만 보는 훈련이다.</p>
+
+<div class="concept-card">
+  <div class="card-title">효과적인 매매일지 항목</div>
+  <table>
+    <tr><th>항목</th><th>기록 내용</th><th>목적</th></tr>
+    <tr><td>진입 근거</td><td>어떤 시나리오, 어떤 신호로 진입했는가</td><td>근거 없는 진입 방지</td></tr>
+    <tr><td>심리 상태</td><td>진입 시 감정 (확신/불안/흥분/FOMO)</td><td>감정 패턴 파악</td></tr>
+    <tr><td>결과</td><td>수익/손실 금액, 손익비</td><td>실적 추적</td></tr>
+    <tr><td>과정 평가</td><td>원칙 준수 여부 (O/X)</td><td>과정 중심 평가</td></tr>
+    <tr><td>교훈</td><td>다음에 개선할 점</td><td>성장 기록</td></tr>
+  </table>
+</div>
+
+<h3>블랙데이(Black Day) 일지 확인</h3>
+<p>매매를 시작하기 전, 자신의 <strong>최악의 날 매매일지</strong>를 반드시 읽어라. 과거에 뇌동매매로 큰 손실을 본 날, 원칙을 어겨서 참담했던 날의 기록을 다시 읽으면 <strong>겸손한 마인드셋</strong>으로 시장에 임할 수 있다.</p>
+
+<div class="concept-card warning">
+  <div class="card-title">블랙데이 읽기의 효과 <span class="badge badge-rule">습관</span></div>
+  <ul>
+    <li>"나도 이렇게 무너질 수 있다"는 경각심</li>
+    <li>과도한 자신감(교만) 방지</li>
+    <li>리스크 관리의 중요성 재각인</li>
+    <li>감정적 매매의 결과를 생생하게 상기</li>
+  </ul>
+</div>
+
+<h3>심리 진정 안 되면 즉시 중단</h3>
+<p>흥분 상태에서 수익을 내는 것도 <strong>나쁜 습관</strong>이다. 흥분해서 번 돈은 "흥분해도 괜찮다"는 잘못된 강화를 만들고, 다음번 흥분 상태에서는 큰 손실로 이어진다. 심리가 흔들리면 <strong>무조건 매매를 멈추고</strong> 자리를 떠나라.</p>
+
+<div class="arrow-annotation">
+  <span class="arr arr-warn">!</span>
+  <span>심박수가 올라가거나, 손이 떨리거나, "한 번만 더"라는 생각이 들면 — 즉시 중단 신호</span>
+</div>
+
+<h4>매매 전 루틴 플로우</h4>
+
+<div class="visual-flow">
+  <span class="vf-step sell">블랙데이 일지 읽기</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">겸손 세팅</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">시장 분석</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">시나리오 작성</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step buy">진입</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step neutral">결과와 무관하게 복기</span>
+</div>
+
+<div class="insight">
+    <strong>💡 핵심 격언:</strong> 뇌동매매는 실력의 문제가 아니라 습관의 문제다. 루틴이 습관을 이긴다.
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.5 뇌동매매 방지법                                              -->
+<!-- ================================================================ -->
+<section id="ch5">
+<h2><span class="num">5</span>뇌동매매 방지법</h2>
+
+<h3>핵심 기법 1~3개에 집중</h3>
+<p>여러 가지 매매 기법을 얕게 아는 것은 뇌동매매의 지름길이다. 눌림목, 돌파, 밥그릇, 역추세... 모든 기법을 동시에 쓰려 하면 어떤 자리에서든 "진입 근거"를 만들어낼 수 있고, 결과적으로 <strong>모든 자리에서 매매</strong>하게 된다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">집중 전략의 힘</div>
+  <p><strong>1~3개 기법만 완벽하게 마스터</strong>하라. 그 기법에 해당하지 않는 자리는 아무리 좋아 보여도 <strong>패스</strong>한다. 전문가는 모든 자리를 먹으려 하지 않는다. 자기 자리만 먹는다.</p>
+</div>
+
+<h3>진입 전 시나리오 작성</h3>
+<p>모든 진입 전에 반드시 <strong>3가지 시나리오</strong>를 작성하라: 상승, 횡보, 하락. 각 경우에 내가 어떻게 대응할지를 미리 정해놓으면, 어떤 상황이 와도 "이미 계획된 대응"을 실행할 수 있다.</p>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">시나리오 A: 상승</div>
+    <div class="value">목표가 도달 시 분할 익절</div>
+  </div>
+  <div class="def-item info">
+    <div class="label">시나리오 B: 횡보</div>
+    <div class="value">추가 진입 없이 관망, 시간 손절 고려</div>
+  </div>
+  <div class="def-item sell">
+    <div class="label">시나리오 C: 하락</div>
+    <div class="value">손절 라인 도달 시 즉시 청산</div>
+  </div>
+</div>
+
+<h3>고민되면 무조건 회피</h3>
+<p>"진입할까 말까" 5:5로 고민되는 순간, 이미 좋은 자리가 아니다. 정말 좋은 자리는 <strong>망설임 없이 들어가게 된다</strong>. 고민이 되는 것 자체가 근거가 부족하다는 신호다.</p>
+
+<div class="insight">
+  <p><strong>"진입할까 말까 고민되면 진입하지 말고, 익절할까 말까 고민되면 과감히 매도하라."</strong></p>
+  <p>고민 = 근거 부족. 근거가 부족한 진입은 뇌동매매다. 반면, 익절 고민은 이미 수익이 있다는 뜻이므로 일부라도 확보하는 게 옳다.</p>
+</div>
+
+<h4>뇌동매매 vs 계획된 매매 구분법</h4>
+
+<div class="visual-flow">
+  <span class="vf-step sell">충동 발생</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">시나리오 있나?</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step trap">없다 = 뇌동매매</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step sell">진입 금지</span>
+</div>
+<div class="visual-flow" style="margin-top:6px;">
+  <span class="vf-step neutral">기회 포착</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">시나리오 있나?</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step buy">있다 = 계획된 매매</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step buy">원칙대로 진입</span>
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.6 수익 실현의 심리학                                            -->
+<!-- ================================================================ -->
+<section id="ch6">
+<h2><span class="num">6</span>수익 실현의 심리학</h2>
+
+<h3>이전 손실 복구 심리 배제</h3>
+<p>직전 매매에서 손실을 봤다고 해서 다음 매매에서 "본전 찾기"를 시도하면 안 된다. 각 매매는 <strong>완전히 독립적인 이벤트</strong>다. 이전 손실은 이미 확정된 과거이며, 새로운 진입은 새로운 시나리오로 접근해야 한다.</p>
+
+<div class="concept-card danger">
+  <div class="card-title">본전 심리의 함정 <span class="badge badge-danger">위험</span></div>
+  <ul>
+    <li>"아까 -10만원 잃었으니 이번에 +10만원 벌어야 해" → 무리한 포지션</li>
+    <li>"빨리 복구해야 해" → 성급한 진입, 분석 건너뜀</li>
+    <li>손실이 누적될수록 더 큰 금액을 걸게 됨 → 파산의 길</li>
+  </ul>
+</div>
+
+<h3>분할 매도를 통한 심리적 안정</h3>
+<p>바닥에서 사서 꼭대기에서 파는 것은 <strong>환상</strong>이다. 분할 매도는 이 환상을 버리고 <strong>현실적인 수익</strong>을 확보하는 전략이다. 1차 익절로 심리적 여유를 만들고, 나머지 물량으로 추세를 추종한다.</p>
+
+<h3>"모르면 매도"</h3>
+<p>포지션을 들고 있는데 앞으로의 방향이 확실하지 않다면, <strong>일단 정리하는 것이 정답</strong>이다. 확신이 없는 상태에서 포지션을 유지하는 것은 "도박"과 다를 바 없다.</p>
+
+<h4>분할 매도 전략 플로우</h4>
+
+<div class="visual-flow">
+  <span class="vf-step buy">진입</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step key">1차 익절 (50%)</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">본전 스탑 설정</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step key">나머지 추세 추종</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step neutral">트레일링 스탑 or 목표가 도달</span>
+</div>
+
+<div class="concept-card success">
+  <div class="card-title">분할 매도의 심리적 이점</div>
+  <ul>
+    <li><strong>1차 익절:</strong> "이미 수익 확보" → 심리적 안정</li>
+    <li><strong>본전 스탑:</strong> "최소한 손실은 없다" → 여유로운 홀딩</li>
+    <li><strong>나머지 추종:</strong> 부담 없이 큰 추세를 탈 수 있음</li>
+    <li>꼭대기를 잡으려는 욕심 대신, 구간별 수익을 확보하는 실용적 접근</li>
+  </ul>
+</div>
+
+<div class="insight">
+    <strong>💡 핵심 격언:</strong> 연승 후의 자만이 연패의 시작이고, 연패 후의 겸손이 회복의 시작이다.
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.7 연패와 연승의 대응법                                         -->
+<!-- ================================================================ -->
+<section id="ch7">
+<h2><span class="num">7</span>연패와 연승의 대응법</h2>
+
+<h3>연승 시 교만 경계</h3>
+<p>연속으로 수익이 나면 "나는 시장을 읽을 수 있다"는 착각에 빠지기 쉽다. 이때 레버리지를 올리거나, 익숙하지 않은 종목/시간대에 진출하거나, 손절 라인을 느슨하게 잡는 실수를 저지른다. <strong>수익이 쌓일수록 더 겸손하게</strong>, 더 원칙에 충실해야 한다.</p>
+
+<div class="concept-card warning">
+  <div class="card-title">연승 후 교만의 패턴</div>
+  <ol>
+    <li>5연승 → "나는 감이 좋다" → 레버리지 2배 증가</li>
+    <li>6번째도 성공 → "역시 천재" → 포지션 금액 3배</li>
+    <li>7번째에서 큰 손실 → 이전 6번 수익을 한 번에 토해냄</li>
+    <li>멘탈 붕괴 → 복수 매매 → 추가 손실</li>
+  </ol>
+</div>
+
+<h3>연패 시 매매 정체성 유지</h3>
+<p>연속 손실이 이어지면 "내 전략이 잘못된 건 아닐까?" 의심이 든다. 하지만 어떤 전략이든 연패 구간은 반드시 존재한다. 중요한 것은 <strong>원칙을 바꾸지 않는 것</strong>이다. 대신 금액을 최소화하거나, 아예 매매를 쉬면서 심리를 회복하라.</p>
+
+<div class="compare-box">
+  <div class="compare-side wrong">
+    <div class="compare-label">잘못된 연패 대응</div>
+    <ul>
+      <li>전략을 급하게 변경</li>
+      <li>"빨리 복구"하려 금액 증가</li>
+      <li>다른 사람의 추천 따라 매매</li>
+      <li>밤새 차트 보며 기회 찾기</li>
+    </ul>
+  </div>
+  <div class="compare-side right">
+    <div class="compare-label">올바른 연패 대응</div>
+    <ul>
+      <li>원칙 유지, 금액만 축소 (50% 감소)</li>
+      <li>매매일지 복기: 원칙 위반 있었나 확인</li>
+      <li>필요 시 1~3일 매매 중단</li>
+      <li>기본으로 돌아가 연습 (소액 or 모의)</li>
+    </ul>
+  </div>
+</div>
+
+<div class="insight">
+  <p><strong>"연승의 교만이 연패의 시작이다."</strong></p>
+  <p>시장은 겸손하지 않은 트레이더를 반드시 응징한다. 연승 중일수록 리스크를 줄이고, 연패 중일수록 원칙으로 돌아가라.</p>
+</div>
+
+<h4>연승/연패 대응 플로우</h4>
+
+<div class="visual-flow">
+  <span class="vf-step buy">연승 중</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step trap">포지션 크기 유지 or 축소</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">겸손 유지</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step buy">원칙 매매 지속</span>
+</div>
+<div class="visual-flow" style="margin-top:6px;">
+  <span class="vf-step sell">연패 중</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step trap">금액 50% 축소 or 쉬기</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">매매일지 복기</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step buy">원칙 확인 후 재개</span>
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.8 프로 트레이더의 사고방식                                      -->
+<!-- ================================================================ -->
+<section id="ch8">
+<h2><span class="num">8</span>프로 트레이더의 사고방식</h2>
+
+<h3>"I don't know"의 겸손</h3>
+<p>프로 트레이더가 가장 자주 하는 말은 <strong>"모르겠다"</strong>이다. 100% 확신은 무리수의 시작이다. 시장이 어디로 갈지 모른다는 것을 인정해야, 양방향 시나리오를 준비하고 리스크를 관리할 수 있다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">확신 수준과 대응</div>
+  <table>
+    <tr><th>확신 수준</th><th>의미</th><th>적절한 대응</th></tr>
+    <tr><td>100%</td><td>과신 — 위험 신호</td><td>오히려 포지션 축소, 반대 시나리오 검토</td></tr>
+    <tr><td>70~80%</td><td>합리적 확신</td><td>정상 포지션으로 진입, 손절 라인 설정</td></tr>
+    <tr><td>50~60%</td><td>약한 근거</td><td>소액 진입 or 관망</td></tr>
+    <tr><td>50% 미만</td><td>근거 부족</td><td>진입 금지</td></tr>
+  </table>
+</div>
+
+<h3>매매할 때 vs 쉴 때 명확 구분</h3>
+<p>시장에는 <strong>매매해야 할 구간</strong>과 <strong>쉬어야 할 구간</strong>이 명확히 존재한다. 추세 초입에서는 과감하게 진입하고, 횡보/불확실 구간에서는 철저하게 관망한다. 항상 매매하려는 충동을 억제하는 것도 실력이다.</p>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">매매 구간</div>
+    <div class="value">추세 초입, 명확한 돌파/눌림목</div>
+    <p style="font-size:0.85em; margin-top:6px;">방향성이 명확하고, 손익비가 좋은 자리</p>
+  </div>
+  <div class="def-item sell">
+    <div class="label">쉬는 구간</div>
+    <div class="value">횡보, 변동성 축소, 방향 불명</div>
+    <p style="font-size:0.85em; margin-top:6px;">무리하게 진입하면 양방향 손절 반복</p>
+  </div>
+</div>
+
+<h4>프로 트레이더의 시장 참여 플로우</h4>
+
+<div class="visual-flow">
+  <span class="vf-step buy">추세 구간</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">과감 진입</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step trap">횡보 구간</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step sell">철저 관망</span>
+  <span class="vf-arrow">→</span>
+  <span class="vf-step key">다음 추세 대기</span>
+  <span class="vf-arrow up">→</span>
+  <span class="vf-step buy">재진입</span>
+</div>
+
+<div class="concept-card">
+  <div class="card-title">프로와 아마추어의 차이 요약</div>
+  <table>
+    <tr><th>항목</th><th>아마추어</th><th>프로</th></tr>
+    <tr><td>확신</td><td>"이번엔 확실해!"</td><td>"모르겠지만, 확률이 좋다"</td></tr>
+    <tr><td>매매 빈도</td><td>매일, 항상</td><td>좋은 자리에서만</td></tr>
+    <tr><td>손실 태도</td><td>"안 돼, 반등해야 해"</td><td>"틀렸네, 다음 기회"</td></tr>
+    <tr><td>수익 태도</td><td>"더 올라갈 거야!"</td><td>"계획대로 분할 익절"</td></tr>
+    <tr><td>휴식</td><td>"쉬면 돈 못 번다"</td><td>"쉬는 것도 매매의 일부"</td></tr>
+  </table>
+</div>
+
+<div class="insight">
+    <strong>💡 핵심 격언:</strong> 프로는 시장을 이기려 하지 않고, 자기 자신을 이기려 한다.
+</div>
+
+</section>
+
+<!-- ================================================================ -->
+<!-- CH.9 중급 심화 심리 전략                                          -->
+<!-- ================================================================ -->
+<section id="ch9">
+<h2><span class="num">9</span>중급 심화 심리 전략</h2>
+
+<h3>"확실한 자리" 재정의</h3>
+<p>많은 트레이더가 "확실한 자리"를 "100% 오르는 자리"로 착각한다. 하지만 그런 자리는 세상에 존재하지 않는다. 진짜 확실한 자리란, <strong>틀리더라도 깔끔하게 인정하고 손절할 수 있는 자리</strong>다. 즉, 졌지만 잘 싸운(졌잘사) 자리다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">"졌잘사" 자리의 조건 <span class="badge badge-core">핵심</span></div>
+  <ul>
+    <li><strong>명확한 손절 라인:</strong> "여기가 무너지면 내가 틀린 것" 지점이 존재</li>
+    <li><strong>적절한 손익비:</strong> 손절 대비 목표가가 최소 1.5:1 이상</li>
+    <li><strong>감당 가능한 손실:</strong> 손절 시 금액이 심리적으로 OK</li>
+    <li><strong>근거가 복합적:</strong> 지지/저항 + 추세 + 캔들 신호 등 2개 이상 일치</li>
+  </ul>
+</div>
+
+<h3>시나리오 이탈 시 즉각 손절</h3>
+<p>손절 라인에 아직 도달하지 않았더라도, <strong>내가 세운 시나리오 자체가 무너졌다면 즉시 청산</strong>해야 한다. 예를 들어 "지지선 반등 후 상승" 시나리오에서 지지선 근처에서 반등은 했지만 바로 재차 하락한다면, 비록 손절 라인까지 여유가 있더라도 시나리오가 이탈된 것이다.</p>
+
+<div class="concept-card danger">
+  <div class="card-title">시나리오 이탈 vs 손절 라인 도달 <span class="badge badge-danger">주의</span></div>
+  <div class="compare-box" style="margin:12px 0;">
+    <div class="compare-side wrong">
+      <div class="compare-label">잘못된 접근</div>
+      <p>"손절 라인까지 아직 2% 남았으니 더 기다리자"</p>
+      <p>→ 시나리오는 이미 무너졌지만 손절 라인에 집착</p>
+    </div>
+    <div class="compare-side right">
+      <div class="compare-label">올바른 접근</div>
+      <p>"시나리오가 벗어났으니 즉시 정리"</p>
+      <p>→ 손절 라인보다 시나리오 유효성이 우선</p>
+    </div>
+  </div>
+</div>
+
+<h3>손절 후 스위칭의 용기</h3>
+<p>롱 포지션 손절 후 하락이 계속된다면, <strong>자존심을 버리고 숏으로 스위칭</strong>하는 용기가 필요하다. "방금 롱으로 잃었는데 숏으로 가라고?" — 맞다. 시장은 당신의 감정에 관심 없다. 더 탄탄한 근거가 있다면 방향을 바꾸는 것이 프로다.</p>
+
+<div class="concept-card">
+  <div class="card-title">스위칭 결정 프로세스</div>
+  <div class="visual-flow">
+    <span class="vf-step sell">롱 손절</span>
+    <span class="vf-arrow">→</span>
+    <span class="vf-step neutral">냉각 시간 (5~15분)</span>
+    <span class="vf-arrow">→</span>
+    <span class="vf-step key">차트 재분석</span>
+    <span class="vf-arrow">→</span>
+    <span class="vf-step neutral">숏 근거 충분?</span>
+    <span class="vf-arrow">→</span>
+    <span class="vf-step buy">시나리오 작성 후 숏 진입</span>
+  </div>
+  <p style="margin-top:12px;">핵심은 <strong>"복수"가 아니라 "냉정한 재분석 후 새로운 시나리오"</strong>로 진입하는 것이다.</p>
+</div>
+
+<div class="insight">
+  <p><strong>"확실한 자리란 틀려도 깔끔하게 인정할 수 있는 자리다."</strong></p>
+  <p>100% 오르는 자리를 찾지 말라. 틀렸을 때 손실이 작고 맞았을 때 수익이 큰 자리, 그리고 결과에 관계없이 "원칙을 지켰다"고 말할 수 있는 자리를 찾아라.</p>
+</div>
+
+<details>
+  <summary>심화: 심리적 트리거 자가 진단 체크리스트</summary>
+  <div class="detail-body">
+    <p>아래 항목 중 3개 이상 해당되면 매매를 중단하고 쉬어야 한다:</p>
+    <ul>
+      <li>손실 후 "빨리 복구해야 한다"는 생각이 강함</li>
+      <li>포지션 크기를 평소보다 키우고 싶은 충동</li>
+      <li>차트를 닫지 못하고 계속 확인함</li>
+      <li>수면 부족 상태에서 매매하려 함</li>
+      <li>"이번만 예외"로 원칙을 어기려 함</li>
+      <li>다른 사람의 수익 인증을 보고 FOMO 느낌</li>
+      <li>분석 없이 "느낌"으로 진입하려 함</li>
+      <li>손절 후 바로 재진입하고 싶은 충동 (냉각 시간 미적용)</li>
+    </ul>
+  </div>
+</details>
+
+<div class="concept-card" style="margin-top:20px;">
+  <div class="card-title">마지막 한마디</div>
+  <p>트레이딩 심리의 핵심은 결국 <strong>"나 자신과의 싸움"</strong>이다. 시장을 이기려 하지 말고, 내 안의 탐욕, 두려움, 교만을 이겨라. 원칙을 지키고, 기록하고, 복기하라. 감정을 제거할 수는 없지만, <strong>감정에 지배당하지 않는 훈련</strong>은 반복을 통해 가능하다.</p>
+  <p>기록하라. 복기하라. 겸손하라. 이것이 프로 트레이더가 되는 유일한 길이다.</p>
+</div>
+</section>
+
+</div><!-- container -->
+
+<footer style="text-align:center; padding:40px 20px; border-top:1px solid var(--border); color:var(--text2); font-size:0.85em;">
+  <p>트레이딩 심리편 — 차트는 심리다</p>
+  <p>차트프로 초급·중급 심리편 강의 기반 | 2026</p>
+  <p style="margin-top:8px; color:var(--text2);">
+    Ch.0 서문: 차트는 심리다 |
+    Ch.1 매매 심리의 기본 원칙 |
+    Ch.2 감정 관리법 |
+    Ch.3 손실 대응 심리 |
+    Ch.4 매매 루틴과 멘탈 관리 |
+    Ch.5 뇌동매매 방지법 |
+    Ch.6 수익 실현의 심리학 |
+    Ch.7 연패와 연승의 대응법 |
+    Ch.8 프로 트레이더의 사고방식 |
+    Ch.9 중급 심화 심리 전략
+  </p>
+  <p style="margin-top:8px;">Last updated: 2026-03-22</p>
+</footer>
+
+</body>
+</html>

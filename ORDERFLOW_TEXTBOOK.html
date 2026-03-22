@@ -1,0 +1,3021 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오더플로우 심화편 — Order Flow, Footprint, Profile 완벽 가이드</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #1c2333;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --accent: #58a6ff;
+  --accent2: #3fb950;
+  --warn: #d29922;
+  --danger: #f85149;
+  --purple: #bc8cff;
+  --cyan: #39d2c0;
+  --orange: #9b59b6;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  font-size: 15px;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 20px; }
+
+/* Header */
+.hero {
+  text-align: center;
+  padding: 60px 20px 40px;
+  background: linear-gradient(135deg, #0d1117 0%, #1a0d2e 50%, #0d1117 100%);
+  border-bottom: 1px solid var(--border);
+}
+.hero h1 {
+  font-size: 2.4em;
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+.hero .subtitle { color: var(--text2); font-size: 1.1em; }
+.hero .meta { color: var(--text2); font-size: 0.85em; margin-top: 15px; }
+
+/* Navigation */
+nav.toc {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13,17,23,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+nav.toc .container { display: flex; gap: 4px; flex-wrap: nowrap; }
+nav.toc a {
+  color: var(--text2);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8em;
+  font-weight: 500;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+nav.toc a:hover, nav.toc a.active {
+  background: var(--surface);
+  color: var(--orange);
+}
+
+/* Sections */
+section { padding: 50px 0; border-bottom: 1px solid var(--border); }
+section:last-child { border-bottom: none; }
+
+h2 {
+  font-size: 1.8em;
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--orange);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+h2 .num {
+  background: var(--orange);
+  color: var(--bg);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6em;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+h3 {
+  font-size: 1.25em;
+  color: var(--orange);
+  margin: 30px 0 12px;
+  padding-left: 12px;
+  border-left: 3px solid var(--orange);
+}
+h4 {
+  font-size: 1.05em;
+  color: var(--purple);
+  margin: 20px 0 8px;
+}
+
+p { margin-bottom: 12px; color: var(--text); }
+
+/* Cards */
+.concept-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 16px 0;
+}
+.concept-card.highlight {
+  border-color: var(--orange);
+  background: linear-gradient(135deg, rgba(155,89,182,0.05), rgba(142,68,173,0.05));
+}
+.concept-card.warning {
+  border-color: var(--warn);
+  background: rgba(210,153,34,0.05);
+}
+.concept-card.danger {
+  border-color: var(--danger);
+  background: rgba(248,81,73,0.05);
+}
+.concept-card.success {
+  border-color: var(--accent2);
+  background: rgba(63,185,80,0.05);
+}
+
+.card-title {
+  font-weight: 700;
+  font-size: 1.05em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title .badge {
+  font-size: 0.7em;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+.badge-core { background: var(--orange); color: var(--bg); }
+.badge-adv { background: var(--purple); color: var(--bg); }
+.badge-rule { background: var(--warn); color: var(--bg); }
+.badge-danger { background: var(--danger); color: #fff; }
+
+/* Definition lists */
+.def-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+@media (max-width: 700px) { .def-grid { grid-template-columns: 1fr; } }
+
+.def-item {
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 3px solid var(--orange);
+}
+.def-item.sell { border-left-color: var(--danger); }
+.def-item.buy { border-left-color: var(--accent2); }
+.def-item.info { border-left-color: var(--accent); }
+.def-item .label {
+  font-size: 0.8em;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.def-item .value { font-weight: 600; font-size: 1.05em; }
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.9em;
+}
+th {
+  background: var(--surface2);
+  color: var(--orange);
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--border);
+}
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+tr:hover { background: rgba(155,89,182,0.03); }
+
+/* Lists */
+ul, ol { margin: 8px 0 16px 20px; }
+li { margin-bottom: 6px; }
+li strong { color: var(--orange); }
+
+/* Flow diagrams (text-based) */
+.flow {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 16px 0;
+  text-align: center;
+  font-family: 'Consolas', monospace;
+  font-size: 0.95em;
+  line-height: 2;
+  overflow-x: auto;
+}
+.flow .arrow { color: var(--orange); font-weight: bold; }
+.flow .stage {
+  display: inline-block;
+  background: var(--surface2);
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  margin: 2px;
+}
+.flow .stage.active {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+/* Key insight boxes */
+.insight {
+  background: linear-gradient(135deg, rgba(57,210,192,0.08), rgba(155,89,182,0.08));
+  border: 1px solid var(--cyan);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+.insight::before {
+  content: '핵심 통찰';
+  display: block;
+  font-size: 0.8em;
+  color: var(--cyan);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+/* Flow arrow diagrams */
+.visual-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 16px 0;
+  font-size: 0.9em;
+  overflow-x: auto;
+}
+.vf-step {
+  background: var(--surface2);
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  text-align: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.vf-step.buy { border-color: var(--accent2); color: var(--accent2); }
+.vf-step.sell { border-color: var(--danger); color: var(--danger); }
+.vf-step.trap { border-color: var(--warn); color: var(--warn); background: rgba(210,153,34,0.08); }
+.vf-step.key { border-color: var(--orange); color: var(--orange); }
+.vf-step.neutral { border-color: var(--text2); }
+.vf-arrow {
+  color: var(--text2);
+  font-size: 1.2em;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+.vf-arrow.down { color: var(--danger); }
+.vf-arrow.up { color: var(--accent2); }
+
+/* Comparison side by side */
+.compare-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+@media (max-width: 600px) { .compare-box { grid-template-columns: 1fr; } }
+.compare-side {
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.compare-side.wrong {
+  background: rgba(248,81,73,0.05);
+  border-color: var(--danger);
+}
+.compare-side.right {
+  background: rgba(63,185,80,0.05);
+  border-color: var(--accent2);
+}
+.compare-label {
+  font-size: 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.compare-side.wrong .compare-label { color: var(--danger); }
+.compare-side.right .compare-label { color: var(--accent2); }
+
+/* Collapsible */
+details {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 12px 0;
+  overflow: hidden;
+}
+details summary {
+  padding: 14px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--orange);
+  background: var(--surface2);
+  list-style: none;
+}
+details summary::before { content: '▸ '; }
+details[open] summary::before { content: '▾ '; }
+details .detail-body { padding: 16px 20px; }
+
+/* Scenario */
+.scenario {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 16px 0;
+  position: relative;
+}
+.scenario .scenario-title {
+  font-size: 0.75em;
+  color: var(--purple);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.scenario.bullish { border-left: 4px solid var(--accent2); }
+.scenario.bearish { border-left: 4px solid var(--danger); }
+
+/* Arrow annotation */
+.arrow-annotation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  margin: 6px 0;
+  background: var(--surface2);
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+.arrow-annotation .arr { font-size: 1.3em; }
+.arr-up { color: var(--accent2); }
+.arr-down { color: var(--danger); }
+.arr-warn { color: var(--warn); }
+.arr-info { color: var(--orange); }
+
+/* Part divider */
+.part-divider {
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, rgba(155,89,182,0.08), rgba(142,68,173,0.03));
+  border: 1px solid var(--orange);
+  border-radius: 12px;
+  margin: 40px 0 20px;
+}
+.part-divider h2 {
+  border-bottom: none;
+  justify-content: center;
+  color: var(--orange);
+  font-size: 1.5em;
+}
+.part-divider p { color: var(--text2); }
+
+/* Print */
+@media print {
+  body { background: #fff; color: #000; font-size: 11pt; }
+  .hero { background: none; border-bottom: 2px solid #000; }
+  .hero h1 { -webkit-text-fill-color: #000; color: #000; }
+  nav.toc { display: none; }
+  .concept-card, details, .flow, .insight {
+    background: #f5f5f5; border-color: #ccc;
+    break-inside: avoid;
+  }
+  th { background: #eee; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero">
+  <h1>오더플로우 심화편</h1>
+  <p class="subtitle">Order Flow, Footprint, Profile 완벽 가이드</p>
+  <p class="meta">Axia Futures 교육 콘텐츠 기반 | BTC 시나리오 교재 시리즈 | Last updated: 2026-03-22</p>
+</header>
+
+<!-- ==================== NAV ==================== -->
+<nav class="toc">
+  <div class="container">
+    <a href="#part1" style="color:var(--orange);">|Part I|</a>
+    <a href="#ch1">Ch.1</a>
+    <a href="#ch2">Ch.2</a>
+    <a href="#ch3">Ch.3</a>
+    <a href="#ch4">Ch.4</a>
+    <a href="#part2" style="color:var(--orange);">|Part II|</a>
+    <a href="#ch5">Ch.5</a>
+    <a href="#ch6">Ch.6</a>
+    <a href="#ch7">Ch.7</a>
+    <a href="#ch8">Ch.8</a>
+    <a href="#ch9">Ch.9</a>
+    <a href="#ch10">Ch.10</a>
+    <a href="#ch11">Ch.11</a>
+    <a href="#part3" style="color:var(--orange);">|Part III|</a>
+    <a href="#ch12">Ch.12</a>
+    <a href="#ch13">Ch.13</a>
+    <a href="#ch14">Ch.14</a>
+    <a href="#ch15">Ch.15</a>
+    <a href="#ch16">Ch.16</a>
+    <a href="#ch17">Ch.17</a>
+    <a href="#part4" style="color:var(--orange);">|Part IV|</a>
+    <a href="#ch18">Ch.18</a>
+    <a href="#ch19">Ch.19</a>
+    <a href="#ch20">Ch.20</a>
+    <a href="#ch21">Ch.21</a>
+    <a href="#ch22">Ch.22</a>
+    <a href="#part5" style="color:var(--orange);">|Part V|</a>
+    <a href="#ch23">Ch.23</a>
+    <a href="#ch24">Ch.24</a>
+    <a href="#ch25">Ch.25</a>
+    <a href="#part6" style="color:var(--orange);">|Part VI|</a>
+    <a href="#ch26">Ch.26</a>
+    <a href="#ch27">Ch.27</a>
+    <a href="#ch28">Ch.28</a>
+    <a href="#ch29">Ch.29</a>
+    <a href="#ch30">Ch.30</a>
+    <a href="#appendix" style="color:var(--purple);">|부록|</a>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- ================================================================== -->
+<!--                    PART I: 오더플로우 기초                          -->
+<!-- ================================================================== -->
+<div class="part-divider" id="part1">
+  <h2>Part I: 오더플로우 기초</h2>
+  <p>Ch.1 ~ Ch.4 | 오더플로우의 본질과 시장 의도 읽기</p>
+</div>
+
+<!-- ==================== Ch.1 ==================== -->
+<section id="ch1">
+<h2><span class="num">01</span> 오더플로우란 무엇인가 — 캔들스틱 vs 오더플로우</h2>
+
+<h3>왜 오더플로우인가</h3>
+<p>오더플로우(Order Flow)란 시장 참여자들 간의 실시간 거래 상호작용을 의미한다. 전통적인 차트 분석(캔들스틱)이 과거 가격의 <strong>요약된 결과</strong>를 보여준다면, 오더플로우는 가격이 <strong>왜</strong> 움직였는지를 보여준다. 캔들스틱만으로 매매하는 것은 "어둠 속에서 트레이딩하는 것"과 같다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">핵심 개념 <span class="badge badge-core">CORE</span></div>
+  <p>오더플로우는 매수자와 매도자 사이의 <strong>힘의 전환(power shift)</strong>을 실시간으로 드러낸다. 차트가 "어디에 있었는지"를 보여준다면, 오더플로우는 "왜 거기에 있는지"를 보여준다.</p>
+</div>
+
+<div class="compare-box">
+  <div class="compare-side wrong">
+    <div class="compare-label">캔들스틱 차트의 한계</div>
+    <ul>
+      <li>과거 가격의 요약만 제공</li>
+      <li>가격 움직임의 원인을 알 수 없음</li>
+      <li>동일한 캔들 모양이 완전히 다른 의미를 가질 수 있음</li>
+      <li>감정적, 반응적 의사결정 유발</li>
+    </ul>
+  </div>
+  <div class="compare-side right">
+    <div class="compare-label">오더플로우의 강점</div>
+    <ul>
+      <li>실시간 거래 데이터 기반</li>
+      <li>매수/매도 압력의 정확한 측정</li>
+      <li>가격 레벨별 실제 거래량 확인</li>
+      <li>구체적 데이터 기반 의사결정</li>
+    </ul>
+  </div>
+</div>
+
+<h3>오더플로우가 감정을 제거하는 방법</h3>
+<p>오더플로우는 구체적인 데이터에 기반하기 때문에, Price Action만 응시하며 발생하는 감정적 취약성과 반응적 의사결정을 제거하는 데 도움이 된다. 숫자와 흐름을 읽는 것이지, 패턴을 해석하는 것이 아니다.</p>
+
+<div class="visual-flow">
+  <div class="vf-step key">Price Action 관찰</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step neutral">"왜 움직였지?"</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">오더플로우 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">매수/매도 압력 식별</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">데이터 기반 판단</div>
+</div>
+
+<div class="insight">
+  <p>캔들스틱은 "지도"이고 오더플로우는 "실시간 GPS"이다. 지도만으로도 목적지에 도달할 수 있지만, GPS가 있으면 실시간 교통상황(시장의 힘)을 보며 최적 경로를 선택할 수 있다. 둘 다 필요하지만, 오더플로우 없이 캔들스틱만 보는 것은 과거 데이터만으로 미래를 예측하는 것과 같다.</p>
+</div>
+
+<details>
+  <summary>심화: 오더플로우가 특히 유용한 시장 상황</summary>
+  <div class="detail-body">
+    <ul>
+      <li><strong>Key Level 테스트</strong>: 지지/저항에서 실제로 매수/매도가 어떻게 발생하는지 확인</li>
+      <li><strong>뉴스 이벤트 직후</strong>: 강제 포지셔닝의 흐름을 추적</li>
+      <li><strong>브레이크아웃 진위 판별</strong>: 실제 공격적 거래량이 수반되는지 확인</li>
+      <li><strong>청산 (Liquidation) 감지</strong>: Stop Run의 강도와 방향 측정</li>
+    </ul>
+  </div>
+</details>
+
+<h3>오더플로우 분석의 계층 구조</h3>
+<p>오더플로우 분석은 단일 도구가 아닌 여러 도구의 <strong>계층적 조합</strong>이다. 각 도구는 서로 다른 "줌 레벨"에서 시장을 관찰한다.</p>
+
+<div class="concept-card">
+  <div class="card-title">오더플로우 도구의 계층 구조</div>
+  <table>
+    <tr><th>계층</th><th>도구</th><th>줌 레벨</th><th>주요 질문</th></tr>
+    <tr><td>Level 1 (매크로)</td><td>Market Profile / Volume Profile</td><td>일간 ~ 다일간</td><td>"오늘은 어떤 유형의 날인가? 핵심 레벨은 어디인가?"</td></tr>
+    <tr><td>Level 2 (중간)</td><td>Footprint Chart</td><td>캔들 단위 (1분 ~ 30분)</td><td>"이 레벨에서 무슨 일이 발생하고 있는가? 누가 이기고 있는가?"</td></tr>
+    <tr><td>Level 3 (미시)</td><td>DOM / Price Ladder</td><td>틱 단위 (실시간)</td><td>"지금 이 순간 Bid/Offer 상태는? 진입/청산 타이밍은?"</td></tr>
+    <tr><td>보조</td><td>Delta / CVD</td><td>모든 레벨</td><td>"공격적 매수/매도의 누적 방향은? Divergence가 있는가?"</td></tr>
+  </table>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step key">VP/MP: 레벨 식별</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">Footprint: 패턴 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">DOM: 실시간 실행</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">Delta: 최종 검증</div>
+</div>
+
+<h3>전통적 기술적 분석 vs 오더플로우: 상호 보완</h3>
+<p>오더플로우는 기술적 분석을 "대체"하는 것이 아니라 "강화"한다. 기술적 분석이 "어디에서" 매매할지를 알려준다면, 오더플로우는 "정말 그 레벨이 유효한지"를 확인해준다.</p>
+
+<div class="compare-box">
+  <div class="compare-side right">
+    <div class="compare-label">기술적 분석의 역할</div>
+    <ul>
+      <li>구조적 레벨(지지/저항) 식별</li>
+      <li>추세 방향 판단</li>
+      <li>패턴 인식 (Head & Shoulders, Double Top 등)</li>
+      <li>Risk-Reward 프레임 설정</li>
+    </ul>
+  </div>
+  <div class="compare-side right">
+    <div class="compare-label">오더플로우의 역할</div>
+    <ul>
+      <li>레벨의 실시간 유효성 확인</li>
+      <li>추세의 건강도(Health) 측정</li>
+      <li>패턴의 실패/성공 조기 감지</li>
+      <li>정밀 진입 타이밍 제공</li>
+    </ul>
+  </div>
+</div>
+
+<div class="insight">
+  <p>오더플로우를 배운다고 해서 기술적 분석을 버리지 마라. 오히려 기술적 분석이 탄탄할수록 오더플로우의 가치가 극대화된다. 기술적 분석으로 "지도"를 그리고, 오더플로우로 "실시간 교통 정보"를 확인하라. 둘 다 있어야 최적 경로를 찾을 수 있다.</p>
+</div>
+</section>
+
+<!-- ==================== Ch.2 ==================== -->
+<section id="ch2">
+<h2><span class="num">02</span> 시장의 의도를 읽는 법 — Bid/Ask, Aggressor, Passive vs Active</h2>
+
+<h3>Bid/Ask Volume의 이해</h3>
+<p>오더플로우 도구는 거래 활동을 Bid(매수호가)와 Ask/Offer(매도호가)로 분리하여 표시한다. 일반적으로 Bid는 왼쪽(빨간색), Ask는 오른쪽(초록색)으로 나타난다.</p>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">Aggressive Buyer (공격적 매수)</div>
+    <div class="value">현재 매도호가(Offer)를 직접 치고 올라가는 매수자</div>
+    <p style="margin-top:8px;font-size:0.9em;color:var(--text2);">초록색 숫자로 표시. "Lifting the Ask"라고 부른다. 더 높은 가격을 기꺼이 지불하려는 의지를 보여준다.</p>
+  </div>
+  <div class="def-item sell">
+    <div class="label">Aggressive Seller (공격적 매도)</div>
+    <div class="value">현재 매수호가(Bid)를 직접 때리는 매도자</div>
+    <p style="margin-top:8px;font-size:0.9em;color:var(--text2);">빨간색 숫자로 표시. "Hitting the Bid"라고 부른다. 즉시 팔기 위해 낮은 가격을 수용한다.</p>
+  </div>
+  <div class="def-item info">
+    <div class="label">Passive Order (수동적 주문)</div>
+    <div class="value">오더북에 미리 걸어놓은 지정가(Limit) 주문</div>
+    <p style="margin-top:8px;font-size:0.9em;color:var(--text2);">대형 Passive Order는 공격적 흐름을 흡수(Absorb)하거나, 가격 방향을 조종하는 스푸핑(Spoof)으로 작용할 수 있다.</p>
+  </div>
+  <div class="def-item">
+    <div class="label">Spoof 사례</div>
+    <div class="value">1,400 lot 매도벽으로 매도 유도 후 흡수</div>
+    <p style="margin-top:8px;font-size:0.9em;color:var(--text2);">대형 Offer에 겁먹은 트레이더들이 앞다투어 매도 → 조작자는 99에서 Passive Bid로 흡수 → 대형 Offer 취소 → 가격 급등</p>
+  </div>
+</div>
+
+<h3>시장 의도(Market Intent) 읽기</h3>
+<p>시장의 의도는 <strong>페이스(Pace)</strong>, <strong>거래량 축적(Volume Build-up)</strong>, 그리고 핵심 레벨에서의 매수/매도 행동을 관찰하여 파악한다.</p>
+
+<div class="visual-flow">
+  <div class="vf-step neutral">시장 잠잠</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">페이스 급증</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">회전 이동 (78→74)</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">새 가격에 거래량 축적</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">새 레벨 수용</div>
+</div>
+
+<div class="concept-card warning">
+  <div class="card-title">Stop Run 식별 <span class="badge badge-rule">RULE</span></div>
+  <p><strong>점진적 축적</strong>과 <strong>Stop Run</strong>을 구별하는 것이 핵심이다. Stop Run은 강제 시장가 주문이 여러 가격을 순간적으로 건너뛰며 유동성을 쓸어가는 현상이다. 꾸준한 거래량 축적과 달리, Stop Run은 한 방향으로의 급격한 가격 이동과 함께 발생한다.</p>
+</div>
+
+<div class="insight">
+  <p>시장이 "깨어나는" 순간을 포착하라. 갑자기 페이스가 빨라지고 회전 이동(Rotational Shift)이 발생하면, 이것이 바로 방향성 있는 움직임의 시작이다. 새로운 가격 레벨에 거래량이 쌓이기 시작하면, 시장은 그 레벨을 "공정 가격"으로 수용하기 시작한 것이다.</p>
+</div>
+
+<details>
+  <summary>심화: Passive Order 조작 패턴</summary>
+  <div class="detail-body">
+    <p>대형 기관은 다음과 같은 패턴으로 Passive Order를 활용한다:</p>
+    <ol>
+      <li>대형 Offer(예: 1,400 lot)를 특정 가격에 걸어 "벽"을 만든다</li>
+      <li>다른 트레이더들이 이 벽을 보고 앞다투어 매도한다</li>
+      <li>조작자는 더 낮은 가격(예: 99)에 Passive Bid를 걸어 매도 물량을 흡수한다</li>
+      <li>충분히 매집한 후 대형 Offer를 취소한다</li>
+      <li>매도 압력 제거 + 매수 포지션 확보로 가격이 급등한다</li>
+    </ol>
+    <p>이것이 바로 오더플로우를 읽어야 하는 이유 중 하나이다. 단순 가격 차트로는 이런 조작을 감지할 수 없다.</p>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.3 ==================== -->
+<section id="ch3">
+<h2><span class="num">03</span> 오더플로우 실행 — 진입과 체결의 기술</h2>
+
+<h3>오더플로우 기반 진입 원칙</h3>
+<p>오더플로우를 활용한 진입은 단순히 "파란 숫자가 크니까 매수"가 아니다. <strong>컨텍스트(Context)</strong> 안에서의 오더플로우 해석이 핵심이다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">진입 프레임워크 <span class="badge badge-core">CORE</span></div>
+  <ol>
+    <li><strong>구조적 레벨 식별</strong>: 어디에서 진입할 것인지 먼저 결정 (Volume Profile, Market Profile 기반)</li>
+    <li><strong>오더플로우 확인</strong>: 해당 레벨에서 Absorption, Initiative, 또는 Exhaustion 패턴 확인</li>
+    <li><strong>진입 실행</strong>: Limit Order로 정밀 진입, Stop은 구조적 레벨 바로 뒤에 배치</li>
+    <li><strong>관리</strong>: 오더플로우가 지속적으로 자신의 포지션을 지지하는지 모니터링</li>
+  </ol>
+</div>
+
+<h3>Limit Order vs Market Order 활용</h3>
+
+<div class="compare-box">
+  <div class="compare-side right">
+    <div class="compare-label">Limit Order (권장)</div>
+    <ul>
+      <li>정확한 가격에 진입 가능</li>
+      <li>슬리피지 최소화</li>
+      <li>Stop 거리를 좁게 설정 가능</li>
+      <li>Absorption 레벨 뒤에 배치</li>
+    </ul>
+  </div>
+  <div class="compare-side wrong">
+    <div class="compare-label">Market Order (제한적 사용)</div>
+    <ul>
+      <li>슬리피지 발생 가능</li>
+      <li>빠른 움직임에서는 불리한 가격에 체결</li>
+      <li>Stop 거리가 넓어질 수 있음</li>
+      <li>확인 후 진입 시에만 사용</li>
+    </ul>
+  </div>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step key">Key Level 도달</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">Absorption 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">Limit Order 배치</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">Stop 설정 (구조 뒤)</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">Target: VPOC 또는 VA</div>
+</div>
+
+<h3>프로 트레이더의 실행 규율</h3>
+<p>프로 트레이더들은 "Aggressive In and Aggressive Out"이라는 V자형 가격 반응을 핵심 지지선(예: WTI 오일 88-90)에서 찾는다. 정밀한 Limit Order 진입과 엄격한 사후 분석을 수행하여, 손실 포지션을 끌고 가거나, 불량한 Fill을 추격하거나, Scratch Trade를 주저하는 등의 실행 오류를 근절한다.</p>
+
+<div class="insight">
+  <p>진입의 핵심은 "오더플로우 신호를 보고 진입"이 아니라, "구조적 레벨에서 오더플로우 확인을 거쳐 진입"하는 것이다. 순서가 중요하다 — 먼저 레벨을 정하고, 그 다음에 오더플로우로 확인하라. 역순으로 하면 모든 오더플로우 패턴이 매매 신호로 보이기 시작한다.</p>
+</div>
+
+<details>
+  <summary>심화: Scratch Trade의 중요성</summary>
+  <div class="detail-body">
+    <p>Setup이 실패했을 때 즉시 본전 부근에서 청산하는 것을 Scratch Trade라고 한다. 많은 트레이더가 "조금만 더 기다려보자"며 Scratch Trade를 주저하지만, 이는 작은 손실을 큰 손실로 키우는 가장 흔한 원인이다.</p>
+    <p><strong>규칙</strong>: Setup이 기대대로 작동하지 않으면, 무조건 Scratch한다. 오더플로우가 당신의 방향을 지지하지 않는 순간 = 청산해야 하는 순간이다.</p>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.4 ==================== -->
+<section id="ch4">
+<h2><span class="num">04</span> 변동성과 오더플로우 — 왜 변동성 장에서 더 쉬운가</h2>
+
+<h3>고변동성 = 깨끗한 오더플로우</h3>
+<p>직관에 반하지만, 고변동성 환경에서 오더플로우는 실제로 <strong>더 깨끗하고 읽기 쉬워진다</strong>. 이유는 강제 포지셔닝(Forced Positioning)의 공격적 흐름을 명확하게 추적할 수 있기 때문이다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">변동성과 오더플로우의 관계 <span class="badge badge-core">CORE</span></div>
+  <table>
+    <tr><th>환경</th><th>오더플로우 특성</th><th>매매 난이도</th></tr>
+    <tr><td>저변동성 (Chop)</td><td>노이즈 많음, 약한 신호, 잦은 Fake-out</td><td>어려움</td></tr>
+    <tr><td>고변동성 (Trend)</td><td>명확한 공격적 흐름, 깨끗한 Absorption, 확실한 Stop Run</td><td>상대적으로 용이</td></tr>
+    <tr><td>뉴스 이벤트</td><td>극단적으로 강한 한방향 흐름, 유동성 진공</td><td>빠른 판단 필요</td></tr>
+  </table>
+</div>
+
+<h3>왜 변동성 장에서 더 쉬운가</h3>
+
+<div class="visual-flow">
+  <div class="vf-step sell">강제 매도 발생</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step">여러 가격 건너뜀</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step sell">Stop Run 연쇄</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step key">Exhaustion 포착</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">반전 진입</div>
+</div>
+
+<p>저변동성 환경에서는 매수자와 매도자의 힘이 비슷하여 오더플로우 신호가 모호하고 Fake-out이 빈번하다. 반면 고변동성 환경에서는:</p>
+<ul>
+  <li><strong>한쪽의 압도적 우위</strong>가 명확하게 보임</li>
+  <li><strong>Stop Run</strong>이 깨끗하게 발생하여 진입/청산 타이밍이 명확</li>
+  <li><strong>Absorption</strong>이 대규모로 발생하여 반전 포인트가 선명</li>
+  <li><strong>거래량이 충분</strong>하여 통계적으로 유의미한 데이터 확보 가능</li>
+</ul>
+
+<div class="insight">
+  <p>변동성을 두려워하지 마라. 변동성이야말로 오더플로우 트레이더의 가장 좋은 친구이다. 시장이 공포에 빠져 강제 청산이 발생할 때, 오더플로우는 가장 선명한 신호를 제공한다. 핵심은 변동성 자체가 아니라, 변동성 속에서 Exhaustion과 Absorption을 포착하는 능력이다.</p>
+</div>
+
+<details>
+  <summary>심화: 변동성 장에서의 리스크 관리</summary>
+  <div class="detail-body">
+    <p>변동성이 높다고 해서 포지션 사이즈를 늘려서는 안 된다. 오히려:</p>
+    <ul>
+      <li>Stop 거리가 넓어지므로 포지션 사이즈를 <strong>줄여야</strong> 한다</li>
+      <li>고정 리스크 금액(예: 계좌의 1-2%)을 유지</li>
+      <li>ATR(Average True Range)이 2배가 되면 포지션 사이즈는 절반으로</li>
+      <li>승률이 더 높더라도 절대 금액 리스크를 초과하지 않는다</li>
+    </ul>
+  </div>
+</details>
+
+<h3>변동성 측정과 오더플로우의 조합</h3>
+<p>변동성의 정도를 판단하는 것도 오더플로우가 도움이 된다. 단순히 가격 범위(Range)만 보는 것이 아니라, 거래량의 집중도와 페이스 변화를 함께 관찰한다.</p>
+
+<div class="concept-card">
+  <div class="card-title">변동성 환경 분류 기준</div>
+  <table>
+    <tr><th>지표</th><th>저변동성</th><th>적정 변동성</th><th>고변동성</th></tr>
+    <tr><td>IB 범위</td><td>일 평균의 30% 이하</td><td>일 평균의 30-70%</td><td>일 평균의 70% 이상</td></tr>
+    <tr><td>풋프린트 페이스</td><td>느리고 불규칙</td><td>꾸준하고 읽기 쉬움</td><td>빠르고 공격적</td></tr>
+    <tr><td>Delta 진폭</td><td>작고 노이즈 많음</td><td>중간, 방향성 있음</td><td>크고 명확한 방향</td></tr>
+    <tr><td>래더 오더북 깊이</td><td>두꺼움 (가격 이동 어려움)</td><td>보통</td><td>얇음 (가격 빠르게 이동)</td></tr>
+    <tr><td>최적 전략</td><td>관망 또는 범위 매매</td><td>Absorption 반전 매매</td><td>모멘텀 추종 + Exhaustion 반전</td></tr>
+  </table>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step">IB 범위 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">변동성 환경 분류</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">적합한 전략 선택</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">포지션 사이즈 조절</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">실행</div>
+</div>
+
+<h3>고변동성 장의 심리적 도전</h3>
+<p>고변동성 환경에서 오더플로우가 더 깨끗하다는 것은 기술적 사실이다. 그러나 심리적으로는 훨씬 더 어렵다. 빠른 움직임은 공포와 탐욕을 증폭시킨다.</p>
+
+<div class="concept-card warning">
+  <div class="card-title">고변동성 장 심리 관리 규칙 <span class="badge badge-rule">RULE</span></div>
+  <ul>
+    <li><strong>사전 설정</strong>: 포지션 사이즈, Stop, Target을 시장이 움직이기 <em>전에</em> 결정하라. 움직이는 중에 결정하면 감정에 휘둘린다.</li>
+    <li><strong>하루 최대 손실 한도</strong>: 당일 최대 손실액을 사전에 설정. 도달하면 무조건 마감. 복구하려다 더 잃는 것이 최악.</li>
+    <li><strong>연속 손실 규칙</strong>: 연속 3회 손실 시 30분 휴식. 스크린에서 벗어나 관점을 리셋.</li>
+    <li><strong>수익 보호</strong>: 좋은 수익이 나면 그날은 사이즈를 줄이거나 마감. 수익을 지키는 것이 더 버는 것만큼 중요.</li>
+  </ul>
+</div>
+
+<div class="insight">
+  <p>변동성은 기회이자 위험이다. 기술적으로는 고변동성에서 오더플로우가 더 쉬워지지만, 심리적으로는 더 어려워진다. 이 역설을 해결하는 열쇠는 <strong>사전 계획</strong>이다. 시장이 미쳐 날뛸 때 실시간으로 판단을 내리려 하지 마라. 모든 것을 미리 결정해놓고, 현장에서는 실행만 하라. 이것이 프로와 아마추어의 차이이다.</p>
+</div>
+</section>
+
+
+<!-- ================================================================== -->
+<!--                  PART II: 풋프린트 차트 마스터                       -->
+<!-- ================================================================== -->
+<div class="part-divider" id="part2">
+  <h2>Part II: 풋프린트 차트 마스터</h2>
+  <p>Ch.5 ~ Ch.11 | Footprint Chart의 기본부터 고급 기법까지</p>
+</div>
+
+<!-- ==================== Ch.5 ==================== -->
+<section id="ch5">
+<h2><span class="num">05</span> 풋프린트 차트 입문 — 설정과 기본 읽기</h2>
+
+<h3>풋프린트 차트란</h3>
+<p>풋프린트 차트(Footprint Chart)는 표준 캔들스틱의 몸통(Body)을 제거하고, 해당 시간대 내 <strong>각 개별 가격 레벨에서 거래된 정확한 거래량</strong>을 노출하는 차트이다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">캔들스틱 vs 풋프린트 <span class="badge badge-core">CORE</span></div>
+  <p>캔들스틱이 긴 꼬리(Wick)로 가격 거부(Rejection)를 보여준다면, 풋프린트는 그 거부를 만드는 데 <strong>정확히 얼마나 많은 거래량</strong>이 필요했는지, 그리고 <strong>정확히 어느 지점</strong>에서 매수자가 매도자를 압도했는지를 보여준다.</p>
+</div>
+
+<h3>풋프린트 차트 읽기 기본</h3>
+
+<div class="def-grid">
+  <div class="def-item sell">
+    <div class="label">Bid Volume (왼쪽)</div>
+    <div class="value">매도 압력 (Selling Pressure)</div>
+    <p style="margin-top:8px;font-size:0.9em;">Bid에서 체결된 거래량. 공격적 매도자가 매수호가를 때린 양을 나타낸다.</p>
+  </div>
+  <div class="def-item buy">
+    <div class="label">Ask Volume (오른쪽)</div>
+    <div class="value">매수 압력 (Buying Pressure)</div>
+    <p style="margin-top:8px;font-size:0.9em;">Ask에서 체결된 거래량. 공격적 매수자가 매도호가를 들어올린 양을 나타낸다.</p>
+  </div>
+  <div class="def-item info">
+    <div class="label">Delta</div>
+    <div class="value">Ask Volume - Bid Volume</div>
+    <p style="margin-top:8px;font-size:0.9em;">특정 가격 또는 캔들 전체에서의 순 매수/매도 차이. 양수 = 매수 우위, 음수 = 매도 우위.</p>
+  </div>
+  <div class="def-item">
+    <div class="label">Imbalance</div>
+    <div class="value">비대칭적 공격적 거래량</div>
+    <p style="margin-top:8px;font-size:0.9em;">한쪽의 공격적 거래량이 반대쪽을 크게 초과하는 가격. 색상 코딩으로 표시된다.</p>
+  </div>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step">캔들스틱 형성</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">몸통 제거</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">각 가격별 Bid x Ask 표시</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">Delta 계산</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">Imbalance 하이라이트</div>
+</div>
+
+<div class="insight">
+  <p>풋프린트 차트를 처음 접하면 숫자의 홍수에 압도당할 수 있다. 핵심은 <strong>모든 숫자를 다 읽으려 하지 않는 것</strong>이다. 먼저 캔들의 고점과 저점 부근의 Bid x Ask만 집중적으로 관찰하라. 그곳이 바로 힘의 전환이 발생하는 지점이다.</p>
+</div>
+
+<details>
+  <summary>심화: 풋프린트 차트 설정 권장값</summary>
+  <div class="detail-body">
+    <table>
+      <tr><th>설정 항목</th><th>스캘핑 (1-5분)</th><th>데이트레이딩 (15-30분)</th></tr>
+      <tr><td>타임프레임</td><td>1분 또는 Tick 차트</td><td>5분 또는 15분</td></tr>
+      <tr><td>Imbalance 배수</td><td>300% (3:1)</td><td>400% (4:1)</td></tr>
+      <tr><td>Delta 표시</td><td>각 가격 + 캔들 합계</td><td>캔들 합계 위주</td></tr>
+      <tr><td>색상 구분</td><td>강한 Imbalance 시 진한 색</td><td>동일</td></tr>
+    </table>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.6 ==================== -->
+<section id="ch6">
+<h2><span class="num">06</span> 풋프린트 핵심 패턴 — Absorption, Initiative, Exhaustion</h2>
+
+<h3>Absorption (흡수)</h3>
+<p>공격적 시장가 주문이 대형 Passive Limit Order에 부딪혀 가격이 더 이상 움직이지 못하는 현상이다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">Absorption 패턴 <span class="badge badge-core">CORE</span></div>
+  <p><strong>실전 예시</strong>: 매수자들이 가격 24에서 Offer를 대량으로 들어올린다(풋프린트에서 두 개의 큰 초록색 블록). 하지만 가격은 한 틱도 올라가지 못한다 — Passive 매도자가 모든 거래량을 흡수하고 있기 때문이다.</p>
+  <p>Absorption은 "보이지 않는 벽"과 같다. 공격적 플레이어가 아무리 밀어도 넘어가지 않는다.</p>
+</div>
+
+<h3>Initiative (주도)</h3>
+<p>Absorption 이후에 발생하는 방향성 있는 움직임이다. 흡수하던 쪽이 충분히 포지션을 채운 후, 반대 방향의 압력이 사라지면 주도적 움직임이 시작된다.</p>
+
+<div class="visual-flow">
+  <div class="vf-step sell">공격적 매도 진행</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step key">Passive Bid가 흡수</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">매도 압력 소진</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">Initiative 매수 시작</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">방향성 이동</div>
+</div>
+
+<h3>Exhaustion (소진)</h3>
+<p>통상적으로 대량의 거래량이 발생하는 시장에서, 새로운 극단(Extreme)에서 갑자기 <strong>매우 적은 거래량</strong>이 나타나는 현상이다.</p>
+
+<div class="concept-card warning">
+  <div class="card-title">Exhaustion 식별 <span class="badge badge-rule">RULE</span></div>
+  <p><strong>실전 예시</strong>: US 10-Year Treasury가 통상 각 가격에서 수천 lot이 거래되는데, 저점 돌파를 시도할 때 갑자기 50 lot이나 129 lot만 거래된다면 — 매도가 소진된 것이다. 이는 강력한 반전 신호이다.</p>
+  <p>Exhaustion = 한쪽이 더 이상 밀 힘이 없다는 증거</p>
+</div>
+
+<h3>세 패턴의 연결 흐름</h3>
+
+<div class="visual-flow">
+  <div class="vf-step sell">공격적 매도</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step key">Exhaustion (거래량 급감)</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">Absorption (Passive 흡수)</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">Initiative 반전</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">새로운 추세</div>
+</div>
+
+<div class="insight">
+  <p>이 세 가지 패턴은 독립적이 아니라 <strong>시퀀스(Sequence)</strong>로 발생한다. Exhaustion → Absorption → Initiative 순서를 이해하면, 반전의 전체 그림을 조기에 포착할 수 있다. 하나의 패턴만 보고 진입하지 말고, 반드시 다음 단계가 확인될 때까지 기다려라.</p>
+</div>
+
+<details>
+  <summary>심화: 각 패턴별 풋프린트에서의 시각적 특징</summary>
+  <div class="detail-body">
+    <table>
+      <tr><th>패턴</th><th>풋프린트 시각적 특징</th><th>Delta 특성</th></tr>
+      <tr><td><strong>Absorption</strong></td><td>한쪽에 큰 숫자, 반대쪽도 큰 숫자 (서로 상쇄)</td><td>낮은 Net Delta (양쪽이 비슷)</td></tr>
+      <tr><td><strong>Initiative</strong></td><td>한쪽에만 큰 숫자, 반대쪽은 작음</td><td>높은 Net Delta (한쪽 압도)</td></tr>
+      <tr><td><strong>Exhaustion</strong></td><td>극단 가격에서 매우 작은 숫자</td><td>Delta 급감</td></tr>
+    </table>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.7 ==================== -->
+<section id="ch7">
+<h2><span class="num">07</span> 풋프린트 vs DOM — 언제 무엇을 쓰는가</h2>
+
+<h3>도구의 본질적 차이</h3>
+<p>풋프린트와 DOM(Depth of Market)은 시장의 <strong>서로 다른 측면</strong>을 보여준다. 하나만으로는 전체 그림을 볼 수 없다.</p>
+
+<div class="compare-box">
+  <div class="compare-side right">
+    <div class="compare-label">풋프린트 차트</div>
+    <ul>
+      <li>이미 <strong>체결된</strong> 거래량 표시</li>
+      <li>과거의 Aggression 기록</li>
+      <li>정확한 거래 볼륨과 방향</li>
+      <li>"공이 어떻게 차여졌는지"를 보여줌</li>
+    </ul>
+  </div>
+  <div class="compare-side right">
+    <div class="compare-label">DOM / Price Ladder</div>
+    <ul>
+      <li>현재 <strong>대기 중인</strong> 주문 표시</li>
+      <li>실시간 유동성 구조</li>
+      <li>Absorption과 Reload를 라이브로 감지</li>
+      <li>"선수들이 어디에 서 있는지"를 보여줌</li>
+    </ul>
+  </div>
+</div>
+
+<h3>상황별 도구 선택 가이드</h3>
+
+<table>
+  <tr><th>상황</th><th>최적 도구</th><th>이유</th></tr>
+  <tr><td>Key Level에서 반전 포착</td><td>풋프린트 + DOM</td><td>Absorption을 체결 데이터와 대기 주문 모두에서 확인</td></tr>
+  <tr><td>브레이크아웃 진위 판별</td><td>풋프린트</td><td>실제 공격적 거래량이 수반되는지 확인</td></tr>
+  <tr><td>실시간 트레이드 관리</td><td>DOM / Price Ladder</td><td>Bid/Offer의 Reload 여부를 실시간 모니터링</td></tr>
+  <tr><td>사후 분석 (Debrief)</td><td>풋프린트</td><td>체결 기록을 시간순으로 재생하며 복기</td></tr>
+</table>
+
+<div class="visual-flow">
+  <div class="vf-step key">상황 파악</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">Key Level?</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">풋프린트로 Absorption 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">DOM으로 Reload 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">진입 실행</div>
+</div>
+
+<div class="insight">
+  <p>풋프린트는 "무슨 일이 일어났는지"를, DOM은 "무슨 일이 일어나려 하는지"를 보여준다. 이상적으로는 둘 다 같은 방향을 가리킬 때만 진입하라. 풋프린트에서 Absorption이 보이고, DOM에서 Passive Order가 계속 Reload되고 있다면 — 이것은 가장 확실한 진입 시그널이다.</p>
+</div>
+
+<details>
+  <summary>심화: 도구별 장단점 상세 비교</summary>
+  <div class="detail-body">
+    <table>
+      <tr><th>특성</th><th>풋프린트</th><th>DOM</th><th>Bookmap</th></tr>
+      <tr><td>데이터 유형</td><td>체결 거래</td><td>대기 주문 + 체결</td><td>대기 주문 히트맵</td></tr>
+      <tr><td>시간 범위</td><td>과거 ~ 현재</td><td>현재 순간</td><td>과거 ~ 현재</td></tr>
+      <tr><td>학습 난이도</td><td>중</td><td>상</td><td>중</td></tr>
+      <tr><td>최적 활용</td><td>패턴 확인, 복기</td><td>실시간 실행</td><td>유동성 매핑</td></tr>
+    </table>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.8 ==================== -->
+<section id="ch8">
+<h2><span class="num">08</span> 풋프린트로 반전 포착하기</h2>
+
+<h3>캔들스틱이 놓치는 것</h3>
+<p>캔들스틱은 저점이 05에서 형성되었다고 알려주지만, 풋프린트는 실제 <strong>Control Shift(통제권 전환)</strong>가 05가 아니라 11~15 사이에서 발생했음을 보여준다. 바로 그 구간에서 매도자가 완전히 사라진 것이다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">풋프린트 반전 포착의 핵심 <span class="badge badge-core">CORE</span></div>
+  <p>수 시간 후 Retest가 발생할 때, 캔들 분석만 하는 트레이더는 05를 기다리지만, 풋프린트 트레이더는 <strong>11~15에 진입</strong>한다. 이 차이가 수 틱의 유리한 진입과 좁은 Stop을 가능하게 한다.</p>
+</div>
+
+<h3>반전 포착 프로세스</h3>
+
+<div class="visual-flow">
+  <div class="vf-step sell">하락 진행</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step">풋프린트에서 매도 Exhaustion 감지</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">Control Shift 포인트 식별 (11~15)</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">Retest 대기</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">Control Shift 레벨에서 진입</div>
+</div>
+
+<h3>반전 확인 체크리스트</h3>
+<div class="concept-card">
+  <div class="card-title">반전 진입 전 필수 확인 사항</div>
+  <ol>
+    <li><strong>Exhaustion 확인</strong>: 극단 가격에서 거래량 급감</li>
+    <li><strong>Absorption 확인</strong>: 반대 방향의 공격적 흐름을 Passive Order가 흡수</li>
+    <li><strong>Control Shift 레벨 표시</strong>: 매도자가 사라진 정확한 가격대</li>
+    <li><strong>Retest 대기</strong>: 첫 번째 움직임이 아닌 두 번째 테스트에서 진입</li>
+    <li><strong>Stop 배치</strong>: Control Shift 레벨 바로 아래</li>
+  </ol>
+</div>
+
+<div class="insight">
+  <p>반전 트레이딩에서 풋프린트의 가장 큰 가치는 "정밀한 진입(Precision Entry)"이다. 캔들스틱은 저점이 어디인지 알려주지만, 진짜 반전이 시작된 정확한 가격은 알려주지 않는다. 풋프린트는 Control Shift 포인트를 특정해준다 — 이것이 곧 최적 진입 레벨이다.</p>
+</div>
+
+<details>
+  <summary>심화: V-Bottom vs Messy Bottom 구별</summary>
+  <div class="detail-body">
+    <p>무자비한 고거래량 하락(예: S&P 150포인트 드롭) 후 반전을 포착하려면:</p>
+    <ul>
+      <li><strong>V-Bottom 찾기</strong>: 명확하고 날카로운 V자형 반전. 지저분한 횡보가 아니다.</li>
+      <li><strong>Micro-Rotation 확인</strong>: 55에서 58로의 소규모 회전이 유지되는지 확인</li>
+      <li><strong>Delta 급변</strong>: 갑작스럽고 대규모의 양수 Delta 점프 — 긴급 매수자 진입 신호</li>
+      <li>주저하지 말고 즉시 매수: Rotation 위(55)에서 진입, 4-5포인트 Stop, 20포인트 이상 Target</li>
+    </ul>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.9 ==================== -->
+<section id="ch9">
+<h2><span class="num">09</span> 풋프린트 고급 기법 — Open Drive, Iceberg</h2>
+
+<h3>Open Drive Setup</h3>
+<p>현금시장(Cash) 개장 직후 발생하는 강력한 방향성 움직임을 포착하는 셋업이다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">Open Drive 조건 <span class="badge badge-adv">ADV</span></div>
+  <ol>
+    <li>개장 후 가격이 몇 틱만 하락 — <strong>매우 적은 거래량</strong>으로</li>
+    <li>즉시 대규모 Absorption Block(예: 2,000+ lot Iceberg)에 부딪힘</li>
+    <li>약한 단기 참여자들이 트랩됨</li>
+    <li>시장이 다시 위로 회전하며 뒤에 <strong>Low Volume Node</strong>를 남김</li>
+    <li>매수자가 완전한 통제권을 유지하며 대규모 상승 Drive 시작</li>
+    <li>Stop 연쇄 발생으로 가속화</li>
+  </ol>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step neutral">Cash 개장</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step">소규모 하락 (저거래량)</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">Iceberg Absorption (2,000+ lot)</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step trap">약한 매도자 트랩</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">대규모 상승 Drive + Stop Run</div>
+</div>
+
+<h3>Iceberg Order 감지</h3>
+<p>Iceberg Order는 숨겨진 Limit Order로, 체결될 때마다 새로 갱신된다. 풋프린트에서 동일한 가격에서 반복적으로 대량 거래가 체결되지만 가격이 움직이지 않을 때 Iceberg의 존재를 의심할 수 있다.</p>
+
+<div class="concept-card">
+  <div class="card-title">Iceberg 사례: S&P Overnight High</div>
+  <p>시장이 Overnight High 3800에 도달 → 1,481 lot 흡수 → 풀백 → 다시 올라와 3,076 lot 추가 흡수 → 브레이크아웃 매수자 트랩 → 급격한 하방 청산. 이 경우 Iceberg Seller가 총 4,557 lot 이상을 흡수하며 반전을 만들었다.</p>
+</div>
+
+<div class="insight">
+  <p>Open Drive는 하루 중 가장 강력한 움직임의 시작점이 되는 경우가 많다. 핵심은 개장 직후의 "테스트 무빙"이 저거래량으로 빠르게 흡수되는지를 확인하는 것이다. 만약 개장 후 하락이 대량 거래량과 함께 진행된다면, 이는 Open Drive가 아닌 진짜 매도 압력이므로 매수하면 안 된다.</p>
+</div>
+
+<details>
+  <summary>심화: Iceberg 감지를 위한 실용적 체크리스트</summary>
+  <div class="detail-body">
+    <ul>
+      <li>동일 가격에서 반복적으로 대량 체결이 발생하는가?</li>
+      <li>체결량 대비 가격 움직임이 비정상적으로 적은가?</li>
+      <li>DOM에서 해당 가격의 Bid/Offer가 체결 후 즉시 Reload되는가?</li>
+      <li>Bookmap에서 해당 가격에 지속적인 주문 갱신이 보이는가?</li>
+      <li>총 흡수량이 정상 거래량의 몇 배 수준인가?</li>
+    </ul>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.10 ==================== -->
+<section id="ch10">
+<h2><span class="num">10</span> Consolidation vs Absorption 구별법</h2>
+
+<h3>캔들스틱의 맹점</h3>
+<p>캔들스틱 차트에서는 Consolidation(횡보)과 Absorption(흡수)이 <strong>동일하게</strong> 보인다. 둘 다 좁은 범위 내에서의 가격 움직임이다. 그러나 의미는 완전히 다르다.</p>
+
+<div class="compare-box">
+  <div class="compare-side wrong">
+    <div class="compare-label">일반 Consolidation</div>
+    <ul>
+      <li>낮은 거래량</li>
+      <li>참여자 관심 부족</li>
+      <li>방향성 부재</li>
+      <li>브레이크아웃 방향 불확실</li>
+      <li>에너지 축적이 아닌 무관심</li>
+    </ul>
+  </div>
+  <div class="compare-side right">
+    <div class="compare-label">진정한 Absorption</div>
+    <ul>
+      <li><strong>높은 상대적 거래량</strong></li>
+      <li>양쪽 모두 공격적 참여</li>
+      <li>한쪽이 다른 쪽을 점진적으로 압도</li>
+      <li>방향성 Initiative 이동으로 연결</li>
+      <li>대규모 에너지 축적</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Absorption 판별 3대 규칙</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">Absorption 확인 규칙 <span class="badge badge-rule">RULE</span></div>
+  <ol>
+    <li><strong>높은 상대적 거래량(High Relative Volume)</strong>: 해당 시간대 평균 대비 현저히 높은 거래량</li>
+    <li><strong>가격 포인트 변동성(Price Point Volatility)</strong>: 좁은 범위 내에서의 빈번한 가격 변동</li>
+    <li><strong>Initiative 결론(Initiative Conclusion)</strong>: Absorption 후 명확한 방향성 이동 발생</li>
+  </ol>
+</div>
+
+<h3>실전 사례: E-mini S&P</h3>
+<p>시장이 2855 브레이크아웃 레벨을 테스트했다. 풋프린트는 단 4개 가격(53~54)에서 10분 동안 <strong>25,000계약</strong>이 거래되었음을 보여주었다. 이 정도의 거래량이 좁은 범위에 집중된 것은 진정한 Absorption이며, 일반 Consolidation에서는 절대 볼 수 없는 현상이다.</p>
+
+<div class="visual-flow">
+  <div class="vf-step">좁은 범위 형성</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">거래량 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">25,000계약 / 4가격 / 10분</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">= 진정한 Absorption</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">Initiative 방향 이동</div>
+</div>
+
+<div class="insight">
+  <p>Consolidation과 Absorption을 구별하는 단 하나의 기준은 <strong>거래량</strong>이다. 좁은 범위에서 거래량이 평소의 5배 이상이면 Absorption을 의심하라. 거래량이 평소와 비슷하거나 낮다면 그냥 무관심한 횡보일 뿐이다. 이 구별을 못하면 Consolidation에서 매매하다가 양방향 Stop-out을 당하게 된다.</p>
+</div>
+
+<details>
+  <summary>심화: Absorption 후 Initiative 방향 예측</summary>
+  <div class="detail-body">
+    <p>Absorption 후 어느 방향으로 Initiative가 발생할지는 다음으로 판단한다:</p>
+    <ul>
+      <li><strong>누가 흡수하고 있는가</strong>: Passive Buyer가 흡수 중이면 → 상방 Initiative 예상</li>
+      <li><strong>Net Delta 방향</strong>: Absorption 구간에서 Delta가 양수로 전환되면 → 상방</li>
+      <li><strong>마지막 공격자</strong>: 마지막으로 공격적이었던 쪽이 패배자(Initiative는 반대 방향)</li>
+      <li><strong>구조적 위치</strong>: Value Area 하단에서의 Absorption = 상방 가능성 높음</li>
+    </ul>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.11 ==================== -->
+<section id="ch11">
+<h2><span class="num">11</span> 풋프린트로 트레이드 복기하기</h2>
+
+<h3>프로의 복기 방법론</h3>
+<p>프롭 트레이더들은 주말을 활용하여 30분 풋프린트를 Volume Profile 옆에 놓고 시장을 리플레이한다. Epic Pen 같은 도구로 라이브 녹화본에 주석을 달면서, 약한 Overnight 포지셔닝이 Low Volume Hole에 갇힌 지점, 또는 Buying Imbalance를 통해 진정한 지지가 구축된 지점을 정확히 찾아낸다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">복기 워크플로우 <span class="badge badge-core">CORE</span></div>
+  <div class="visual-flow">
+    <div class="vf-step key">30분 풋프린트 + VP 병렬 배치</div>
+    <div class="vf-arrow">→</div>
+    <div class="vf-step">시장 리플레이 시작</div>
+    <div class="vf-arrow">→</div>
+    <div class="vf-step">핵심 이벤트에 주석 표시</div>
+    <div class="vf-arrow">→</div>
+    <div class="vf-step buy">패턴 인식 구축</div>
+  </div>
+</div>
+
+<h3>복기 시 주목할 포인트</h3>
+
+<table>
+  <tr><th>관찰 항목</th><th>무엇을 찾는가</th><th>의미</th></tr>
+  <tr><td>Overnight Positioning</td><td>Low Volume Hole에 갇힌 약한 포지션</td><td>Cash 개장 후 청산 대상</td></tr>
+  <tr><td>Buying Imbalance</td><td>특정 레벨에서 지속적인 매수 우위</td><td>진정한 지지선 구축</td></tr>
+  <tr><td>Absorption Zone</td><td>대량 거래 + 가격 정체</td><td>반전 또는 가속 포인트</td></tr>
+  <tr><td>Stop Run</td><td>가격 건너뜀 + 급격한 거래량</td><td>강제 청산, 유동성 수확</td></tr>
+  <tr><td>Delta Divergence</td><td>가격과 Delta의 방향 불일치</td><td>추세 약화 또는 반전 징후</td></tr>
+</table>
+
+<div class="insight">
+  <p>복기의 목적은 실수를 찾는 것이 아니라 <strong>인지적 패턴 인식(Cognitive Pattern Recognition)</strong>을 구축하는 것이다. 풋프린트를 수백 시간 리플레이하면, 라이브 환경에서 비슷한 패턴을 "직감적으로" 인식하게 된다. 이것이 프로 트레이더의 진짜 Edge이다. 의도적 연습(Deliberate Practice)의 핵심은 반복적 노출이다.</p>
+</div>
+
+<details>
+  <summary>심화: 복기 체크리스트 템플릿</summary>
+  <div class="detail-body">
+    <ol>
+      <li><strong>Pre-Market Context</strong>: Overnight 세션에서 어떤 포지셔닝이 형성되었는가?</li>
+      <li><strong>Cash Open 반응</strong>: 개장 후 첫 30분의 오더플로우 특성은?</li>
+      <li><strong>Key Level 테스트</strong>: 주요 레벨에서 Absorption/Exhaustion이 발생했는가?</li>
+      <li><strong>최적 진입점</strong>: 풋프린트 기준으로 가장 좋은 진입은 어디였는가?</li>
+      <li><strong>내 진입 비교</strong>: 내 실제 진입은 최적 진입 대비 몇 틱 차이가 났는가?</li>
+      <li><strong>관리 품질</strong>: 오더플로우가 반대 신호를 보냈을 때 즉시 대응했는가?</li>
+      <li><strong>교훈</strong>: 오늘 학습한 패턴 1~2개를 기록</li>
+    </ol>
+  </div>
+</details>
+</section>
+
+
+<!-- ================================================================== -->
+<!--             PART III: 볼륨 프로파일 & 마켓 프로파일                   -->
+<!-- ================================================================== -->
+<div class="part-divider" id="part3">
+  <h2>Part III: 볼륨 프로파일 & 마켓 프로파일</h2>
+  <p>Ch.12 ~ Ch.17 | Volume Profile과 Market Profile의 이론과 실전</p>
+</div>
+
+<!-- ==================== Ch.12 ==================== -->
+<section id="ch12">
+<h2><span class="num">12</span> 마켓 프로파일 기초 — TPO, Initial Balance, Value Area</h2>
+
+<h3>마켓 프로파일이란</h3>
+<p>마켓 프로파일(Market Profile) 또는 TPO(Time Price Opportunity)는 시장 데이터를 <strong>시간(Time)</strong> 기반으로 조직한다. 각 30분 구간에 알파벳 문자를 할당하여(예: A = 첫 30분, B = 다음 30분), 각 가격이 어떤 시간대에 거래되었는지를 시각화한다.</p>
+
+<div class="def-grid">
+  <div class="def-item">
+    <div class="label">TPO (Time Price Opportunity)</div>
+    <div class="value">특정 30분 블록에서 터치된 가격 = 하나의 글자</div>
+    <p style="margin-top:8px;font-size:0.9em;">예: 가격 4520이 A, B, C 구간에서 터치되었으면 TPO = 3</p>
+  </div>
+  <div class="def-item">
+    <div class="label">Initial Balance (IB)</div>
+    <div class="value">Cash 개장 후 첫 1시간 (A + B 구간)</div>
+    <p style="margin-top:8px;font-size:0.9em;">그날의 기본 구조와 초기 가치(Value)를 설정. 하루 전체의 벤치마크가 된다.</p>
+  </div>
+  <div class="def-item info">
+    <div class="label">Value Area</div>
+    <div class="value">TPO 글자의 70%가 집중된 가격 범위</div>
+    <p style="margin-top:8px;font-size:0.9em;">시장이 대부분의 시간을 보낸 구간 = 시장이 "공정 가격"으로 인정한 영역</p>
+  </div>
+  <div class="def-item">
+    <div class="label">POC (Point of Control)</div>
+    <div class="value">가장 많은 TPO(또는 거래량)가 집중된 단일 가격</div>
+    <p style="margin-top:8px;font-size:0.9em;">시장의 "균형점". 가격이 이 레벨로 회귀하려는 성질이 있다.</p>
+  </div>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step neutral">A 구간 (0:00~0:30)</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step neutral">B 구간 (0:30~1:00)</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">IB 완성 (첫 1시간)</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">C, D, E... 구간 확장</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">Value Area 형성</div>
+</div>
+
+<div class="insight">
+  <p>마켓 프로파일의 핵심 가정은 "가격이 오래 머무는 곳이 공정 가치(Fair Value)"라는 것이다. 이 가정 하에서, 가격이 Value Area 밖으로 이동하면 "과대평가/과소평가" 상태이며, 다시 Value Area로 회귀할 가능성이 높다. 이것이 바로 마켓 프로파일 매매의 근본 로직이다.</p>
+</div>
+
+<details>
+  <summary>심화: Initial Balance의 전략적 의미</summary>
+  <div class="detail-body">
+    <p>Initial Balance(IB)는 단순한 시간 구간이 아닌, 하루의 "기준선"이다:</p>
+    <ul>
+      <li><strong>IB가 넓은 날</strong>: 양쪽 모두 공격적 → Range Day 가능성. IB 범위 내에서 역추세 매매</li>
+      <li><strong>IB가 좁은 날</strong>: 참여자 관심 부족 → 브레이크아웃 Day 가능성. IB 돌파 방향으로 추세 매매</li>
+      <li><strong>IB 돌파 실패</strong>: IB 범위로 회귀하면 Balanced Day 확정. 반대편 IB 극단을 Target으로 설정</li>
+    </ul>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.13 ==================== -->
+<section id="ch13">
+<h2><span class="num">13</span> 볼륨 프로파일 기초 — POC, HVN, LVN, Value Area</h2>
+
+<h3>볼륨 프로파일이란</h3>
+<p>볼륨 프로파일(Volume Profile)은 각 가격 레벨에서 거래된 <strong>정확한 계약 수</strong>를 히스토그램으로 보여주는 도구이다.</p>
+
+<div class="def-grid">
+  <div class="def-item">
+    <div class="label">VPOC (Volume Point of Control)</div>
+    <div class="value">가장 많은 거래량이 발생한 단일 가격</div>
+    <p style="margin-top:8px;font-size:0.9em;">시장의 "자석" 역할. 매수자와 매도자가 가장 많이 합의한 가격이다.</p>
+  </div>
+  <div class="def-item info">
+    <div class="label">Value Area</div>
+    <div class="value">전체 거래량의 70%가 발생한 가격 범위</div>
+    <p style="margin-top:8px;font-size:0.9em;">기관 투자자들이 실제로 거래한 "공정 가치" 영역. Value Area High(VAH)와 Value Area Low(VAL)로 경계가 정해진다.</p>
+  </div>
+  <div class="def-item buy">
+    <div class="label">HVN (High Volume Node)</div>
+    <div class="value">거래량이 집중된 영역</div>
+    <p style="margin-top:8px;font-size:0.9em;">가격이 이 영역을 쉽게 벗어나지 못함. 일종의 "자석"이자 "진흙탕"과 같다.</p>
+  </div>
+  <div class="def-item sell">
+    <div class="label">LVN (Low Volume Node)</div>
+    <div class="value">거래량이 뚜렷하게 부족한 영역</div>
+    <p style="margin-top:8px;font-size:0.9em;">가격이 빠르게 통과하는 구간. Stop 보호에 적합. 시장은 LVN을 빠르게 지나치려는 경향이 있다.</p>
+  </div>
+</div>
+
+<h3>VPOC의 올바른 사용법</h3>
+
+<div class="concept-card danger">
+  <div class="card-title">VPOC에 대한 가장 큰 오해 <span class="badge badge-danger">WARNING</span></div>
+  <p>가장 흔한 오해: "VPOC는 최적의 진입 지점이다." <strong>이것은 틀렸다.</strong> VPOC는 매수자와 매도자 사이의 균형된 합의를 나타내기 때문에, 데이트레이더에게 <strong>방향성 Edge가 없다</strong>.</p>
+  <p>VPOC는 "자석(Magnet)"으로 사용하라 — 극단에서 반전을 잡았을 때의 <strong>수익 실현(Exit) 목표</strong>로 최적이다.</p>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step sell">가격이 Value Area 밖으로 이동</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">Exhaustion 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">극단에서 반전 진입</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">VPOC를 Target으로 설정</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">VPOC 도달 시 수익 실현</div>
+</div>
+
+<div class="insight">
+  <p>VPOC는 진입이 아니라 출구(Exit)이다. 최적의 진입은 Value Area의 극단(VAH 또는 VAL) 부근에서 Exhaustion이나 Absorption이 확인될 때이다. 여기서 진입하고, VPOC를 향해 수익을 취한다. 이것이 Volume Profile 매매의 핵심 로직이다.</p>
+</div>
+
+<details>
+  <summary>심화: HVN과 LVN의 전략적 활용</summary>
+  <div class="detail-body">
+    <table>
+      <tr><th>노드 유형</th><th>가격 행동</th><th>전략적 활용</th></tr>
+      <tr><td><strong>HVN</strong></td><td>가격이 느리게 통과, 자주 정체</td><td>추세 중 "쉬어가는" 구간. Target 또는 부분 수익 실현 지점</td></tr>
+      <tr><td><strong>LVN</strong></td><td>가격이 빠르게 통과</td><td>Stop 배치에 적합 (가격이 LVN을 빠르게 지나가므로). 브레이크아웃 Target</td></tr>
+      <tr><td><strong>HVN → LVN 경계</strong></td><td>급격한 가속 가능</td><td>이 경계를 돌파하면 다음 HVN까지 빠른 이동 예상</td></tr>
+    </table>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.14 ==================== -->
+<section id="ch14">
+<h2><span class="num">14</span> 마켓 프로파일 vs 볼륨 프로파일 — 차이와 활용</h2>
+
+<h3>본질적 차이</h3>
+<p>마켓 프로파일은 <strong>시간 기반</strong>이고, 볼륨 프로파일은 <strong>거래량 기반</strong>이다. 이 차이가 실전에서 어떤 의미를 갖는지 이해하는 것이 핵심이다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">시간 vs 거래량: 왜 둘 다 필요한가 <span class="badge badge-core">CORE</span></div>
+  <p>시장이 특정 가격에 수 시간 동안 머물 수 있지만(거대한 TPO 돌출부 형성), 실제 거래된 계약 수는 매우 적을 수 있다(저유동성 Overnight 세션). 반대로, 짧은 시간 동안 엄청난 거래량이 특정 가격에 집중될 수도 있다. TPO는 순서와 형태를 보여주고, Volume Profile은 실제 기관 사이즈가 어디서 체결되었는지의 정밀한 위치를 알려준다.</p>
+</div>
+
+<div class="compare-box">
+  <div class="compare-side right">
+    <div class="compare-label">마켓 프로파일 (TPO)</div>
+    <ul>
+      <li><strong>시간</strong> 기반: 오래 머문 가격 = 공정 가치</li>
+      <li>30분 단위 알파벳 문자</li>
+      <li>하루의 "형태(Shape)" 파악에 유리</li>
+      <li>D형, P형, B형 등 클래식 패턴</li>
+      <li>다음 날 행동 예측에 활용</li>
+    </ul>
+  </div>
+  <div class="compare-side right">
+    <div class="compare-label">볼륨 프로파일</div>
+    <ul>
+      <li><strong>거래량</strong> 기반: 많이 거래된 가격 = 합의 가격</li>
+      <li>각 가격의 정확한 계약 수</li>
+      <li>VPOC, HVN, LVN 정밀 식별</li>
+      <li>기관의 실제 체결 위치 추적</li>
+      <li>정밀 진입/청산 레벨 설정에 활용</li>
+    </ul>
+  </div>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step key">TPO로 형태 파악</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">하루의 유형 판단</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">VP로 핵심 레벨 식별</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">VPOC, HVN, LVN 표시</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">통합 전략 수립</div>
+</div>
+
+<div class="insight">
+  <p>둘 중 하나만 쓰지 마라. TPO로 "오늘이 어떤 유형의 날인지" 판단하고, Volume Profile로 "정확히 어디에서 매매할지" 결정하라. TPO가 전략적 방향을 제공하고, Volume Profile이 전술적 실행을 지원한다.</p>
+</div>
+
+<details>
+  <summary>심화: 24시간 vs RTH 프로파일 분리</summary>
+  <div class="detail-body">
+    <p>트레이더들은 Volume Profile을 Regular Trading Hours(RTH)와 Overnight(Asian/European) 세션으로 분리하여 관찰한다. 이유:</p>
+    <ul>
+      <li>24시간 차트는 저유동성 Overnight 세션의 시간이 과대 반영될 수 있음</li>
+      <li>RTH Volume Profile만 보면 진정한 기관의 가치(Value) 판단이 가능</li>
+      <li>Overnight 프로파일은 아시아/유럽 참여자의 포지셔닝 파악에 활용</li>
+      <li>두 프로파일의 불일치가 Cash 개장 후 방향성의 실마리</li>
+    </ul>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.15 ==================== -->
+<section id="ch15">
+<h2><span class="num">15</span> 볼륨 프로파일 실전 — 최적 진입 위치와 전략</h2>
+
+<h3>최적 진입의 원리</h3>
+<p>최적의 진입 위치는 <strong>가치(Value)에서 벗어난 극단적 가격 움직임을 Fading</strong>하는 것에서 찾는다. VPOC 또는 전일 Value Area를 Target으로 삼고, 극단에서 Exhaustion 신호가 나타날 때 진입한다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">고급 Volume Profile 셋업 <span class="badge badge-adv">ADV</span></div>
+  <p><strong>셋업 조건</strong>: 일봉에서 매우 강한 양봉이 고점에서 마감. 그러나 Volume Profile의 Value Area(70% 거래량)는 레인지 하단에 완전히 고정되어 있다.</p>
+  <p><strong>의미</strong>: 가격은 올라갔지만 가치(Value)는 이동하지 않았다. 고가는 근본적으로 지지되지 않는다.</p>
+  <p><strong>전략</strong>: 고점 부근(예: 526.98)에서 숏 진입, 50틱 하락을 Target으로 전일 Value Area 상단(526.62)까지 매도.</p>
+</div>
+
+<h3>3가지 진입 옵션</h3>
+
+<table>
+  <tr><th>옵션</th><th>조건</th><th>리스크</th></tr>
+  <tr><td><strong>1) 개장 직후 진입</strong></td><td>보류 중인 뉴스 없을 때</td><td>가장 공격적, Gap & Go 리스크</td></tr>
+  <tr><td><strong>2) 뉴스 후 진입</strong></td><td>경제 데이터 발표가 가격을 저항으로 밀어올린 후</td><td>중간, 뉴스 방향 확인 필요</td></tr>
+  <tr><td><strong>3) 횡보 이탈 진입</strong></td><td>오전 Consolidation Range 하방 돌파 시 (예: 98 이하)</td><td>가장 보수적, 확인 후 진입</td></tr>
+</table>
+
+<div class="visual-flow">
+  <div class="vf-step">전일 강한 양봉 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">VP Value Area 위치 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step sell">Value 미이동 → 숏 셋업</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">3가지 옵션 중 선택</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">Target: VA 상단</div>
+</div>
+
+<div class="insight">
+  <p>Volume Profile 매매의 핵심 원리는 "가격은 가치(Value)를 향해 회귀한다"이다. 가격이 아무리 극단적으로 움직여도, Value Area가 이동하지 않으면 그 움직임은 지속 불가능하다. 이 단순한 원리 하나만으로도 높은 승률의 셋업을 구축할 수 있다.</p>
+</div>
+
+<details>
+  <summary>심화: Value Migration 추적법</summary>
+  <div class="detail-body">
+    <p>Value Area가 날마다 어느 방향으로 이동하는지를 추적하면 시장의 중기 방향을 파악할 수 있다:</p>
+    <ul>
+      <li><strong>Value 상방 이동</strong> (4일 연속): 매수 편향. 풀백 매수 전략</li>
+      <li><strong>Value 정체</strong>: 균형 시장. 극단 Fading 전략</li>
+      <li><strong>Value vs 가격 괴리</strong>: 가격만 이동하고 Value는 제자리 → 반전 가능성 높음</li>
+    </ul>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.16 ==================== -->
+<section id="ch16">
+<h2><span class="num">16</span> 볼륨 프로파일 고급 — 트렌드, 준비, 프렙 루틴</h2>
+
+<h3>트레이딩 준비(Prep) 루틴</h3>
+<p>프로 트레이더들은 Volume Profile을 RTH(Regular Trading Hours)와 Overnight 세션으로 분리하여 관찰한다. 24시간 차트는 저유동성 Overnight 세션이 과대 반영될 수 있기 때문이다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">Pre-Market 준비 절차 <span class="badge badge-core">CORE</span></div>
+  <ol>
+    <li><strong>RTH Volume Profile 분리</strong>: 전일 RTH만의 VPOC, VA, HVN, LVN 확인</li>
+    <li><strong>"Cave" 식별</strong>: 전일 프로파일의 빈 공간(Gap) 찾기</li>
+    <li><strong>하루 유형 판단</strong>: Cave 유무에 따라 Trend Day vs Chop Day 예측</li>
+    <li><strong>핵심 레벨 표시</strong>: 전일 VPOC, VAH, VAL, HVN, LVN을 금일 차트에 표시</li>
+    <li><strong>시나리오 수립</strong>: 상방/하방 각각의 진입 레벨과 Target 사전 설정</li>
+  </ol>
+</div>
+
+<h3>프로파일 "Cave"의 의미</h3>
+<p>전일 프로파일에서 발견되는 빈 공간(Gap 또는 "Cave")은 시장이 해당 가격대를 빠르게 통과했음을 의미한다. 이 영역이 있으면:</p>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">Cave 있음</div>
+    <div class="value">Trend Day 가능성 높음</div>
+    <p style="margin-top:8px;font-size:0.9em;">시장이 빠르게 이 공간을 채우거나 확장할 가능성. 브레이크아웃 전략이 유리하다.</p>
+  </div>
+  <div class="def-item sell">
+    <div class="label">Cave 없음 (뚱뚱한 프로파일)</div>
+    <div class="value">Chop Day 가능성 높음</div>
+    <p style="margin-top:8px;font-size:0.9em;">시장이 균형 상태. 극단 Fading 전략이 유리하다. 브레이크아웃은 Fake-out될 가능성이 높다.</p>
+  </div>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step">전일 RTH Profile 관찰</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">Cave 존재 여부 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">Day Type 판단</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">전략 선택 (Trend vs Range)</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">시나리오 기반 매매</div>
+</div>
+
+<div class="insight">
+  <p>Pre-Market Prep은 매매의 50%를 결정한다. 시장이 열리기 전에 핵심 레벨을 표시하고 시나리오를 수립해놓으면, 개장 후에는 실행만 하면 된다. "보고 넣으면 늦다" — 미리 준비된 트레이더만이 최적의 가격에 진입할 수 있다.</p>
+</div>
+
+<details>
+  <summary>심화: 멀티데이 Volume Profile 분석</summary>
+  <div class="detail-body">
+    <p>단일 일봉의 Volume Profile뿐 아니라, 여러 날을 합산한 Composite Profile을 활용하면:</p>
+    <ul>
+      <li>중기적 HVN/LVN 식별 가능 (더 중요한 레벨)</li>
+      <li>여러 날의 VPOC가 같은 가격에 수렴하면 → 강력한 자석 레벨</li>
+      <li>VPOC가 날마다 상방 이동하면 → 상승 추세 확인</li>
+      <li>LVN이 넓게 분포하면 → 빠른 추세 이동 가능성</li>
+    </ul>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.17 ==================== -->
+<section id="ch17">
+<h2><span class="num">17</span> 마켓 프로파일 심화 — Value의 중요성과 Edge 개발</h2>
+
+<h3>Value가 말하는 것</h3>
+<p>Value는 시장 참여자들 사이의 <strong>가격 합의 수준</strong>을 나타낸다. Value Area의 <strong>형태(Shape)</strong>가 그 합의의 강도를 알려준다.</p>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">작고 동그란 Value Area</div>
+    <div class="value">엄청난 합의 = 강한 균형</div>
+    <p style="margin-top:8px;font-size:0.9em;">70%의 거래가 좁은 구간에 집중. 시장이 고도로 균형 잡혀 있으며, 이탈하려면 강력한 촉매가 필요하다.</p>
+  </div>
+  <div class="def-item sell">
+    <div class="label">넓고 들쭉날쭉한 Value Area</div>
+    <div class="value">완전한 불합의 = 불안정</div>
+    <p style="margin-top:8px;font-size:0.9em;">참여자들 사이에 가격 합의 없음. 변동성이 크고 방향성이 불확실하다.</p>
+  </div>
+</div>
+
+<h3>Edge 개발: 프로파일의 "약점" 찾기</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">프로파일 약점 식별 <span class="badge badge-adv">ADV</span></div>
+  <p>Edge는 프로파일의 시각적 "약점"을 식별하는 것에서 시작한다. 예를 들어, 시장이 상방으로 이동했지만 뚱뚱한 "Buying Tail"이나 Value 분포를 형성하지 못한 채 단일 프린트(Single Print)만 남겼다면, 해당 레벨은 구조적 무결성이 없다. 반전에 극도로 취약하다.</p>
+</div>
+
+<h3>Value Migration을 통한 Liquidation 예측</h3>
+
+<div class="visual-flow">
+  <div class="vf-step">Value 4일 연속 상방 이동</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">전일 저점 매번 미돌파</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step trap">시장 공격적 롱 포지션</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step sell">상방 돌파 실패 + 레인지 복귀</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step sell">b-shape 롱 청산일</div>
+</div>
+
+<p>Value가 4일 연속 상방 이동하면서 전일 저점을 한 번도 돌파하지 못하면, 시장은 공격적으로 롱 포지셔닝되어 있다. 다음 날 상방 돌파에 실패하고 전일 레인지 내로 복귀하면, "b-shape" 롱 청산일(Liquidation Day)을 예측할 수 있다. IB 하단(예: 6783) 또는 VPOC(예: 6789)의 하방 돌파에서 숏 진입.</p>
+
+<div class="concept-card warning">
+  <div class="card-title">Value 미이동의 함의 <span class="badge badge-rule">RULE</span></div>
+  <p>시장이 신고가를 돌파했지만 Value Area가 여전히 아래에 머물러 있거나 신고가로 이동하지 못한다면, 그 움직임은 <strong>근본적으로 지속 불가능</strong>하다. 늦은 매수자들이 곧 트랩되고, 시장은 아래에 형성된 가치(Value)를 향해 공격적으로 반전할 것이다. 이것이 궁극의 반전 신호이다.</p>
+</div>
+
+<div class="insight">
+  <p>마켓 프로파일에서 Edge를 개발하는 핵심은 "클래식 프로파일 형태(Classical Profile Shapes)"에 대한 패턴 기억(Pattern Recall)이다. D형, P형, B형 등의 프로파일 형태를 충분히 학습하면, 현재 형성 중인 프로파일을 보고 다음 행동을 예측할 수 있다. 이것은 순수한 반복 학습을 통해서만 얻어지는 능력이다.</p>
+</div>
+
+<details>
+  <summary>심화: 클래식 프로파일 형태 가이드</summary>
+  <div class="detail-body">
+    <table>
+      <tr><th>형태</th><th>특징</th><th>의미</th><th>트레이딩 전략</th></tr>
+      <tr><td><strong>D형 (Normal Day)</strong></td><td>종 모양, Value 중앙 집중</td><td>균형 시장, 방향성 부재</td><td>극단 Fading, 범위 매매</td></tr>
+      <tr><td><strong>P형 (Long Liquidation)</strong></td><td>상단 좁고 하단 넓음</td><td>롱 포지션 청산</td><td>하방 추세 추종, 풀백 숏</td></tr>
+      <tr><td><strong>B형 (Short Liquidation)</strong></td><td>하단 좁고 상단 넓음</td><td>숏 포지션 청산</td><td>상방 추세 추종, 풀백 롱</td></tr>
+      <tr><td><strong>Trend Day</strong></td><td>한 방향으로 확장, Single Print 다수</td><td>강한 방향성</td><td>추세 방향 진입, 역추세 금지</td></tr>
+    </table>
+  </div>
+</details>
+</section>
+
+
+<!-- ================================================================== -->
+<!--                    PART IV: 델타 & CVD                              -->
+<!-- ================================================================== -->
+<div class="part-divider" id="part4">
+  <h2>Part IV: 델타 & CVD</h2>
+  <p>Ch.18 ~ Ch.22 | Delta, Cumulative Volume Delta의 이론과 전략</p>
+</div>
+
+<!-- ==================== Ch.18 ==================== -->
+<section id="ch18">
+<h2><span class="num">18</span> 델타 기초 — 매수/매도 압력 측정</h2>
+
+<h3>Delta란 무엇인가</h3>
+<p>Delta는 시장에서 <strong>공격적 매수자(Active Buyer)</strong>와 <strong>공격적 매도자(Active Seller)</strong> 사이의 순 차이를 나타낸다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">Delta의 정의 <span class="badge badge-core">CORE</span></div>
+  <ul>
+    <li><strong>양수 Delta (+)</strong>: 누군가 대기 중인 Offer(매도호가)를 치고 매수 → 더 높은 가격을 기꺼이 수용. 공격적 매수 우위.</li>
+    <li><strong>음수 Delta (-)</strong>: 누군가 대기 중인 Bid(매수호가)를 때리고 매도 → 더 낮은 가격을 수용. 공격적 매도 우위.</li>
+  </ul>
+  <p>Delta는 본질적으로 오더플로우의 <strong>진정한 공격성(True Aggression)</strong>을 모니터링하여, 실제로 가격을 움직이고 있는 주체가 매수자인지 매도자인지를 드러낸다.</p>
+</div>
+
+<h3>Delta의 해석 원칙</h3>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">가격 상승 + 양수 Delta</div>
+    <div class="value">건강한 상승 = 추세 지속</div>
+    <p style="margin-top:8px;font-size:0.9em;">공격적 매수가 가격 상승을 주도. 가장 깨끗한 추세 환경.</p>
+  </div>
+  <div class="def-item sell">
+    <div class="label">가격 하락 + 음수 Delta</div>
+    <div class="value">건강한 하락 = 추세 지속</div>
+    <p style="margin-top:8px;font-size:0.9em;">공격적 매도가 가격 하락을 주도. 역추세 매수 자제.</p>
+  </div>
+  <div class="def-item info">
+    <div class="label">가격 상승 + 음수 Delta</div>
+    <div class="value">Divergence = 상승 약화</div>
+    <p style="margin-top:8px;font-size:0.9em;">매수자가 수동적, 매도자가 공격적. 상승이 Passive Buyer에 의존 → 불안정.</p>
+  </div>
+  <div class="def-item">
+    <div class="label">가격 하락 + 양수 Delta</div>
+    <div class="value">Divergence = 하락 약화</div>
+    <p style="margin-top:8px;font-size:0.9em;">매도 공격에도 가격이 많이 안 내려감. Passive Buyer가 흡수 중. 반전 가능.</p>
+  </div>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step">가격 움직임 관찰</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">Delta 방향 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">일치? Divergence?</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">일치 = 추세 지속</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step sell">Divergence = 약화/반전</div>
+</div>
+
+<div class="insight">
+  <p>Delta를 읽을 때 가장 중요한 것은 "가격과 Delta의 일치/불일치"이다. 둘이 같은 방향이면 추세가 건강하다. 하지만 가격은 올라가는데 Delta가 음수이거나 감소한다면, 그 상승은 Passive Buying에 의존하고 있으며 지속되기 어렵다. 이 Divergence가 바로 숏 진입의 최적 시그널이다.</p>
+</div>
+
+<details>
+  <summary>심화: Delta Misconception — 가장 흔한 오해</summary>
+  <div class="detail-body">
+    <div class="concept-card danger">
+      <div class="card-title">Delta 오해 <span class="badge badge-danger">WARNING</span></div>
+      <p>트레이더들이 자주 저지르는 오류: "일간 Delta가 -3,200이니까 시장이 대규모 순매도 포지션을 구축했다."</p>
+      <p><strong>현실</strong>: 가격이 내려가지 않으면서 음수 Delta가 축적된다면, 이것은 Passive Buyer가 공격적 매도자를 끈질기게 흡수하며 Bid를 계속 Reload하고 있다는 의미이다. 대규모 순매도가 아니라 <strong>대규모 Absorption</strong>이다.</p>
+    </div>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.19 ==================== -->
+<section id="ch19">
+<h2><span class="num">19</span> Cumulative Delta — Continuation vs Reversal 신호</h2>
+
+<h3>CVD(Cumulative Volume Delta)란</h3>
+<p>Cumulative Volume Delta(CVD)는 이 오더플로우 공격성을 <strong>전체 세션에 걸쳐 누적</strong>한 것이다. 개별 캔들의 Delta는 노이즈가 많지만, 누적하면 세션 전체의 매수/매도 우위를 명확하게 보여준다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">CVD 해석 프레임워크 <span class="badge badge-core">CORE</span></div>
+  <table>
+    <tr><th>가격 방향</th><th>CVD 방향</th><th>해석</th><th>전략</th></tr>
+    <tr><td>상승</td><td>상승</td><td>건강한 Continuation</td><td>풀백 매수</td></tr>
+    <tr><td>하락</td><td>하락</td><td>건강한 Continuation</td><td>풀백 매도</td></tr>
+    <tr><td>Lower Low</td><td>Higher Low</td><td><strong>Bullish Divergence</strong></td><td>반전 매수 대기</td></tr>
+    <tr><td>Higher High</td><td>Lower High</td><td><strong>Bearish Divergence</strong></td><td>반전 매도 대기</td></tr>
+  </table>
+</div>
+
+<h3>Continuation 신호</h3>
+<p>가격과 CVD가 같은 방향으로 움직일 때 — 추세가 건강하다. 하락 추세에서는 Delta가 높은 거래량과 함께 음수로 축적되어야 한다.</p>
+
+<h3>Reversal 신호 (Divergence)</h3>
+<p>시장이 Lower Low를 만들었지만 Delta가 Higher Low를 프린트한다면, 매도 공격성이 소진되었고 매수자가 움직임을 흡수하고 있다는 신호이다.</p>
+
+<div class="visual-flow">
+  <div class="vf-step sell">가격 Lower Low</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">Delta Higher Low</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">= 매도 소진</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">Passive Buyer 흡수 중</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">반전 매수 신호</div>
+</div>
+
+<div class="insight">
+  <p>CVD Divergence는 "순진한 추세 추종자"를 이기는 최고의 도구이다. 가격만 보는 트레이더는 Lower Low에서 추가 매도를 하지만, CVD를 보는 트레이더는 매도 공격성이 소진되었음을 알고 반전을 준비한다. 단, Divergence만으로 진입하지 말고 반드시 가격 구조(Key Level)와 함께 확인하라.</p>
+</div>
+
+<details>
+  <summary>심화: CVD를 활용한 단계별 트레이딩</summary>
+  <div class="detail-body">
+    <ol>
+      <li><strong>Context 식별</strong>: 높은 거래량과 Delta 변화를 동반한 구조적 돌파가 명확한 추세를 정의할 때까지 기다린다</li>
+      <li><strong>Pullback 대기</strong>: 적절한 Risk-Reward를 위해 최소 25% Fibonacci 상대적 Pullback을 기다린다</li>
+      <li><strong>Axis 찾기</strong>: 풋프린트에서 높은 역추세 Delta(대규모 Absorption)나 긴 꼬리 반전 캔들 같은 오더플로우 "Axis(접근점)"를 찾는다</li>
+      <li><strong>실행</strong>: Axis가 확인되면 진입, 10틱 타이트 Stop을 Axis 캔들 바로 너머에 배치. Target은 1:1.5 ~ 1:2 Risk-Reward 또는 극단 재테스트</li>
+    </ol>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.20 ==================== -->
+<section id="ch20">
+<h2><span class="num">20</span> Delta Flip 전략</h2>
+
+<h3>Delta Flip이란</h3>
+<p>핵심 지지 레벨(예: 전일 VPOC)에서 Delta가 <strong>정확히 방향을 전환하는 순간</strong>을 포착하여 반전을 일찍 잡는 전략이다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">Delta Flip 전략 프로세스 <span class="badge badge-adv">ADV</span></div>
+  <ol>
+    <li><strong>구조적 레벨 식별</strong>: 전일 VPOC 등 핵심 지지선 표시</li>
+    <li><strong>Passive Bid 배치</strong>: 해당 레벨에 Limit Buy 주문 설정</li>
+    <li><strong>풋프린트로 Delta 전환 확인</strong>: 대형 매수 주문(예: 63, 64)이 진입하고 공격적으로 Offer를 들어올리는지(예: 65) 확인</li>
+    <li><strong>Stop 배치</strong>: 최근 Swing Low(예: 59 또는 54) 바로 아래</li>
+    <li><strong>Target 설정</strong>: 상방 Low Volume Node(예: 69~74) — 트랩된 숏이 커버하며 가속</li>
+  </ol>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step sell">하락하여 전일 VPOC 도달</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">Delta 음수 → 양수 전환</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">대형 매수 진입 (63, 64)</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">Offer Lift (65)</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">LVN Target (69~74)</div>
+</div>
+
+<div class="insight">
+  <p>Delta Flip 전략의 핵심은 "구조적 레벨 + Delta 전환"의 조합이다. 아무 가격에서나 Delta가 양수로 전환됐다고 매수하는 것이 아니다. 반드시 전일 VPOC, Value Area Low 등 의미 있는 레벨에서의 Delta 전환만 신뢰하라. 구조 없는 Delta Flip은 노이즈일 뿐이다.</p>
+</div>
+
+<details>
+  <summary>심화: Delta Flip 리스크 관리</summary>
+  <div class="detail-body">
+    <p>Delta Flip이 실패하는 경우:</p>
+    <ul>
+      <li>Delta가 양수로 전환됐지만 <strong>다시 음수로 복귀</strong>: 즉시 Scratch 또는 Stop-out</li>
+      <li>매수가 진입했지만 <strong>거래량이 미미</strong>: 셋업 무효. 진정한 Flip은 거래량 증가를 동반</li>
+      <li><strong>빠르게 LVN을 통과하지 못함</strong>: 모멘텀 부족. 부분 수익 실현 고려</li>
+    </ul>
+    <p>Stop은 반드시 Swing Low 아래에 배치. 이것은 타협 불가. Stop이 Hit되면 셋업 자체가 무효화된 것이다.</p>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.21 ==================== -->
+<section id="ch21">
+<h2><span class="num">21</span> Delta Punch Block Reversal 전략</h2>
+
+<h3>Delta Punch Block이란</h3>
+<p>시장이 좁은 횡보 블록(Block)으로 하락한 후, CVD가 상승하기 시작하면 매수자가 매도 압력을 공격적으로 흡수하고 있다는 신호이다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">Delta Punch Block 전략 <span class="badge badge-adv">ADV</span></div>
+  <ol>
+    <li><strong>블록 식별</strong>: 하락 후 좁은 횡보 범위 형성</li>
+    <li><strong>CVD 관찰</strong>: 가격은 횡보하지만 CVD가 상승 → 매수자 흡수 중</li>
+    <li><strong>블록 상방 돌파 매수</strong>: 예: 25 위로 돌파 시 진입</li>
+    <li><strong>"Delta Punch" 확인</strong>: 단일 풋프린트 캔들에서 갑작스럽고 공격적인 Delta + 거래량 점프</li>
+    <li><strong>사이즈 추가</strong>: Punch가 확인되면 확신을 갖고 포지션에 추가 진입</li>
+  </ol>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step sell">하락</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step">좁은 Block 형성</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">CVD 상승 (흡수 진행)</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">Block 상방 돌파 (>25)</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">Delta Punch! → 사이즈 추가</div>
+</div>
+
+<h3>Delta Punch의 특징</h3>
+
+<table>
+  <tr><th>특징</th><th>설명</th></tr>
+  <tr><td>속도</td><td>단일 캔들에서 갑작스러운 Delta 급증</td></tr>
+  <tr><td>거래량</td><td>평균 대비 2-3배 이상의 거래량</td></tr>
+  <tr><td>가격 반응</td><td>돌파 레벨을 빠르게 벗어남</td></tr>
+  <tr><td>후속 행동</td><td>트랩된 매도자의 커버링으로 가속</td></tr>
+</table>
+
+<div class="insight">
+  <p>Delta Punch Block은 "확신을 갖고 사이즈를 추가하는" 몇 안 되는 셋업 중 하나이다. 일반적으로 포지션에 추가 진입하는 것은 위험하지만, Block 내에서 CVD가 상승하고 있고 명확한 Delta Punch가 발생하면, 이것은 매수자가 완전히 통제권을 잡았다는 강력한 확인이다. 이때만큼은 공격적으로 진입할 근거가 있다.</p>
+</div>
+
+<details>
+  <summary>심화: Block 내부의 CVD 분석</summary>
+  <div class="detail-body">
+    <p>Block이 진정한 Absorption인지 단순 Consolidation인지는 CVD로 구별한다:</p>
+    <ul>
+      <li><strong>CVD 상승 + 가격 횡보</strong>: 매수자 흡수 중. 상방 돌파 가능성 높음</li>
+      <li><strong>CVD 하락 + 가격 횡보</strong>: 매도자 흡수 중. 하방 돌파 가능성 높음</li>
+      <li><strong>CVD 평탄 + 가격 횡보</strong>: 진정한 균형. 방향 불확실. 대기</li>
+    </ul>
+    <p>CVD의 방향이 돌파 방향을 사전에 알려준다. 이것이 CVD의 진정한 가치이다.</p>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.22 ==================== -->
+<section id="ch22">
+<h2><span class="num">22</span> 볼륨 델타 활용 2가지 방법과 흔한 실수</h2>
+
+<h3>방법 1: Confirmation (확인)</h3>
+<p>브레이크아웃 트레이드에서 Delta가 가격과 함께 꾸준히 상승하면, 움직임이 공격적 매수에 의해 지지되고 있음을 확인한다.</p>
+
+<div class="concept-card success">
+  <div class="card-title">Confirmation 사례 <span class="badge badge-core">CORE</span></div>
+  <p><strong>DAX 레인지 돌파</strong>: 12378에서 12390으로의 브레이크아웃. Delta가 가격과 함께 꾸준히 상승 → 공격적 매수가 움직임을 주도하고 있음을 확인. 포지션을 계속 유지할 근거를 제공한다.</p>
+</div>
+
+<h3>방법 2: Divergence (괴리)</h3>
+<p>가격이 상승하지만 Delta가 하락하면, 매수자는 완전히 수동적(Passive)이고 매도자가 적극적으로 Bid를 때리고 있다는 의미이다.</p>
+
+<div class="concept-card warning">
+  <div class="card-title">Divergence 사례 <span class="badge badge-rule">RULE</span></div>
+  <p>가격이 상승하는데 Delta가 하락: 매수자가 전적으로 Passive하고 매도자가 적극적으로 Bid를 때리는 중. Head and Shoulders 같은 기술적 패턴의 매도에 완벽한 오더플로우 셋업이다.</p>
+</div>
+
+<h3>흔한 실수</h3>
+
+<div class="concept-card danger">
+  <div class="card-title">Delta 사용 시 치명적 실수 <span class="badge badge-danger">WARNING</span></div>
+  <ol>
+    <li><strong>구조적 컨텍스트 없이 Delta만으로 진입</strong>: Delta가 하락한다고 무조건 매도하면 안 된다. 가격이 계속 신고가를 경신하면서 Delta가 하락하는 것은 Passive Buyer의 흡수일 수 있다.</li>
+    <li><strong>Delta로 리스크 관리 시도</strong>: Delta만으로는 정확한 Stop 레벨을 정의할 수 없다. Delta는 기존 매매 아이디어를 <strong>강화(Enhance)</strong>하는 도구일 뿐, 독립적 진입/리스크 관리 도구가 아니다.</li>
+  </ol>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step key">매매 아이디어 수립</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">구조적 레벨 식별</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">Delta로 확인/부정</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">확인 시 진입</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step sell">부정 시 대기/취소</div>
+</div>
+
+<div class="insight">
+  <p>Delta는 "보조 지표"이지 "주 지표"가 아니다. 먼저 구조적 분석(Volume Profile, Market Profile, Key Level)으로 매매 아이디어를 수립하고, Delta로 그 아이디어를 확인하거나 부정하라. 순서가 뒤바뀌면 모든 Delta 움직임이 매매 신호로 보이기 시작하고, 과매매(Overtrading)의 늪에 빠진다.</p>
+</div>
+
+<details>
+  <summary>심화: Delta + 기술적 패턴 조합 사례</summary>
+  <div class="detail-body">
+    <p>Delta Divergence가 가장 효과적인 기술적 패턴과의 조합:</p>
+    <ul>
+      <li><strong>Head and Shoulders + 음수 Delta</strong>: 우측 어깨에서 Delta가 하락하면 → 강력한 숏 셋업</li>
+      <li><strong>Double Top + Delta 감소</strong>: 두 번째 고점에서 Delta가 약하면 → 반전 확률 높음</li>
+      <li><strong>Cup and Handle + Delta 상승</strong>: Handle에서 Delta가 상승하면 → 돌파 확률 높음</li>
+      <li><strong>Falling Wedge + CVD 상승</strong>: 가격은 하락하지만 CVD 상승 → 강력한 Bullish Divergence</li>
+    </ul>
+  </div>
+</details>
+</section>
+
+
+<!-- ================================================================== -->
+<!--              PART V: 프라이스 래더 & DOM                            -->
+<!-- ================================================================== -->
+<div class="part-divider" id="part5">
+  <h2>Part V: 프라이스 래더 & DOM</h2>
+  <p>Ch.23 ~ Ch.25 | Price Ladder와 Depth of Market의 실전 활용</p>
+</div>
+
+<!-- ==================== Ch.23 ==================== -->
+<section id="ch23">
+<h2><span class="num">23</span> 프라이스 래더가 차트에 없는 것을 보여주는 이유</h2>
+
+<h3>프라이스 래더의 고유한 정보</h3>
+<p>프라이스 래더(Price Ladder)는 시장 유동성(Liquidity)의 <strong>실시간으로 변하는 뷰</strong>를 제공한다. 1분 캔들스틱 차트가 읽을 수 없는 작은 chop으로만 표시하는 것을, 프라이스 래더는 정확한 Absorption 가격과 공격적 Bid/Offer Reload를 하이라이트한다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">프라이스 래더만의 정보 <span class="badge badge-core">CORE</span></div>
+  <ul>
+    <li><strong>Absorption의 정확한 가격</strong>: 어디에서 대형 Passive Order가 공격적 흐름을 흡수하는지</li>
+    <li><strong>Bid/Offer Reload</strong>: 대기 주문이 체결 후 즉시 다시 나타나는지 (Iceberg 감지)</li>
+    <li><strong>페이스(Pace) 변화</strong>: 거래 속도의 갑작스러운 변화</li>
+    <li><strong>유동성 진공(Liquidity Void)</strong>: 특정 가격에 주문이 없는 공백</li>
+  </ul>
+</div>
+
+<div class="compare-box">
+  <div class="compare-side wrong">
+    <div class="compare-label">1분 캔들스틱에서 보이는 것</div>
+    <p>작은 Doji 캔들. 방향성 불명확. 의사결정 불가.</p>
+  </div>
+  <div class="compare-side right">
+    <div class="compare-label">프라이스 래더에서 보이는 것</div>
+    <p>300-lot Bid가 95에서 공격적 매도를 흡수하고 즉시 Reload. 매수자가 이 레벨을 방어하고 있음을 실시간으로 확인.</p>
+  </div>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step">차트에서 Chop 관찰</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">래더로 전환</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">Absorption 위치 식별</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">Reload 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">방향성 판단</div>
+</div>
+
+<div class="insight">
+  <p>프라이스 래더는 "미시적(Micro)" 수준의 시장 분석 도구이다. 차트가 "매크로"를 보여주고 풋프린트가 "중간"을 보여준다면, 래더는 한 틱 한 틱의 전투를 보여준다. 특히 좁은 레인지에서의 방향 결정이나, 진입 후 트레이드 관리에서 래더는 대체 불가능한 정보를 제공한다.</p>
+</div>
+
+<details>
+  <summary>심화: 래더 리딩 연습법</summary>
+  <div class="detail-body">
+    <p>래더 리딩은 오랜 관찰과 연습이 필요한 스킬이다:</p>
+    <ul>
+      <li><strong>SIM(시뮬레이터) 환경</strong>에서 하루 2시간 이상 래더만 관찰</li>
+      <li>녹화 후 리뷰: Key Level에서의 Absorption 패턴 복기</li>
+      <li>한 시장(예: ES, NQ)에 집중. 시장마다 래더 행동이 다름</li>
+      <li>처음에는 진입하지 말고 관찰만. 패턴이 "보이기" 시작하면 소규모로 시작</li>
+    </ul>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.24 ==================== -->
+<section id="ch24">
+<h2><span class="num">24</span> 프로 트레이더의 프라이스 래더 연습법</h2>
+
+<h3>정밀한 규칙 기반 연습</h3>
+<p>프로 트레이더들은 "Aggressive In and Aggressive Out" — 핵심 지지선(예: WTI 오일 88-90)에서의 V자형 가격 반응을 찾는 등, 매우 정확한 규칙을 정의한다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">프로의 래더 연습 프레임워크 <span class="badge badge-core">CORE</span></div>
+  <ol>
+    <li><strong>규칙 정의</strong>: "WTI가 88-90에서 V자 반응을 보일 때만 매수한다"</li>
+    <li><strong>정밀 Limit Order 진입</strong>: 시장가가 아닌 지정가로 정확한 가격에 진입</li>
+    <li><strong>엄격한 사후 분석</strong>: 모든 거래를 기록하고 실행 오류를 분류</li>
+  </ol>
+</div>
+
+<h3>근절해야 할 실행 오류들</h3>
+
+<table>
+  <tr><th>오류 유형</th><th>설명</th><th>해결책</th></tr>
+  <tr><td><strong>잔여 포지션 보유</strong></td><td>손실 트레이드의 잔여물을 끌고 감</td><td>깨끗하게 전량 청산. 부분 보유 금지</td></tr>
+  <tr><td><strong>나쁜 Fill 추격</strong></td><td>슬리피지를 만회하려고 추가 진입</td><td>나쁜 Fill은 수용. 추격 진입 절대 금지</td></tr>
+  <tr><td><strong>Scratch 주저</strong></td><td>셋업 실패 시 본전 청산을 주저</td><td>셋업이 작동하지 않으면 무조건 Scratch</td></tr>
+  <tr><td><strong>규칙 외 진입</strong></td><td>정의된 셋업이 아닌 "감"에 의한 진입</td><td>규칙 외 진입 시 자동 벌금(자기 규율)</td></tr>
+</table>
+
+<div class="visual-flow">
+  <div class="vf-step key">규칙 정의</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">래더 관찰</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">셋업 출현 대기</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">Limit Order 실행</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">사후 분석 + 오류 분류</div>
+</div>
+
+<div class="insight">
+  <p>래더 트레이딩의 성공은 "기술"이 아니라 "규율"에 달려 있다. 프로 트레이더들은 래더에서 매 순간 수많은 기회를 본다. 하지만 사전에 정의한 셋업에 맞는 것만 실행한다. 나머지는 전부 무시한다. "기회를 놓치는 것"이 아니라 "규칙에 맞지 않는 것을 거부하는 것"이다.</p>
+</div>
+
+<details>
+  <summary>심화: 실행 품질 측정 지표</summary>
+  <div class="detail-body">
+    <ul>
+      <li><strong>Fill Quality</strong>: 의도한 가격 대비 실제 체결 가격 차이 (0이 이상적)</li>
+      <li><strong>Scratch Rate</strong>: 셋업 실패 시 본전에 나온 비율 (높을수록 좋음)</li>
+      <li><strong>Rule Adherence</strong>: 사전 정의 규칙 준수 비율 (100%가 목표)</li>
+      <li><strong>MFE/MAE</strong>: 최대 유리 이탈 vs 최대 불리 이탈 (MFE >> MAE 이상적)</li>
+    </ul>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.25 ==================== -->
+<section id="ch25">
+<h2><span class="num">25</span> 프라이스 래더 실전 — Gap 셋업, Absorption, Volume Ledge</h2>
+
+<h3>Gap 셋업</h3>
+<p>전일 Value Area(예: VPOC 93)로 Gap Down한 후, 공격적 매도가 완전히 흡수될 때까지 인내심 있게 기다린다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">Gap Absorption 셋업 <span class="badge badge-adv">ADV</span></div>
+  <p>300-lot 시장가 매도가 95에서 즉시 Reload되는 Bid에 부딪히면 — <strong>Absorption 매수</strong>. Stop은 VPOC 바로 아래(91/92)에 극도로 타이트하게 배치. Target은 Gap이 남긴 Single Print를 완전히 채우는 것.</p>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step sell">Gap Down → 전일 VA 진입</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step">공격적 매도 관찰</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">300-lot 매도 흡수 + Bid Reload</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">Absorption 매수 (95)</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">Target: Single Print 채우기</div>
+</div>
+
+<h3>Volume Ledge (볼륨 선반)</h3>
+<p>시장이 특정 레벨(예: 86)까지 올라갔을 때, 대규모 매수에도 불구하고 가격이 한 틱도 올라가지 못하는 현상이다. 끊임없이 Reload되는 Offer가 "선반"을 형성한다.</p>
+
+<div class="concept-card">
+  <div class="card-title">Volume Ledge 매매법</div>
+  <ol>
+    <li>시장이 86까지 상승, 대규모 매수가 진행</li>
+    <li>86에서 Offer가 계속 Reload — 가격 한 틱 상승 불가</li>
+    <li>86으로의 매수가 느려지기 시작</li>
+    <li>매도자가 85를 공격적으로 때리기 시작</li>
+    <li><strong>매도자가 Ledge에서 승리</strong> → 숏 진입</li>
+    <li>Stop: 86 Absorption 벽 위</li>
+    <li>Target: 이전 브레이크아웃 기점(예: 74)</li>
+  </ol>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step buy">매수가 86까지 Push</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">86에서 Offer Reload (Ledge)</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">매수 둔화</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step sell">매도자 85 공격 시작</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step sell">숏 진입 → Target 74</div>
+</div>
+
+<h3>래더를 통한 트레이드 관리</h3>
+<p>래더는 트레이드 관리에서 즉각적인 미시적 단서를 제공한다. 풀백(37에서 매수)에서 시장이 예상보다 깊이 하락(33)한 후 천천히 올라오지만(40, 41, 42), 공격적이고 건강한 Bidding이 없이 "기어 올라가기만" 하면 — 구조가 약하다.</p>
+
+<div class="concept-card danger">
+  <div class="card-title">래더 관리 규칙 <span class="badge badge-danger">WARNING</span></div>
+  <p>시장이 고점을 돌파하기 어려워하고 매수 페이스가 사라지면 → <strong>즉시 청산</strong>. 래더에서 "인내"는 미덕이 아니다. 래더는 가장 빠른 피드백 루프이므로, 부정적 신호에 가장 빠르게 반응해야 한다.</p>
+</div>
+
+<div class="insight">
+  <p>프라이스 래더의 3가지 핵심 셋업(Gap Absorption, Volume Ledge, Pace 변화)은 모두 같은 원리를 공유한다: "한쪽이 공격적으로 밀지만 가격이 움직이지 않으면, 반대쪽이 이기고 있다." 이 단순한 원리를 래더에서 실시간으로 읽는 능력이 프로와 아마추어를 구분한다.</p>
+</div>
+
+<details>
+  <summary>심화: Absorption Trading 진입 전 점검</summary>
+  <div class="detail-body">
+    <p>Absorption에서 진입하기 전 반드시 확인해야 할 사항:</p>
+    <ol>
+      <li>Absorption이 발생하는 레벨이 <strong>구조적으로 의미 있는가?</strong> (VPOC, VA 경계, Key Level)</li>
+      <li>흡수되는 거래량이 <strong>충분히 큰가?</strong> (해당 시장의 평균 대비)</li>
+      <li>Bid/Offer가 체결 후 <strong>Reload되는가?</strong> (한 번에 소멸되면 Absorption 아님)</li>
+      <li>반대 방향의 <strong>공격적 흐름이 감소하고 있는가?</strong></li>
+      <li>Time & Sales에서 <strong>방향 전환 조짐</strong>이 보이는가?</li>
+    </ol>
+  </div>
+</details>
+</section>
+
+
+<!-- ================================================================== -->
+<!--                  PART VI: 실전 전략 통합                            -->
+<!-- ================================================================== -->
+<div class="part-divider" id="part6">
+  <h2>Part VI: 실전 전략 통합</h2>
+  <p>Ch.26 ~ Ch.30 | 오더플로우 기반 실전 트레이딩 전략과 관리</p>
+</div>
+
+<!-- ==================== Ch.26 ==================== -->
+<section id="ch26">
+<h2><span class="num">26</span> Absorption → Breakout 전략</h2>
+
+<h3>레벨에서의 Absorption, 그리고 그 이전</h3>
+<p>Absorption은 레벨 "에서(at)" 뿐 아니라, 레벨 "위에서(above)" 발생할 수 있다. 특히 붕괴(Breakdown) 직전에 레벨 위에서 누군가가 적극적으로 매도하며 바운스를 치는 모든 매수자를 짓누르는 패턴이다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">Absorption → Snap 셋업 <span class="badge badge-adv">ADV</span></div>
+  <ol>
+    <li>저점(예: 37)을 핀(Pin)하려는 공격적 매도자 관찰</li>
+    <li>바운스를 치려는 매수자를 모두 흡수하며 밀어냄</li>
+    <li>Bid가 마르고(Dry Up) 매수자가 Reload를 멈춤</li>
+    <li>시장이 패닉으로 하방 "Snap" 발생</li>
+    <li><strong>Snap 매도</strong>: Stop은 Absorption Block(41) 위에, Target은 다음 주요 레벨(22)</li>
+  </ol>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step">37 레벨에서 바운스 시도</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step sell">공격적 매도가 바운스 흡수</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">Bid Dry Up</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step sell">패닉 Snap → 숏 진입</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step sell">Target: 22</div>
+</div>
+
+<div class="insight">
+  <p>"가격이 내려가기 직전"에 발생하는 Absorption은 래더에서 가장 잘 보인다. Bid가 하나씩 사라지는 것을 관찰할 수 있다. 핵심은 "Snap이 발생하기 전에" 준비하는 것이다. Snap이 발생한 후 매도하면 이미 늦다. Absorption이 진행 중일 때 Sell Limit을 미리 배치하거나, Bid Dry Up 직후 시장가로 즉시 진입해야 한다.</p>
+</div>
+
+<details>
+  <summary>심화: Fake Absorption 구별법</summary>
+  <div class="detail-body">
+    <p>모든 Absorption이 반전으로 이어지지는 않는다. Fake Absorption을 구별하는 방법:</p>
+    <ul>
+      <li><strong>거래량 규모</strong>: 진정한 Absorption은 해당 시장 일일 평균의 상당 부분이 특정 가격에 집중</li>
+      <li><strong>Reload 지속성</strong>: 1-2번의 Reload가 아닌 지속적(5회 이상)인 Reload가 필요</li>
+      <li><strong>시간</strong>: 진정한 Absorption은 최소 수 분간 지속. 순간적 Absorption은 Fake일 가능성</li>
+      <li><strong>후속 행동</strong>: Absorption 후 즉시 반대 방향으로 Initiative가 없으면 → Fake 가능성</li>
+    </ul>
+  </div>
+</details>
+
+<h3>Absorption → Breakout 실행 타이밍</h3>
+<p>Absorption을 확인한 후 실제로 어느 시점에 진입하는가가 수익과 손실을 가른다. 너무 일찍 진입하면 Absorption이 계속 진행 중일 수 있고, 너무 늦으면 최적 가격을 놓친다.</p>
+
+<div class="concept-card">
+  <div class="card-title">진입 타이밍 가이드</div>
+  <table>
+    <tr><th>타이밍</th><th>장점</th><th>단점</th><th>적합한 상황</th></tr>
+    <tr><td><strong>Absorption 진행 중</strong></td><td>최적 가격, 타이트한 Stop</td><td>Absorption 실패 시 손실</td><td>경험 많은 트레이더, 래더 능숙자</td></tr>
+    <tr><td><strong>Bid/Offer Dry Up 직후</strong></td><td>확인 후 진입, 높은 확률</td><td>가격이 이미 약간 이동</td><td>대부분의 트레이더에게 권장</td></tr>
+    <tr><td><strong>Initiative 시작 후</strong></td><td>가장 확실한 확인</td><td>Stop 거리 넓어짐, RR 감소</td><td>보수적 트레이더, 초보자</td></tr>
+  </table>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step key">Absorption 관찰</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">공격적 흐름 감소 감지</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">Bid/Offer Dry Up</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">진입 (최적 타이밍)</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">Initiative 확인 → 유지</div>
+</div>
+
+<div class="insight">
+  <p>Absorption → Breakout 전략에서 가장 흔한 실수는 "Absorption이 보이자마자 진입"하는 것이다. Absorption은 수 분에서 수십 분간 지속될 수 있다. 핵심은 Absorption이 "끝나는 시점"을 포착하는 것이다. 반대쪽의 공격적 흐름이 감소하기 시작하고, Bid/Offer가 마르기 시작할 때 — 그것이 바로 진입 타이밍이다.</p>
+</div>
+</section>
+
+<!-- ==================== Ch.27 ==================== -->
+<section id="ch27">
+<h2><span class="num">27</span> 오더플로우 브레이크아웃 3단계</h2>
+
+<h3>3단계 브레이크아웃 프레임워크</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">브레이크아웃 3단계 <span class="badge badge-core">CORE</span></div>
+
+  <h4>Step 1: Context (컨텍스트)</h4>
+  <p>구조적 약점을 식별한다. 예: 시간별 프로파일의 Double Top, Overnight 상방 Drift, 그리고 Cash 개장 초기 IB 하방 돌파 가능성.</p>
+
+  <h4>Step 2: Execution (실행)</h4>
+  <p>1분 풋프린트에서 갑작스러운 하방 페이스 가속을 확인한다. 예: 87 하방 돌파. Key Level(예: 63)에서의 Passive Buyer가 압도당하면 사이즈를 공격적으로 추가한다.</p>
+
+  <h4>Step 3: Management (관리)</h4>
+  <p>새로 형성된 Low Volume Pocket 뒤로 Stop을 Trail한다. 패닉 "Snap" 또는 긴장 해소(Release of Tension)를 목격하는 순간 즉시 청산한다.</p>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step key">Context: 구조적 약점 식별</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step sell">Execution: 87 돌파 + 사이즈 추가</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step">Management: LVN 뒤로 Trailing Stop</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step sell">패닉 Snap 시 수익 실현</div>
+</div>
+
+<h3>브레이크아웃 타이밍</h3>
+<p>주요 고점(예: 파운드 1.0900~1.0920) 근처의 핵심 Execution Zone을 식별한다. 중간 고점을 빠르고 자신감 있게 돌파하는 가격 점프를 관찰한다. 시장이 Execution Zone 내에서 조용히 거래량을 축적하며 뒤로 물러서지 않는다면 — 셋업을 신뢰하라. 이것이 바로 참여자들이 주요 일봉 고점을 돌파하기 전에 하는 행동이다.</p>
+
+<div class="insight">
+  <p>오더플로우 브레이크아웃의 핵심은 "확인 후 진입"이 아니라 "진행 중 진입"이다. 브레이크아웃이 완료된 후 진입하면 이미 최적 가격을 놓친 것이다. Context로 방향을 정하고, 풋프린트에서 첫 번째 신호가 나타날 때 실행하라. 그리고 즉시 관리 모드로 전환하라.</p>
+</div>
+
+<details>
+  <summary>심화: 브레이크아웃 실패 시 대응</summary>
+  <div class="detail-body">
+    <p>브레이크아웃이 실패하는 신호:</p>
+    <ul>
+      <li>돌파 후 <strong>거래량이 급감</strong>: Follow-through 부재</li>
+      <li>돌파 직후 <strong>반대 방향 Absorption</strong> 발생: 트랩 가능성</li>
+      <li>돌파 레벨 <strong>아래로 빠르게 복귀</strong>: Failed Breakout 확정</li>
+    </ul>
+    <p>대응: 즉시 Scratch 또는 Stop-out. Failed Breakout은 반대 방향으로의 강력한 셋업이므로, 원래 방향 재진입은 금지하고 반대 방향 셋업을 주시한다.</p>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.28 ==================== -->
+<section id="ch28">
+<h2><span class="num">28</span> Liquidation Day 셋업 — 4가지 신호</h2>
+
+<h3>Volume Profile에서 읽는 4가지 사전 신호</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">Liquidation Day 4대 신호 <span class="badge badge-core">CORE</span></div>
+  <ol>
+    <li><strong>Value 이동 실패</strong>: 여러 날에 걸쳐 Value가 하방 이동을 유지하지 못한다</li>
+    <li><strong>타이트한 Consolidation 압축</strong>: 여러 날의 좁은 범위가 시장을 압축한다</li>
+    <li><strong>IB 방향 실패</strong>: Initial Balance가 한 방향을 시도하지만 반대로 마감</li>
+    <li><strong>Overnight Gap 실패</strong>: 참여자를 트랩하는 Overnight Gap이 발생한 후 즉시 반대 방향으로 진행</li>
+  </ol>
+</div>
+
+<h3>매매 방법</h3>
+
+<div class="visual-flow">
+  <div class="vf-step">Value 이동 실패 관찰 (수일)</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">타이트한 Consolidation 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step trap">IB 방향 실패 + Gap 실패</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step sell">트랩된 롱 청산 시작</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step sell">직선형 P/B 프로파일 Ride</div>
+</div>
+
+<p>트랩된 롱이 청산을 시작하면, 빠른 방향성 모멘텀에 따라 매도한다. 직선형 "P" 또는 "B" 형태의 프로파일을 Ride한다. 이후 Single Print가 형성되면, 중간 레인지로의 Fade를 시도한다.</p>
+
+<div class="insight">
+  <p>Liquidation Day는 트레이더에게 가장 수익성 높은 날 중 하나이다. 핵심은 사전 신호를 읽는 것이다. 4가지 신호 중 3개 이상이 확인되면 Liquidation Day 가능성이 매우 높다. 미리 준비된 트레이더만이 이 기회를 잡을 수 있다. "보고 넣으면 늦다" — Pre-Market에서 이미 시나리오가 완성되어 있어야 한다.</p>
+</div>
+
+<details>
+  <summary>심화: Liquidation Day 후반부 전략</summary>
+  <div class="detail-body">
+    <p>Liquidation의 첫 물결이 지나간 후:</p>
+    <ul>
+      <li>Single Print가 남은 구간 식별</li>
+      <li>시장이 과도하게 확장된 극단에서 Exhaustion 확인</li>
+      <li>중간 레인지(Mid-Range) 또는 전일 VPOC를 향한 <strong>Fade 진입</strong></li>
+      <li>Stop은 당일 극단 바로 뒤</li>
+      <li>이 Fade는 "데드캣 바운스"일 수 있으므로 부분 수익 실현 필수</li>
+    </ul>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.29 ==================== -->
+<section id="ch29">
+<h2><span class="num">29</span> Auction Reversal & 반전 포착법</h2>
+
+<h3>Key Auction Reversal 셋업</h3>
+<p>극단적 Delta Flush(예: -3,000 Delta) 이후, 래더에서 공격적 매도가 전혀 하방 진전을 이루지 못하는 강력한 Absorption을 관찰한다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">Auction Reversal 프로세스 <span class="badge badge-adv">ADV</span></div>
+  <ol>
+    <li><strong>극단적 Delta Flush</strong>: 예: -3,000 Delta — 대규모 공격적 매도</li>
+    <li><strong>Absorption 확인</strong>: 래더에서 공격적 매도가 하방 진전 제로</li>
+    <li><strong>Time & Sales 색상 전환</strong>: 갑자기 파란색(공격적 매수)이 점멸</li>
+    <li><strong>풋프린트 확인</strong>: 공격적 매수자가 Offer를 쓸어감 (예: 97~98.50에서 100+ lot)</li>
+    <li><strong>Low Volume Zone 형성</strong>: 풋프린트에서 저점 아래에 LVZ 남김</li>
+    <li><strong>Retest 매수</strong>: 타이트한 Stop(절대 저점 아래), Target 20+ Handle</li>
+  </ol>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step sell">-3k Delta Flush</div>
+  <div class="vf-arrow down">→</div>
+  <div class="vf-step key">Absorption (진전 제로)</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">T&S 파란색 점멸</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">공격적 매수 (97~98.5)</div>
+  <div class="vf-arrow up">→</div>
+  <div class="vf-step buy">Retest 매수 → Target 20+</div>
+</div>
+
+<h3>스캘핑 반전</h3>
+<p>연장 거래(ETH) 매도세 이후 시장이 저점 돌파에 실패하고 타이트한 Micro-Range(예: 83.5~88)를 형성할 때:</p>
+<ul>
+  <li>알고리즘 매수가 진입하기를 기다린다 (예: 87.5에 200-lot, 500-lot Bid)</li>
+  <li>모멘텀이 가격을 Cash 개장가 위로 밀어올리면 매수</li>
+  <li><strong>타이트한 관리</strong>: 대규모 Absorption이 나타나고 시장이 정체(예: 95.5)하면 즉시 부분 수익 실현</li>
+</ul>
+
+<div class="insight">
+  <p>Auction Reversal은 가장 강력하면서도 가장 위험한 셋업이다. 핵심은 "극단적 Delta Flush + Absorption + 방향 전환"의 3중 확인이다. 하나라도 빠지면 진입하지 마라. 특히 Absorption 없이 단순히 Delta가 극단적이라는 이유만으로 반전을 시도하면 "떨어지는 칼"을 잡는 것이 된다.</p>
+</div>
+
+<details>
+  <summary>심화: 시장 반전을 사전 감지하는 미시적 단서</summary>
+  <div class="detail-body">
+    <p>150포인트 S&P 하락 같은 무자비한 고거래량 Flush 저점에서:</p>
+    <ul>
+      <li><strong>V-Bottom 형태</strong>: 깔끔한 V자. 지저분한 횡보 아님</li>
+      <li><strong>Micro-Rotation 유지</strong>: 55→58 회전이 유지됨</li>
+      <li><strong>Delta 급반전</strong>: 대규모 양수 Delta 점프 — 긴급 매수자</li>
+      <li>주저 없이 즉시 진입: 55 위에서 매수, 4-5포인트 Stop, 20포인트 Target</li>
+      <li>Risk-Reward가 4:1 이상이므로 공격적 진입이 정당화됨</li>
+    </ul>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Ch.30 ==================== -->
+<section id="ch30">
+<h2><span class="num">30</span> 트레이드 관리 — 홀딩, 청산, 모멘텀 활용</h2>
+
+<h3>포지션 유지 판단법</h3>
+<p>일봉 Volume Profile의 형태(균형 "종 모양" 또는 B-Shape)를 활용하여 궁극적 Target을 결정한다.</p>
+
+<div class="concept-card highlight">
+  <div class="card-title">홀딩 전략 <span class="badge badge-core">CORE</span></div>
+  <p>균형된 프로파일 상단의 Single Print(예: Eurostoxx 67)에서 매도한 경우, 구조적 Target은 전일 Value 하단 또는 당일 극단 저점(예: 77)이다. 래더의 사소한 변동에 기반하여 조기 청산하지 마라.</p>
+</div>
+
+<h3>청산 전략</h3>
+
+<div class="def-grid">
+  <div class="def-item sell">
+    <div class="label">모멘텀 반대 시 즉시 청산</div>
+    <div class="value">Tape 속도가 포지션 반대 방향으로 가속</div>
+    <p style="margin-top:8px;font-size:0.9em;">상승 움직임이 천천히 기어가고 공격적 파란색 풋프린트 매수가 부재하면 → 즉시 포지션 청산</p>
+  </div>
+  <div class="def-item buy">
+    <div class="label">패닉을 수익 실현에 활용</div>
+    <div class="value">숏 포지션에서 대규모 하방 Flush 발생 시</div>
+    <p style="margin-top:8px;font-size:0.9em;">대규모 고속 하방 거래량이 Bid로 쏟아지는 패닉(Stop Run) → 이 정확한 패닉 순간에 수익 실현. Follow-through는 거의 없다.</p>
+  </div>
+</div>
+
+<h3>관리 원칙 종합</h3>
+
+<table>
+  <tr><th>상황</th><th>행동</th><th>이유</th></tr>
+  <tr><td>추세와 함께 + Delta 확인</td><td>포지션 유지, Trailing Stop</td><td>건강한 추세는 길게 잡아야 수익 극대화</td></tr>
+  <tr><td>반대 방향 Absorption 감지</td><td>부분 수익 실현 또는 전량 청산</td><td>Absorption은 방향 전환의 전조</td></tr>
+  <tr><td>패닉 Flush 발생</td><td>즉시 수익 실현</td><td>패닉 후 Follow-through는 드물다</td></tr>
+  <tr><td>래더에서 페이스 소멸</td><td>즉시 청산</td><td>모멘텀 부재 = 셋업 무효</td></tr>
+  <tr><td>LVN 통과 중</td><td>포지션 유지</td><td>LVN은 빠르게 통과됨, 다음 HVN이 Target</td></tr>
+</table>
+
+<div class="visual-flow">
+  <div class="vf-step buy">진입 완료</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">Delta + 페이스 모니터링</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">LVN 뒤로 Stop Trail</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">반대 Absorption 또는 패닉?</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step sell">수익 실현</div>
+</div>
+
+<div class="insight">
+  <p>트레이드 관리는 진입보다 중요하다. 완벽한 진입도 잘못된 관리로 손실이 될 수 있다. 핵심 규칙: (1) 오더플로우가 지지하면 유지, (2) 반대 신호에 즉시 반응, (3) 패닉 순간을 수익 실현에 활용. 래더의 미세한 변동에 휘둘리지 말되, 구조적 변화(Absorption, 페이스 소멸)에는 즉시 대응하라.</p>
+</div>
+
+<details>
+  <summary>심화: "Leveraging Up" — 이기고 있을 때 사이즈 추가</summary>
+  <div class="detail-body">
+    <p>이기고 있는 포지션에 사이즈를 추가하는 것(Leveraging Up)은 대형 수익의 열쇠이다. 그러나 규율 없이 하면 수익을 날린다.</p>
+    <p><strong>사이즈 추가 조건</strong>:</p>
+    <ul>
+      <li>대형 Passive Support가 래더에 나타날 때 (예: 300-lot Bid Reload)</li>
+      <li>풋프린트에서 지속적인 Buying Imbalance 확인 시</li>
+      <li>LVN을 돌파하여 다음 HVN으로 향하는 모멘텀이 있을 때</li>
+    </ul>
+    <p><strong>규칙</strong>: 추가 진입 후 Stop은 반드시 해당 Passive Support 바로 뒤로 이동. 원래 Stop 위치로는 절대 돌아가지 않는다.</p>
+  </div>
+</details>
+</section>
+
+
+<!-- ================================================================== -->
+<!--                         APPENDIX                                   -->
+<!-- ================================================================== -->
+<div class="part-divider" id="appendix">
+  <h2>Appendix: 부록</h2>
+  <p>도구 비교, 핵심 개념, 체크리스트 & 치트시트</p>
+</div>
+
+<!-- ==================== Appendix A ==================== -->
+<section id="app-a">
+<h2><span class="num">A</span> 도구 비교 — Footprint vs DOM vs Bookmap</h2>
+
+<h3>3대 오더플로우 도구 비교</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">도구별 핵심 메타포 <span class="badge badge-core">CORE</span></div>
+  <ul>
+    <li><strong>Bookmap</strong> = "축구장 위의 선수 배치도" — 대기 주문(Resting Order)이 어디에 있는지를 보여주지만, 누가 공을 가지고 있는지는 모른다</li>
+    <li><strong>Footprint</strong> = "경기 기록" — 실제 체결된 거래량과 공격성(공이 차여진 방향)을 보여주지만, 대기 중인 유동성 방어선은 보이지 않는다</li>
+    <li><strong>Price Ladder (DOM)</strong> = "실시간 경기 중계" — 두 요소를 결합. Bookmap으로 100+ lot 대기 주문 확인 + Footprint로 실제 체결/Reload 여부 확인</li>
+  </ul>
+</div>
+
+<table>
+  <tr><th>특성</th><th>Footprint</th><th>DOM / Price Ladder</th><th>Bookmap</th></tr>
+  <tr><td><strong>데이터 유형</strong></td><td>체결된 거래 (Traded Volume)</td><td>대기 주문 + 체결 (Live Order Book)</td><td>대기 주문 히트맵</td></tr>
+  <tr><td><strong>시간 범위</strong></td><td>과거 ~ 현재 (캔들 기반)</td><td>현재 순간 (실시간)</td><td>과거 ~ 현재 (연속 히트맵)</td></tr>
+  <tr><td><strong>최적 활용</strong></td><td>패턴 확인, 복기, 진입 정밀도</td><td>실시간 실행, 트레이드 관리</td><td>유동성 매핑, Iceberg 감지</td></tr>
+  <tr><td><strong>장점</strong></td><td>정확한 거래 데이터, 재생 가능</td><td>가장 빠른 피드백, 실시간 Absorption</td><td>시각적 직관성, 유동성 구조 파악</td></tr>
+  <tr><td><strong>단점</strong></td><td>대기 주문 불가시, 학습 곡선</td><td>정보 과부하, 빠른 판단 필요</td><td>체결 데이터 부재, Spoof에 취약</td></tr>
+  <tr><td><strong>학습 난이도</strong></td><td>중</td><td>상</td><td>중</td></tr>
+  <tr><td><strong>필수 여부</strong></td><td>필수</td><td>권장 (스캘핑 시 필수)</td><td>선택 (보조 도구)</td></tr>
+</table>
+
+<div class="visual-flow">
+  <div class="vf-step">Bookmap: 유동성 구조 파악</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">Footprint: Absorption/Initiative 확인</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">DOM: 실시간 실행 + 관리</div>
+</div>
+
+<div class="insight">
+  <p>세 도구는 경쟁이 아니라 보완 관계이다. 이상적으로는 세 가지를 모두 사용하되, 하나만 선택해야 한다면 <strong>Footprint Chart</strong>가 가장 범용적이다. 체결 데이터는 거짓말하지 않기 때문이다(대기 주문은 취소될 수 있지만, 체결은 사실이다). 스캘핑에 집중한다면 DOM이 필수가 된다.</p>
+</div>
+</section>
+
+<!-- ==================== Appendix B ==================== -->
+<section id="app-b">
+<h2><span class="num">B</span> Liquidity 핵심 개념 정리</h2>
+
+<h3>유동성(Liquidity)의 정의</h3>
+<p>유동성은 "가격을 움직이지 않고 자산을 현금으로 전환할 수 있는 용이성"으로 엄격하게 정의된다.</p>
+
+<div class="concept-card danger">
+  <div class="card-title">Volume과 Liquidity를 혼동하지 마라 <span class="badge badge-danger">WARNING</span></div>
+  <p>T-Note와 S&P는 비슷한 일일 거래량(약 150만 계약)을 가진다. 하지만 T-Note에서는 단일 가격에서 500 계약을 쉽게 매수할 수 있는 반면, S&P에서 500 계약을 매수하면 래더의 여러 가격을 뚫고 올라가야 한다(Offer가 얇으므로). 즉 S&P는 거래량은 많지만 유동성은 낮다.</p>
+</div>
+
+<div class="def-grid">
+  <div class="def-item">
+    <div class="label">Volume (거래량)</div>
+    <div class="value">일정 기간 동안 거래된 총 계약 수</div>
+    <p style="margin-top:8px;font-size:0.9em;">시장 활동의 크기를 나타냄. 유동성과 반드시 비례하지 않음.</p>
+  </div>
+  <div class="def-item info">
+    <div class="label">Liquidity (유동성)</div>
+    <div class="value">가격 영향 없이 거래할 수 있는 능력</div>
+    <p style="margin-top:8px;font-size:0.9em;">오더북의 깊이(Depth)와 각 가격의 대기 주문 규모에 의존. 같은 거래량이라도 유동성은 크게 다를 수 있다.</p>
+  </div>
+  <div class="def-item buy">
+    <div class="label">Liquidity Pool</div>
+    <div class="value">대량의 Stop Order가 집중된 가격대</div>
+    <p style="margin-top:8px;font-size:0.9em;">시장 조성자와 대형 트레이더가 목표로 삼는 영역. Stop Hunt의 대상.</p>
+  </div>
+  <div class="def-item sell">
+    <div class="label">Liquidity Void</div>
+    <div class="value">대기 주문이 거의 없는 가격 공백</div>
+    <p style="margin-top:8px;font-size:0.9em;">가격이 이 영역을 극도로 빠르게 통과. 거래 실행이 어렵고 슬리피지 대폭 증가.</p>
+  </div>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step">높은 거래량</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">유동성이 높다?</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step sell">반드시는 아님!</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">래더 깊이(Depth) 확인 필수</div>
+</div>
+
+<div class="insight">
+  <p>유동성을 이해하는 것은 오더플로우 트레이딩의 전제 조건이다. 유동성이 풍부한 시장(T-Note)에서는 대형 주문이 가격을 크게 움직이지 않지만, 유동성이 얇은 시장(S&P, 크립토)에서는 소규모 주문도 큰 슬리피지를 유발할 수 있다. 본인이 매매하는 시장의 유동성 특성을 반드시 파악하라.</p>
+</div>
+</section>
+
+<!-- ==================== Appendix C ==================== -->
+<section id="app-c">
+<h2><span class="num">C</span> 오더플로우 체크리스트 & 치트시트</h2>
+
+<h3>Pre-Market 체크리스트</h3>
+
+<div class="concept-card highlight">
+  <div class="card-title">개장 전 필수 점검 <span class="badge badge-rule">RULE</span></div>
+  <ol>
+    <li>전일 RTH Volume Profile 확인: VPOC, VAH, VAL, HVN, LVN 표시</li>
+    <li>전일 Market Profile 형태 확인: D, P, B, Trend Day 중 어떤 유형?</li>
+    <li>Value Migration 방향 확인: 최근 3-5일 Value 이동 추적</li>
+    <li>프로파일 "Cave" 존재 여부: Trend Day vs Chop Day 판단</li>
+    <li>Overnight 세션 분석: 포지셔닝 방향, Gap 여부</li>
+    <li>경제 이벤트 캘린더 확인: 뉴스 영향 시간대 표시</li>
+    <li>상방/하방 시나리오 각각 수립: 진입 레벨, Stop, Target 사전 설정</li>
+  </ol>
+</div>
+
+<h3>진입 체크리스트</h3>
+
+<table>
+  <tr><th>단계</th><th>확인 사항</th><th>도구</th></tr>
+  <tr><td>1</td><td>구조적 레벨에 가격이 도달했는가?</td><td>Volume Profile, Market Profile</td></tr>
+  <tr><td>2</td><td>Exhaustion 또는 Absorption이 확인되는가?</td><td>Footprint Chart</td></tr>
+  <tr><td>3</td><td>Delta가 진입 방향을 지지하는가?</td><td>Delta / CVD</td></tr>
+  <tr><td>4</td><td>래더에서 Passive Support/Resistance가 확인되는가?</td><td>DOM / Price Ladder</td></tr>
+  <tr><td>5</td><td>Risk-Reward가 최소 1:1.5 이상인가?</td><td>차트 + 구조적 Target</td></tr>
+  <tr><td>6</td><td>Stop 위치가 구조적으로 타당한가?</td><td>LVN, Swing Low/High</td></tr>
+</table>
+
+<h3>패턴 치트시트</h3>
+
+<div class="def-grid">
+  <div class="def-item buy">
+    <div class="label">Absorption (매수)</div>
+    <div class="value">Key Level에서 공격적 매도 → 가격 하락 없음 → Bid Reload → 매수 진입</div>
+  </div>
+  <div class="def-item sell">
+    <div class="label">Absorption (매도)</div>
+    <div class="value">Key Level에서 공격적 매수 → 가격 상승 없음 → Offer Reload → 매도 진입</div>
+  </div>
+  <div class="def-item buy">
+    <div class="label">Exhaustion → 반전</div>
+    <div class="value">극단에서 거래량 급감 → Absorption 확인 → Control Shift → Retest 진입</div>
+  </div>
+  <div class="def-item info">
+    <div class="label">Delta Flip</div>
+    <div class="value">VPOC에서 Delta 음수→양수 전환 → 대형 매수 확인 → 매수 → LVN Target</div>
+  </div>
+  <div class="def-item">
+    <div class="label">Delta Punch Block</div>
+    <div class="value">Block 내 CVD 상승 → 상방 돌파 → Delta Punch → 사이즈 추가</div>
+  </div>
+  <div class="def-item sell">
+    <div class="label">Liquidation Day</div>
+    <div class="value">Value 이동 실패 + 좁은 IB + Gap 실패 → 트랩 청산 → 모멘텀 Ride</div>
+  </div>
+  <div class="def-item buy">
+    <div class="label">Auction Reversal</div>
+    <div class="value">극단 Delta Flush → Absorption → T&S 색 전환 → Retest 매수 → 20+ Target</div>
+  </div>
+  <div class="def-item">
+    <div class="label">Volume Ledge</div>
+    <div class="value">Offer Reload 벽 → 매수 둔화 → 매도 시작 → 숏 진입 → 기점 Target</div>
+  </div>
+</div>
+
+<h3>관리 치트시트</h3>
+
+<div class="concept-card">
+  <div class="card-title">트레이드 관리 Quick Reference</div>
+  <table>
+    <tr><th>신호</th><th>행동</th></tr>
+    <tr><td>Delta + 가격 일치, 건강한 페이스</td><td>유지 + LVN 뒤로 Trailing Stop</td></tr>
+    <tr><td>반대 방향 Absorption 감지</td><td>부분/전량 수익 실현</td></tr>
+    <tr><td>패닉 Flush (Stop Run)</td><td>즉시 수익 실현 (Follow-through 드뭄)</td></tr>
+    <tr><td>페이스 소멸, 모멘텀 부재</td><td>즉시 청산 (Scratch 포함)</td></tr>
+    <tr><td>대형 Passive Support 출현</td><td>사이즈 추가 고려 (Stop을 Support 뒤로)</td></tr>
+    <tr><td>셋업이 작동하지 않음</td><td>즉시 Scratch. 주저 금지.</td></tr>
+  </table>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step key">Pre-Market Prep</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">시나리오 수립</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">진입 체크리스트</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">실행</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">관리 치트시트</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">복기 (풋프린트 리플레이)</div>
+</div>
+
+<div class="insight">
+  <p>이 체크리스트와 치트시트를 프린트하여 모니터 옆에 붙여놓아라. 처음에는 매번 확인하는 것이 번거롭지만, 반복하다 보면 자동화된다. 체크리스트를 건너뛰는 순간이 바로 실수가 발생하는 순간이다. "느린 것이 빠른 것이고, 빠른 것이 느린 것이다" — 체크리스트를 확인하는 10초가 잘못된 매매로 잃는 10분을 방지한다.</p>
+</div>
+
+<details>
+  <summary>심화: 일일 자기 평가 양식</summary>
+  <div class="detail-body">
+    <table>
+      <tr><th>항목</th><th>점수 (1-10)</th></tr>
+      <tr><td>Pre-Market Prep 품질</td><td>___</td></tr>
+      <tr><td>규칙 준수율</td><td>___</td></tr>
+      <tr><td>진입 정밀도 (최적 대비 틱 차이)</td><td>___</td></tr>
+      <tr><td>관리 품질 (반대 신호 즉시 대응?)</td><td>___</td></tr>
+      <tr><td>감정 통제</td><td>___</td></tr>
+      <tr><td>Scratch 실행 여부</td><td>___</td></tr>
+      <tr><td>오늘의 교훈</td><td>[기록]</td></tr>
+    </table>
+    <p>매일 장 마감 후 이 양식을 작성하라. 점수가 꾸준히 7 이상이면 사이즈를 점진적으로 늘려도 된다. 5 이하가 반복되면 사이즈를 줄이고 기본으로 돌아가라.</p>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Appendix D: Glossary ==================== -->
+<section id="app-d">
+<h2><span class="num">D</span> 오더플로우 용어 사전</h2>
+
+<h3>기본 용어</h3>
+
+<table>
+  <tr><th>용어</th><th>영문</th><th>정의</th></tr>
+  <tr><td><strong>오더플로우</strong></td><td>Order Flow</td><td>시장 참여자들 간의 실시간 거래 상호작용. 매수/매도 주문의 흐름과 체결 데이터의 총체.</td></tr>
+  <tr><td><strong>풋프린트</strong></td><td>Footprint Chart</td><td>캔들스틱의 몸통을 제거하고 각 가격 레벨별 Bid x Ask 체결량을 노출하는 차트.</td></tr>
+  <tr><td><strong>델타</strong></td><td>Delta</td><td>Ask에서 체결된 거래량(공격적 매수)과 Bid에서 체결된 거래량(공격적 매도)의 순 차이.</td></tr>
+  <tr><td><strong>CVD</strong></td><td>Cumulative Volume Delta</td><td>Delta를 세션 전체에 걸쳐 누적한 값. 매수/매도 공격성의 누적 추이를 보여준다.</td></tr>
+  <tr><td><strong>DOM</strong></td><td>Depth of Market</td><td>현재 시장에 대기 중인 매수/매도 주문의 깊이와 분포를 실시간으로 보여주는 도구.</td></tr>
+  <tr><td><strong>프라이스 래더</strong></td><td>Price Ladder</td><td>DOM과 체결 데이터를 수직으로 배열한 실시간 트레이딩 인터페이스.</td></tr>
+  <tr><td><strong>볼륨 프로파일</strong></td><td>Volume Profile</td><td>각 가격 레벨에서 거래된 정확한 계약 수를 히스토그램으로 보여주는 도구.</td></tr>
+  <tr><td><strong>마켓 프로파일</strong></td><td>Market Profile / TPO</td><td>시장 데이터를 시간(Time) 기반으로 조직하여, 각 30분 구간의 가격 분포를 보여주는 도구.</td></tr>
+</table>
+
+<h3>핵심 개념 용어</h3>
+
+<table>
+  <tr><th>용어</th><th>영문</th><th>정의</th></tr>
+  <tr><td><strong>흡수</strong></td><td>Absorption</td><td>공격적 시장가 주문이 대형 Passive Limit Order에 부딪혀 가격이 더 이상 움직이지 못하는 현상.</td></tr>
+  <tr><td><strong>주도</strong></td><td>Initiative</td><td>Absorption 이후 발생하는 방향성 있는 움직임. 흡수한 쪽이 주도권을 잡은 것.</td></tr>
+  <tr><td><strong>소진</strong></td><td>Exhaustion</td><td>새로운 극단에서 거래량이 급감하는 현상. 한쪽의 힘이 다했음을 의미.</td></tr>
+  <tr><td><strong>불균형</strong></td><td>Imbalance</td><td>풋프린트에서 한쪽의 공격적 거래량이 반대쪽을 크게 초과하는 가격 레벨.</td></tr>
+  <tr><td><strong>아이스버그</strong></td><td>Iceberg Order</td><td>전체 크기를 숨기고 체결될 때마다 갱신되는 숨겨진 대형 지정가 주문.</td></tr>
+  <tr><td><strong>스푸핑</strong></td><td>Spoofing</td><td>체결 의도 없이 대형 주문을 걸어 시장 참여자를 속이는 불법적 조작 행위.</td></tr>
+  <tr><td><strong>Reload</strong></td><td>Order Reload</td><td>체결된 후 즉시 동일 가격에 새로운 주문이 다시 나타나는 현상. Iceberg의 증거.</td></tr>
+  <tr><td><strong>Stop Run</strong></td><td>Stop Hunt</td><td>대량의 Stop Loss 주문이 집중된 가격대를 의도적으로 트리거하는 움직임.</td></tr>
+</table>
+
+<h3>Volume Profile / Market Profile 용어</h3>
+
+<table>
+  <tr><th>용어</th><th>영문</th><th>정의</th></tr>
+  <tr><td><strong>VPOC</strong></td><td>Volume Point of Control</td><td>가장 많은 거래량이 발생한 단일 가격. 시장의 "균형점"이자 "자석" 역할.</td></tr>
+  <tr><td><strong>VA</strong></td><td>Value Area</td><td>전체 거래량의 70%가 발생한 가격 범위. 시장이 "공정 가격"으로 인정한 영역.</td></tr>
+  <tr><td><strong>VAH</strong></td><td>Value Area High</td><td>Value Area의 상한. 이 위로 벗어나면 "과대평가" 영역.</td></tr>
+  <tr><td><strong>VAL</strong></td><td>Value Area Low</td><td>Value Area의 하한. 이 아래로 벗어나면 "과소평가" 영역.</td></tr>
+  <tr><td><strong>HVN</strong></td><td>High Volume Node</td><td>거래량이 집중된 영역. 가격이 느리게 통과. "자석" 또는 "진흙탕" 역할.</td></tr>
+  <tr><td><strong>LVN</strong></td><td>Low Volume Node</td><td>거래량이 부족한 영역. 가격이 빠르게 통과. Stop 보호에 적합.</td></tr>
+  <tr><td><strong>IB</strong></td><td>Initial Balance</td><td>Cash 개장 후 첫 1시간 범위. 하루의 벤치마크.</td></tr>
+  <tr><td><strong>TPO</strong></td><td>Time Price Opportunity</td><td>특정 30분 블록에서 특정 가격이 터치되었음을 나타내는 단위.</td></tr>
+  <tr><td><strong>Single Print</strong></td><td>Single Print</td><td>단일 TPO만 존재하는 가격대. 빠른 이동의 증거. 구조적으로 취약.</td></tr>
+  <tr><td><strong>Cave</strong></td><td>Profile Cave/Gap</td><td>프로파일의 빈 공간. 시장이 빠르게 통과한 구간. Trend Day 가능성 시사.</td></tr>
+</table>
+
+<h3>트레이딩 전략 용어</h3>
+
+<table>
+  <tr><th>용어</th><th>영문</th><th>정의</th></tr>
+  <tr><td><strong>Delta Flip</strong></td><td>Delta Flip</td><td>Key Level에서 Delta가 음수에서 양수로(또는 반대로) 전환되는 반전 신호.</td></tr>
+  <tr><td><strong>Delta Punch</strong></td><td>Delta Punch</td><td>단일 캔들에서 갑작스럽고 공격적인 Delta + 거래량 급증. 방향 전환 확인.</td></tr>
+  <tr><td><strong>Volume Ledge</strong></td><td>Volume Ledge</td><td>특정 가격에서 대규모 매수/매도에도 가격이 움직이지 않는 "선반" 현상.</td></tr>
+  <tr><td><strong>Open Drive</strong></td><td>Open Drive</td><td>Cash 개장 직후 저거래량 테스트 후 Absorption을 거쳐 시작되는 강한 방향 이동.</td></tr>
+  <tr><td><strong>Liquidation Day</strong></td><td>Liquidation Day</td><td>트랩된 포지션이 대규모로 청산되며 직선형 프로파일이 형성되는 날.</td></tr>
+  <tr><td><strong>Scratch Trade</strong></td><td>Scratch Trade</td><td>셋업 실패 시 본전 부근에서 즉시 청산하는 방어적 실행.</td></tr>
+  <tr><td><strong>Fading</strong></td><td>Fading</td><td>극단적 가격 움직임에 반대 방향으로 진입하는 역추세 전략.</td></tr>
+  <tr><td><strong>Trailing Stop</strong></td><td>Trailing Stop</td><td>포지션이 이익 방향으로 움직일 때 Stop을 따라 이동시키는 관리 기법.</td></tr>
+</table>
+
+<div class="insight">
+  <p>용어를 정확히 이해하지 못하면 개념도 정확히 이해할 수 없다. 새로운 용어를 접할 때마다 이 용어 사전을 참조하라. 특히 Absorption, Initiative, Exhaustion의 세 가지 핵심 개념은 반드시 정확한 정의를 숙지하고 있어야 한다. 이 세 개념이 오더플로우 매매의 근간이다.</p>
+</div>
+</section>
+
+<!-- ==================== Appendix E: FAQ ==================== -->
+<section id="app-e">
+<h2><span class="num">E</span> 자주 묻는 질문 (FAQ)</h2>
+
+<details>
+  <summary>Q1: 오더플로우 분석은 크립토(BTC, ETH)에도 적용 가능한가?</summary>
+  <div class="detail-body">
+    <p>적용 가능하다. 다만 몇 가지 차이점을 인지해야 한다:</p>
+    <ul>
+      <li><strong>유동성</strong>: 크립토는 전통 선물(ES, NQ) 대비 유동성이 낮다. 같은 거래량이라도 가격 영향이 크다.</li>
+      <li><strong>시장 구조</strong>: 분산된 거래소(Binance, Bybit 등)로 인해 단일 DOM이 전체 시장을 대표하지 못한다.</li>
+      <li><strong>24/7 시장</strong>: RTH/ETH 구분이 없으므로 Volume Profile 분리 기준을 달리 설정해야 한다(예: US 세션, Asia 세션).</li>
+      <li><strong>Funding Rate</strong>: 퍼페추얼 선물의 Funding Rate가 포지셔닝 편향의 추가 데이터를 제공한다.</li>
+      <li><strong>Liquidation Data</strong>: 크립토 거래소는 청산(Liquidation) 데이터를 공개하므로, 전통 시장에 없는 추가 정보를 활용할 수 있다.</li>
+    </ul>
+    <p>핵심 원리(Absorption, Initiative, Exhaustion, Delta)는 모든 시장에서 동일하게 작동한다.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Q2: 오더플로우 분석을 시작하려면 어떤 소프트웨어가 필요한가?</summary>
+  <div class="detail-body">
+    <p>주요 오더플로우 플랫폼:</p>
+    <table>
+      <tr><th>플랫폼</th><th>강점</th><th>비용</th></tr>
+      <tr><td><strong>Sierra Chart</strong></td><td>가장 포괄적, 풋프린트 + DOM + Volume Profile</td><td>월 $26~$36</td></tr>
+      <tr><td><strong>ATAS</strong></td><td>풋프린트 특화, 직관적 UI</td><td>월 $69~$149</td></tr>
+      <tr><td><strong>Jigsaw Daytradr</strong></td><td>DOM/래더 특화, 교육 콘텐츠 포함</td><td>월 $379 (평생 라이센스 옵션)</td></tr>
+      <tr><td><strong>Bookmap</strong></td><td>유동성 히트맵, 시각적 직관성</td><td>월 $39~$79</td></tr>
+      <tr><td><strong>Quantower</strong></td><td>크립토 + 선물 모두 지원, 합리적 가격</td><td>월 $40~$90</td></tr>
+      <tr><td><strong>Exocharts</strong></td><td>크립토 전용, 풋프린트 + CVD</td><td>월 $49~$99</td></tr>
+    </table>
+    <p>처음이라면 한 가지 플랫폼으로 시작하고, 풋프린트 차트 읽기에 집중하라.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Q3: 풋프린트 차트를 처음 접할 때 가장 먼저 무엇을 연습해야 하는가?</summary>
+  <div class="detail-body">
+    <p>단계별 학습 로드맵:</p>
+    <ol>
+      <li><strong>Week 1-2</strong>: 풋프린트를 열어놓고 관찰만 한다. 캔들 고점/저점의 Bid x Ask 숫자에 집중.</li>
+      <li><strong>Week 3-4</strong>: Absorption 패턴만 찾는다. "가격이 안 움직이는데 거래량이 큰 곳"을 마킹.</li>
+      <li><strong>Week 5-6</strong>: Exhaustion 패턴을 추가. "극단에서 거래량이 급감하는 곳"을 찾는다.</li>
+      <li><strong>Week 7-8</strong>: Delta를 추가. 가격과 Delta의 일치/불일치를 관찰.</li>
+      <li><strong>Week 9+</strong>: 소규모로 실전 진입 시작. 한 가지 셋업(예: Absorption 반전)만으로.</li>
+    </ol>
+    <p>급하게 모든 것을 한꺼번에 배우려 하지 마라. 한 번에 하나씩, 충분히 익힌 후 다음 단계로.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Q4: Volume Profile과 Market Profile 중 하나만 선택해야 한다면?</summary>
+  <div class="detail-body">
+    <p><strong>Volume Profile을 먼저 배워라.</strong></p>
+    <ul>
+      <li>Volume Profile은 <strong>실제 체결 데이터</strong>에 기반하므로 더 정확하다</li>
+      <li>VPOC, HVN, LVN은 바로 매매에 활용 가능한 레벨을 제공한다</li>
+      <li>크립토 시장에서는 TPO 기반 Market Profile의 의미가 상대적으로 약하다 (24/7 시장)</li>
+    </ul>
+    <p>하지만 선물 시장(ES, NQ, CL 등)에서는 Market Profile의 IB 개념과 Day Type 분류가 매우 유용하므로, 두 가지를 모두 배우는 것을 권장한다.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Q5: Delta만으로 매매할 수 있는가?</summary>
+  <div class="detail-body">
+    <p><strong>절대 아니다.</strong> Delta는 기존 매매 아이디어를 강화(Enhance)하는 보조 도구이다.</p>
+    <ul>
+      <li>Delta만으로는 Stop 레벨을 정의할 수 없다</li>
+      <li>Delta만으로는 진입의 구조적 정당성을 확보할 수 없다</li>
+      <li>Delta Divergence가 발생해도, 가격이 추세를 지속하는 경우가 빈번하다</li>
+    </ul>
+    <p>올바른 순서: 구조(Volume Profile/Market Profile) → 레벨 식별 → 오더플로우 확인(풋프린트) → Delta로 최종 검증 → 진입.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Q6: 하루에 몇 번 정도 매매하는 것이 적절한가?</summary>
+  <div class="detail-body">
+    <p>셋업에 의존하지만, 일반적 가이드라인:</p>
+    <table>
+      <tr><th>스타일</th><th>일일 트레이드 수</th><th>특징</th></tr>
+      <tr><td><strong>스캘핑</strong></td><td>5-15회</td><td>작은 Target, 높은 승률 필요. 래더 집중.</td></tr>
+      <tr><td><strong>데이트레이딩</strong></td><td>2-5회</td><td>구조적 레벨 기반. 풋프린트 + VP 중심.</td></tr>
+      <tr><td><strong>스윙 (일중)</strong></td><td>1-3회</td><td>큰 Target. MP Day Type 기반.</td></tr>
+    </table>
+    <p>중요한 것은 횟수가 아니라 <strong>품질</strong>이다. 하루에 고품질 셋업 1개로 충분하다. 무매매일(Flat Day)도 정상이다.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Q7: 오더플로우 학습에 얼마나 시간이 걸리는가?</summary>
+  <div class="detail-body">
+    <p>일반적 학습 타임라인 (하루 2-3시간 집중 기준):</p>
+    <ul>
+      <li><strong>1-3개월</strong>: 기본 개념 이해, 풋프린트 읽기 연습, SIM 매매</li>
+      <li><strong>3-6개월</strong>: 1-2개 셋업에 특화, 소규모 실전 진입 시작</li>
+      <li><strong>6-12개월</strong>: 실전 경험 축적, 복기를 통한 패턴 인식 구축</li>
+      <li><strong>12-24개월</strong>: 숙련. 다양한 시장 조건에서의 적응 능력 개발</li>
+    </ul>
+    <p>인내심이 핵심이다. 빠르게 배우려 하면 기본을 건너뛰게 되고, 기본 없이는 고급 기법이 작동하지 않는다.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Q8: 풋프린트에서 가장 중요한 단 하나의 패턴은?</summary>
+  <div class="detail-body">
+    <p><strong>Absorption이다.</strong></p>
+    <p>이유:</p>
+    <ul>
+      <li>Absorption은 "보이지 않는 힘"(기관, 대형 트레이더)의 존재를 드러낸다</li>
+      <li>Absorption 후에는 거의 항상 Initiative 이동이 발생한다</li>
+      <li>Absorption의 방향이 곧 Initiative의 반대 방향이다</li>
+      <li>다른 모든 패턴(Delta Flip, Delta Punch, Volume Ledge)은 본질적으로 Absorption의 변형이다</li>
+    </ul>
+    <p>Absorption을 완벽하게 읽을 수 있게 되면, 오더플로우 매매의 70%는 완성된 것이다.</p>
+  </div>
+</details>
+
+<div class="insight">
+  <p>학습의 핵심은 "완벽한 이해 후 실행"이 아니라 "관찰 → 소규모 실행 → 복기 → 개선"의 순환이다. 이 교재의 모든 내용을 외우는 것보다, 하나의 셋업을 선택하고 그것만 100번 연습하는 것이 훨씬 효과적이다. 풋프린트를 열고 관찰하라. 그것이 시작이다.</p>
+</div>
+</section>
+
+<!-- ==================== Appendix F: Session Guide ==================== -->
+<section id="app-f">
+<h2><span class="num">F</span> 세션별 오더플로우 특성 가이드</h2>
+
+<h3>주요 거래 세션의 오더플로우 차이</h3>
+<p>같은 시장이라도 세션(시간대)에 따라 오더플로우의 특성이 크게 달라진다. 각 세션의 특성을 이해하면 더 정확한 판단이 가능하다.</p>
+
+<table>
+  <tr><th>세션</th><th>시간 (UTC)</th><th>특성</th><th>오더플로우 특징</th></tr>
+  <tr><td><strong>아시아</strong></td><td>00:00 - 08:00</td><td>낮은 유동성, 범위 제한</td><td>Absorption 미약, Fake-out 빈번. 포지셔닝 파악에 활용.</td></tr>
+  <tr><td><strong>런던</strong></td><td>07:00 - 16:00</td><td>유동성 증가, 방향성 시작</td><td>아시아 세션 포지션 청산, 첫 번째 방향성 움직임. Absorption 신뢰도 증가.</td></tr>
+  <tr><td><strong>뉴욕</strong></td><td>13:00 - 22:00</td><td>최고 유동성, 강한 방향성</td><td>가장 깨끗한 오더플로우. Absorption, Initiative, Exhaustion 모두 선명.</td></tr>
+  <tr><td><strong>런던/뉴욕 겹침</strong></td><td>13:00 - 16:00</td><td>최대 유동성 + 변동성</td><td>가장 강한 움직임 발생 구간. 주요 매매 시간대.</td></tr>
+  <tr><td><strong>레이트 뉴욕</strong></td><td>19:00 - 22:00</td><td>유동성 감소</td><td>포지션 정리, 의미 있는 신호 감소. 분석용으로만 활용.</td></tr>
+</table>
+
+<div class="concept-card warning">
+  <div class="card-title">세션 전환 시 주의사항 <span class="badge badge-rule">RULE</span></div>
+  <ul>
+    <li><strong>아시아 → 런던 전환</strong>: 아시아 세션의 범위(Range)를 표시하라. 런던 개장 후 이 범위의 돌파가 첫 번째 셋업이다.</li>
+    <li><strong>런던 → 뉴욕 전환</strong>: 런던 세션의 VPOC와 VA를 표시하라. 뉴욕은 이 레벨을 기준으로 움직인다.</li>
+    <li><strong>낮은 유동성 세션</strong>: 아시아 세션이나 공휴일에는 Absorption 신호의 신뢰도가 크게 낮아진다. 소규모 주문도 "대형 흡수"처럼 보일 수 있다.</li>
+  </ul>
+</div>
+
+<h3>크립토(BTC) 세션별 특성</h3>
+
+<div class="def-grid">
+  <div class="def-item">
+    <div class="label">아시아 세션 (UTC 00:00-08:00)</div>
+    <div class="value">한국/일본/중국 트레이더 주도</div>
+    <p style="margin-top:8px;font-size:0.9em;">유동성 보통. 김치 프리미엄 변동, 알트코인 변동성 상대적으로 높음. 방향성 약함.</p>
+  </div>
+  <div class="def-item info">
+    <div class="label">유럽 세션 (UTC 07:00-15:00)</div>
+    <div class="value">유럽 기관 + 개인 트레이더</div>
+    <p style="margin-top:8px;font-size:0.9em;">유동성 증가 시작. 아시아 세션 극단 테스트 빈번. 첫 방향성 움직임 기대 가능.</p>
+  </div>
+  <div class="def-item buy">
+    <div class="label">US 세션 (UTC 13:00-21:00)</div>
+    <div class="value">미국 기관 + CME 선물 영향</div>
+    <p style="margin-top:8px;font-size:0.9em;">최고 유동성, 가장 강한 방향성. CME 갭, 고래(Whale) 움직임. 오더플로우 신뢰도 최고.</p>
+  </div>
+  <div class="def-item sell">
+    <div class="label">주말/공휴일</div>
+    <div class="value">기관 부재, 개인 트레이더 주도</div>
+    <p style="margin-top:8px;font-size:0.9em;">유동성 매우 낮음. Absorption 신호 신뢰도 최저. 오더플로우 매매 자제 권장.</p>
+  </div>
+</div>
+
+<div class="visual-flow">
+  <div class="vf-step neutral">아시아: 범위 설정</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step">런던: 방향 탐색</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step key">겹침: 최고 유동성</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step buy">뉴욕: 강한 추세</div>
+  <div class="vf-arrow">→</div>
+  <div class="vf-step neutral">레이트 뉴욕: 정리</div>
+</div>
+
+<div class="insight">
+  <p>오더플로우 매매의 가장 좋은 시간대는 <strong>런던-뉴욕 겹침 구간(UTC 13:00-16:00)</strong>이다. 유동성과 변동성이 모두 최고조에 달하며, Absorption과 Initiative 패턴이 가장 선명하게 나타난다. 이 3시간에 집중하고 나머지는 관찰/분석에 활용하는 것이 효율적이다. 모든 세션을 매매하려 하지 마라 — 에너지 분산은 성과 저하의 원인이다.</p>
+</div>
+
+<details>
+  <summary>심화: 뉴스 이벤트 시 오더플로우 대응법</summary>
+  <div class="detail-body">
+    <p>경제 데이터 발표(NFP, CPI, FOMC 등) 전후의 오더플로우 대응:</p>
+    <h4>발표 전</h4>
+    <ul>
+      <li>유동성이 급감한다 (오더북이 얇아짐)</li>
+      <li>Absorption 신호 신뢰도 저하</li>
+      <li>포지션을 줄이거나 청산하라</li>
+      <li>새로운 진입 금지</li>
+    </ul>
+    <h4>발표 직후 (0-5분)</h4>
+    <ul>
+      <li>극단적 변동성 + 유동성 진공</li>
+      <li>슬리피지 대폭 증가</li>
+      <li>Fake-out 빈번 — 첫 움직임을 추격하지 마라</li>
+      <li>관찰만 하고 기다린다</li>
+    </ul>
+    <h4>발표 후 안정기 (5-30분)</h4>
+    <ul>
+      <li>유동성 회복 시작</li>
+      <li>진정한 방향성이 드러남</li>
+      <li>이때의 Absorption과 Initiative 신호가 가장 신뢰할 수 있음</li>
+      <li>구조적 레벨에서의 셋업 탐색 시작</li>
+    </ul>
+  </div>
+</details>
+</section>
+
+<!-- ==================== Summary ==================== -->
+<section id="summary">
+<h2><span class="num">*</span> 마무리 — 오더플로우 학습 로드맵</h2>
+
+<div class="concept-card highlight">
+  <div class="card-title">4단계 학습 로드맵 <span class="badge badge-core">CORE</span></div>
+  <div class="visual-flow">
+    <div class="vf-step key">Phase 1: 관찰</div>
+    <div class="vf-arrow">→</div>
+    <div class="vf-step">Phase 2: SIM 연습</div>
+    <div class="vf-arrow">→</div>
+    <div class="vf-step buy">Phase 3: 소규모 실전</div>
+    <div class="vf-arrow">→</div>
+    <div class="vf-step buy">Phase 4: 스케일업</div>
+  </div>
+  <table>
+    <tr><th>Phase</th><th>기간</th><th>목표</th><th>기준</th></tr>
+    <tr><td><strong>1. 관찰</strong></td><td>1-2개월</td><td>풋프린트 읽기, VP/MP 레벨 마킹</td><td>매일 2시간 이상 관찰</td></tr>
+    <tr><td><strong>2. SIM 연습</strong></td><td>2-3개월</td><td>1개 셋업 마스터 (Absorption 권장)</td><td>SIM에서 승률 55%+, 양수 PnL 2주 연속</td></tr>
+    <tr><td><strong>3. 소규모 실전</strong></td><td>3-6개월</td><td>리스크 $1-5로 실전 적용</td><td>실전에서 양수 PnL 4주 연속</td></tr>
+    <tr><td><strong>4. 스케일업</strong></td><td>6개월+</td><td>사이즈 점진적 증가</td><td>일관된 규율 + 양수 기대값 유지</td></tr>
+  </table>
+</div>
+
+<div class="insight">
+  <p>이 교재의 내용을 모두 이해했다고 바로 실전에 뛰어들지 마라. 지식과 실행 사이에는 거대한 간극이 있다. 그 간극을 메우는 것은 <strong>반복적 관찰과 의도적 연습</strong>뿐이다. 하나의 셋업을 선택하라 — Absorption을 추천한다 — 그리고 그것만 수백 번 연습하라. 풋프린트를 열고, 관찰하라. 그것이 시작이다.</p>
+</div>
+</section>
+
+<!-- ==================== Footer ==================== -->
+<div style="text-align:center; padding:40px 0 20px; color:var(--text2); font-size:0.85em; border-top:1px solid var(--border); margin-top:40px;">
+  <p>오더플로우 심화편 — Order Flow, Footprint, Profile 완벽 가이드</p>
+  <p>Axia Futures 교육 콘텐츠 기반 | BTC 시나리오 교재 시리즈</p>
+  <p>Last updated: 2026-03-22</p>
+</div>
+
+</div><!-- /.container -->
+</body>
+</html>

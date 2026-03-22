@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>트레이딩 플랫폼 사용법 & 추가 학습 리소스</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #1c2333;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --accent: #58a6ff;
+  --green: #3fb950;
+  --warn: #d29922;
+  --danger: #f85149;
+  --purple: #bc8cff;
+  --cyan: #39d2c0;
+  --orange: #f0883e;
+  --teal: #1abc9c;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  font-size: 15px;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 20px; }
+
+/* Header */
+.hero {
+  text-align: center;
+  padding: 60px 20px 40px;
+  background: linear-gradient(135deg, #0d1117 0%, #0d1a2a 50%, #0d1117 100%);
+  border-bottom: 1px solid var(--border);
+}
+.hero h1 {
+  font-size: 2.2em;
+  background: linear-gradient(135deg, #58a6ff, #39d2c0, #bc8cff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+.hero .subtitle { color: var(--text2); font-size: 1.1em; }
+.hero .meta { color: var(--text2); font-size: 0.85em; margin-top: 15px; }
+
+/* Navigation */
+nav.toc {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13,17,23,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+nav.toc .container { display: flex; gap: 4px; flex-wrap: nowrap; }
+nav.toc a {
+  color: var(--text2);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8em;
+  font-weight: 500;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+nav.toc a:hover { background: var(--surface); color: var(--accent); }
+
+/* Sections */
+section { padding: 50px 0; border-bottom: 1px solid var(--border); }
+section:last-child { border-bottom: none; }
+
+h2 {
+  font-size: 1.6em;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+h3 {
+  font-size: 1.15em;
+  color: var(--accent);
+  margin: 25px 0 10px;
+  border-left: 4px solid var(--accent);
+  padding-left: 12px;
+}
+
+/* Platform card */
+.platform-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 16px 0;
+}
+.platform-card.bybit { border-left: 4px solid var(--warn); }
+.platform-card.bybit h3 { color: var(--warn); border-color: var(--warn); }
+.platform-card.tradovate { border-left: 4px solid var(--green); }
+.platform-card.tradovate h3 { color: var(--green); border-color: var(--green); }
+.platform-card.ninja { border-left: 4px solid var(--purple); }
+.platform-card.ninja h3 { color: var(--purple); border-color: var(--purple); }
+.platform-card.tv { border-left: 4px solid var(--accent); }
+.platform-card.tv h3 { color: var(--accent); border-color: var(--accent); }
+
+/* Link list */
+.link-list { list-style: none; margin: 12px 0; }
+.link-list li {
+  padding: 10px 14px;
+  margin: 6px 0;
+  background: var(--surface2);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  transition: border-color 0.2s;
+}
+.link-list li:hover { border-color: var(--accent); }
+.link-list a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.link-list a:hover { text-decoration: underline; }
+.link-list .desc {
+  display: block;
+  font-size: 0.85em;
+  color: var(--text2);
+  margin-top: 3px;
+}
+.link-list .badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7em;
+  font-weight: 700;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.badge-official { background: var(--green); color: #000; }
+.badge-youtube { background: #f85149; color: #fff; }
+.badge-course { background: var(--purple); color: #fff; }
+.badge-guide { background: var(--accent); color: #000; }
+.badge-korean { background: var(--warn); color: #000; }
+.badge-tool { background: var(--cyan); color: #000; }
+.badge-paper { background: var(--text2); color: #000; }
+
+/* Grid */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+
+/* Info box */
+.info-box {
+  background: rgba(88,166,255,0.1);
+  border: 1px solid rgba(88,166,255,0.3);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  font-size: 0.9em;
+}
+.warn-box {
+  background: rgba(210,153,34,0.1);
+  border: 1px solid rgba(210,153,34,0.3);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  font-size: 0.9em;
+}
+
+/* Textbook index */
+.textbook-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 16px 0; }
+.tb-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.tb-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+.tb-card .tb-icon { font-size: 2em; margin-bottom: 8px; }
+.tb-card .tb-title { font-weight: 700; font-size: 0.95em; }
+.tb-card .tb-sub { color: var(--text2); font-size: 0.75em; margin-top: 4px; }
+.tb-card a { color: inherit; text-decoration: none; }
+
+/* Section divider */
+.section-divider {
+  text-align: center;
+  margin: 40px 0 20px;
+  color: var(--text2);
+  font-size: 0.8em;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.footer {
+  text-align: center;
+  color: var(--text2);
+  font-size: 0.8em;
+  padding: 40px 20px;
+  border-top: 1px solid var(--border);
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <h1>Trading Platform & Resources</h1>
+  <div class="subtitle">플랫폼 사용법 + 추가 학습 리소스 큐레이션</div>
+  <div class="meta">크립토 + 해외선물 주력 | Last updated: 2026-03-22</div>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav class="toc">
+  <div class="container">
+    <a href="#textbooks">교재 인덱스</a>
+    <a href="#bybit">Bybit</a>
+    <a href="#tradovate">Tradovate</a>
+    <a href="#ninjatrader">NinjaTrader</a>
+    <a href="#tradingview">TradingView</a>
+    <a href="#crypto-micro">크립토 심화</a>
+    <a href="#risk-mgmt">리스크 관리</a>
+    <a href="#next">향후 교재</a>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- ═══ 교재 인덱스 ═══ -->
+<section id="textbooks">
+<h2>교재 시리즈 인덱스</h2>
+<p>현재 보유한 교재 7권. 같은 폴더에 있는 HTML 파일을 브라우저로 열면 된다.</p>
+
+<div class="textbook-grid">
+  <div class="tb-card" style="border-top: 3px solid #f0883e;">
+    <div class="tb-icon">📊</div>
+    <div class="tb-title">차트 기초편</div>
+    <div class="tb-sub">20챕터 · 캔들, S/R, 추세선</div>
+    <div class="tb-sub" style="color:#f0883e">CHART_BASICS_TEXTBOOK.html</div>
+  </div>
+  <div class="tb-card" style="border-top: 3px solid #bc8cff;">
+    <div class="tb-icon">🧠</div>
+    <div class="tb-title">심리편</div>
+    <div class="tb-sub">10챕터 · 감정, 규율, 멘탈</div>
+    <div class="tb-sub" style="color:#bc8cff">PSYCHOLOGY_TEXTBOOK.html</div>
+  </div>
+  <div class="tb-card" style="border-top: 3px solid #3fb950;">
+    <div class="tb-icon">⚡</div>
+    <div class="tb-title">실전편</div>
+    <div class="tb-sub">9챕터 · 매매 실행, 복기</div>
+    <div class="tb-sub" style="color:#3fb950">PRACTICE_TEXTBOOK.html</div>
+  </div>
+  <div class="tb-card" style="border-top: 3px solid #58a6ff;">
+    <div class="tb-icon">🌐</div>
+    <div class="tb-title">해외선물편</div>
+    <div class="tb-sub">14챕터 · 선물 기초~고급</div>
+    <div class="tb-sub" style="color:#58a6ff">FUTURES_TEXTBOOK.html</div>
+  </div>
+  <div class="tb-card" style="border-top: 3px solid #1abc9c;">
+    <div class="tb-icon">🏛️</div>
+    <div class="tb-title">SMC 전략편</div>
+    <div class="tb-sub">19챕터 · OB, FVG, 유동성</div>
+    <div class="tb-sub" style="color:#1abc9c">SMC_TEXTBOOK.html</div>
+  </div>
+  <div class="tb-card" style="border-top: 3px solid #e74c3c;">
+    <div class="tb-icon">🔥</div>
+    <div class="tb-title">데이트레이딩편</div>
+    <div class="tb-sub">18챕터 · 볼륨, VWAP, DOM</div>
+    <div class="tb-sub" style="color:#e74c3c">DAYTRADING_TEXTBOOK.html</div>
+  </div>
+  <div class="tb-card" style="border-top: 3px solid #f39c12;">
+    <div class="tb-icon">📈</div>
+    <div class="tb-title">보조지표편</div>
+    <div class="tb-sub">17챕터 · MACD, 스토캐스틱, RSI</div>
+    <div class="tb-sub" style="color:#f39c12">INDICATORS_TEXTBOOK.html</div>
+  </div>
+</div>
+
+<div class="info-box">
+  <strong>학습 순서 추천:</strong> 차트편 → 보조지표편 → SMC 전략편 → 실전편 → 심리편 → 데이트레이딩편/해외선물편 (관심 시장별)
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PART 1: 플랫폼 사용법 -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section-divider">── PART 1: 플랫폼 사용법 ──</div>
+
+<!-- ═══ BYBIT ═══ -->
+<section id="bybit">
+<h2 style="border-color: var(--warn);">Bybit (바이비트)</h2>
+<p>크립토 선물 거래의 주력 플랫폼. USDT 무기한 선물, 최대 100x 레버리지, 테스트넷 모의투자 지원.</p>
+
+<div class="platform-card bybit">
+<h3 style="margin-top:0">공식 리소스</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://learn.bybit.com/en/bybit-guide" target="_blank">Bybit 공식 가이드 — 시작하기</a>
+    <span class="desc">가입, KYC, 지갑 설정, 첫 거래까지 공식 단계별 안내</span>
+  </li>
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://learn.bybit.com/en/trading/get-started-with-crypto-futures-trading" target="_blank">Bybit 선물거래 시작 가이드</a>
+    <span class="desc">무기한 선물 구조, 마진 방식(교차/격리), 펀딩비 개념 공식 설명</span>
+  </li>
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://learn.bybit.com/en/strategies/how-to-trade-futures-futures-trading-strategies" target="_blank">Bybit 선물 전략 가이드</a>
+    <span class="desc">선물 매매 전략, 헤징, 차익거래 공식 교육 자료</span>
+  </li>
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://www.bybit.com/en/help-center/article/Everything-You-Need-to-Know-to-Get-Started-on-Bybit" target="_blank">Bybit 헬프센터 — 시작 가이드 통합</a>
+    <span class="desc">모든 기능의 공식 도움말 허브</span>
+  </li>
+</ul>
+
+<h3>한국어 가이드</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-korean">한국어</span>
+    <a href="https://mathnet.or.kr/%EB%B0%94%EC%9D%B4%EB%B9%84%ED%8A%B8-%EC%84%A0%EB%AC%BC%EA%B1%B0%EB%9E%98/" target="_blank">바이비트 선물거래 방법 7단계 완벽 정리 (2025)</a>
+    <span class="desc">한국어 스크린샷 포함. 지갑 이동, 레버리지 설정, 주문 유형, 청산까지 7단계</span>
+  </li>
+  <li>
+    <span class="badge badge-korean">한국어</span>
+    <a href="https://brunch.co.kr/@bitcoins/35" target="_blank">바이비트 선물거래 방법 — Brunch</a>
+    <span class="desc">초보자 맞춤 한국어 설명. 롱/숏, 교차/격리 마진, 수수료 구조</span>
+  </li>
+  <li>
+    <span class="badge badge-korean">한국어</span>
+    <a href="https://brunch.co.kr/@bitcoins/57" target="_blank">바이비트 사용법 꿀팁 모음</a>
+    <span class="desc">실전 사용자 관점의 팁 모음. UI 커스터마이징, 알림 설정 등</span>
+  </li>
+  <li>
+    <span class="badge badge-korean">한국어</span>
+    <a href="https://auseinet.com/%EB%B0%94%EC%9D%B4%EB%B9%84%ED%8A%B8-%EC%84%A0%EB%AC%BC-%EA%B1%B0%EB%9E%98-%EB%B0%A9%EB%B2%95-%EB%B0%8F-%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0/" target="_blank">바이비트 선물 인터페이스 가이드 (USDT)</a>
+    <span class="desc">선물 거래 화면의 모든 요소를 한국어로 상세 설명</span>
+  </li>
+</ul>
+
+<h3>영문 종합 가이드</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://coinbureau.com/guides/bybit-trading-guide" target="_blank">Coin Bureau — Bybit Trading Guide 2026</a>
+    <span class="desc">영문 최고 수준 가이드. 계정 설정부터 고급 주문까지, 30분 내 거래 시작 가능</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://www.mindmathmoney.com/articles/the-ultimate-bybit-tutorial-for-2025-from-beginner-to-pro-trading-crypto" target="_blank">Mind Math Money — Ultimate Bybit Tutorial (2025)</a>
+    <span class="desc">YouTube 영상 + 텍스트 병행. Spot/Futures, 보안 설정, 보너스 활용까지</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://socialcapitalmarkets.net/crypto-trading/futures/how-to/bybit-tutorial/" target="_blank">Bybit Futures Trading Tutorial — Step-by-Step</a>
+    <span class="desc">선물 거래 특화 스텝바이스텝 가이드</span>
+  </li>
+</ul>
+
+<div class="warn-box">
+  <strong>팁:</strong> 실전 전 반드시 <a href="https://testnet.bybit.com" target="_blank" style="color:var(--accent)">Bybit 테스트넷</a>에서 모의투자로 연습할 것. 수수료: 메이커 0.02%, 테이커 0.055%.
+</div>
+</div>
+</section>
+
+<!-- ═══ TRADOVATE ═══ -->
+<section id="tradovate">
+<h2 style="border-color: var(--green);">Tradovate</h2>
+<p>해외선물(CME) 전용 플랫폼. NQ/ES/CL 등 미니/마이크로 선물. 웹 기반 + 모바일. 프랍 펌 챌린지 호환.</p>
+
+<div class="platform-card tradovate">
+<h3 style="margin-top:0">공식 리소스</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://www.tradovate.com/videos/" target="_blank">Tradovate 공식 비디오 라이브러리</a>
+    <span class="desc">50개+ 공식 튜토리얼 영상. 주문, DOM, 차트, 워크스페이스 설정</span>
+  </li>
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://info.tradovate.com/tradovate-futures" target="_blank">Tradovate Futures Trading — 시작하기</a>
+    <span class="desc">계정 개설, 시뮬레이션 계좌, 실거래 전환 공식 안내</span>
+  </li>
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://info.tradovate.com/simulated-trading" target="_blank">Tradovate 무료 시뮬레이션 트레이딩</a>
+    <span class="desc">무료 시뮬레이션 계좌로 실전 연습. 실제 시장 데이터 사용</span>
+  </li>
+</ul>
+
+<h3>종합 가이드</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://grizzlyparrottrading.com/platforms-tutorials/tradovate-for-beginners.html" target="_blank">Tradovate for Beginners — Grizzly Parrot</a>
+    <span class="desc">로그인부터 차트 설정, DOM, 주문 유형, 리스크 컨트롤까지 초보자 워크스루</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://blog.pickmytrade.trade/mastering-futures-trading-on-tradovate-a-comprehensive-guide/" target="_blank">Mastering Futures Trading on Tradovate</a>
+    <span class="desc">주문 실행, 리스크 관리, TradingView 연동까지 종합 마스터 가이드</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://www.proptradingvibes.com/blog/top-one-futures-tradovate" target="_blank">Tradovate Setup Guide (2025) — 프랍 펌 연동</a>
+    <span class="desc">프랍 펌 챌린지 계좌와 Tradovate 연동 설정 가이드</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://proptradingdeals.com/index.php/2025/08/21/how-to-use-tradovate-a-beginners-guide-for-futures-prop-trading-evaluation-account-setups/" target="_blank">Tradovate Prop Trading Evaluation Setup</a>
+    <span class="desc">프랍 펌 평가 계좌 설정 실전 가이드 (2025)</span>
+  </li>
+</ul>
+
+<h3>교육 코스</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-course">코스</span>
+    <a href="https://www.udemy.com/course/futures-trading-made-easy/" target="_blank">Udemy — Futures Trading for Beginners 2025</a>
+    <span class="desc">Tradovate + TradingView 조합으로 선물거래 배우기. 유료 코스</span>
+  </li>
+</ul>
+</div>
+</section>
+
+<!-- ═══ NINJATRADER ═══ -->
+<section id="ninjatrader">
+<h2 style="border-color: var(--purple);">NinjaTrader</h2>
+<p>프로 급 선물 트레이딩 플랫폼. 고급 차트, 오더플로우(풋프린트), 자동매매 지원. CME 선물 전문.</p>
+
+<div class="platform-card ninja">
+<h3 style="margin-top:0">공식 리소스</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://ninjatrader.com/Video-Guides" target="_blank">NinjaTrader 공식 비디오 가이드</a>
+    <span class="desc">플랫폼 전체 기능의 공식 영상 튜토리얼 라이브러리</span>
+  </li>
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://ninjatrader.com/learn/" target="_blank">NinjaTrader Learn — 선물 트레이딩 교육</a>
+    <span class="desc">선물 거래 기초부터 고급까지 무료 멀티 비디오 코스</span>
+  </li>
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://ninjatrader.com/learn/how-to-trade-futures/" target="_blank">How to Trade Futures — NinjaTrader</a>
+    <span class="desc">선물 시장 구조, 마진, 계약 규격, 세션 이해</span>
+  </li>
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://ninjatrader.com/support/helpguides/nt8/video_library.htm" target="_blank">NinjaTrader 8 — 비디오 라이브러리</a>
+    <span class="desc">NinjaTrader 8 데스크탑 전용 상세 기능별 영상 가이드</span>
+  </li>
+</ul>
+
+<h3>차트 & 트레이딩 설정</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://ninjatrader.com/futures/blogs/charting-setup-and-customization-in-the-ninjatrader-desktop/" target="_blank">NinjaTrader 차트 설정 & 커스터마이징</a>
+    <span class="desc">70+ 내장 인디케이터, 차트 유형, 타임프레임 설정 상세 가이드</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://ninjatrader.com/futures/blogs/how-to-use-ninjatrader-chart-trader/" target="_blank">NinjaTrader Chart Trader 사용법</a>
+    <span class="desc">차트에서 직접 주문 넣기: 원클릭 매매, SL/TP 드래그 설정</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://ninjatrader.com/futures/blogs/chart-patterns-trading/" target="_blank">NinjaTrader 차트 패턴 트레이딩</a>
+    <span class="desc">패턴 인식, 백테스트, 실행까지 차트 기반 전략 가이드</span>
+  </li>
+</ul>
+
+<h3>종합 튜토리얼</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://rizecap.com/blog/ninjatrader-8-beginners-guide/" target="_blank">NinjaTrader 8 Beginner's Guide — RizeCap</a>
+    <span class="desc">설치, 데이터 피드 연결, 시뮬레이션, 첫 거래까지 종합 초보자 가이드</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://daytradetowin.com/ninjatrader-8-how-to-beginner-video-tutorial/" target="_blank">NinjaTrader 8 Beginner Video Tutorial — DayTradeToWin</a>
+    <span class="desc">다운로드, 설치, 설정, 차트 네비게이션 영상 포함 크래시 코스</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://help.topstep.com/en/articles/8284173-ninjatrader-8-tutorial-videos" target="_blank">Topstep — NinjaTrader 8 Tutorial Videos</a>
+    <span class="desc">프랍 펌 Topstep의 NinjaTrader 전용 튜토리얼 시리즈</span>
+  </li>
+  <li>
+    <span class="badge badge-course">코스</span>
+    <a href="https://forum.ninjatrader.com/forum/ninjatrader-8/strategy-development/1338435-ninjatrader-setup-guide-automated-strategy-tutorial-2025" target="_blank">NinjaTrader 자동매매 전략 셋업 가이드 (2025)</a>
+    <span class="desc">자동매매 전략 개발 튜토리얼. C# 기반 전략 빌더</span>
+  </li>
+</ul>
+</div>
+</section>
+
+<!-- ═══ TRADINGVIEW ═══ -->
+<section id="tradingview">
+<h2 style="border-color: var(--accent);">TradingView</h2>
+<p>만능 차트 & 분석 플랫폼. 크립토/선물/주식 전부 지원. Pine Script로 커스텀 인디케이터 개발 가능.</p>
+
+<div class="platform-card tv">
+<h3 style="margin-top:0">공식 리소스</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://www.tradingview.com/support/solutions/43000587305-i-am-new-to-tradingview-where-can-i-learn-more-on-how-to-use-tradingview-features-and-tools/" target="_blank">TradingView 공식 — 신규 사용자 가이드</a>
+    <span class="desc">TradingView의 공식 시작 가이드. 기능별 도움말 허브</span>
+  </li>
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://www.tradingview.com/pine-script-docs/" target="_blank">Pine Script v6 공식 문서</a>
+    <span class="desc">커스텀 인디케이터/전략 개발용 Pine Script 공식 레퍼런스</span>
+  </li>
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://www.tradingview.com/pine-script-docs/primer/first-indicator/" target="_blank">Pine Script — 첫 인디케이터 만들기</a>
+    <span class="desc">Pine Script 입문: 첫 커스텀 인디케이터를 만들어보는 핸즈온 튜토리얼</span>
+  </li>
+  <li>
+    <span class="badge badge-official">공식</span>
+    <a href="https://www.tradingview.com/scripts/" target="_blank">TradingView Community Scripts (150,000+)</a>
+    <span class="desc">커뮤니티가 만든 15만개+ 무료/오픈소스 인디케이터 & 전략</span>
+  </li>
+</ul>
+
+<h3>종합 가이드</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://www.mindmathmoney.com/articles/the-ultimate-tradingview-tutorial-for-2025-and-beyond" target="_blank">Ultimate TradingView Guide (2025) — Mind Math Money</a>
+    <span class="desc">YouTube 영상 + 텍스트. 셋업, 기술적 분석, 인디케이터, 알림 설정 완벽 가이드</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://optimusfutures.com/blog/complete-tradingview-tutorial-2025-master-technical-analysis-chart-setup-beginners-guide/" target="_blank">Complete TradingView Tutorial 2025 — Optimus Futures</a>
+    <span class="desc">기술적 분석 + 차트 설정 마스터. 선물 트레이더 관점의 TV 가이드</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://tradeproacademy.com/tradingview-tutorial-from-beginner-to-expert/" target="_blank">TradingView: Beginner to Expert — TradePro Academy</a>
+    <span class="desc">초보→전문가 레벨까지. 드로잉 도구, 멀티 차트, 알림, 백테스팅</span>
+  </li>
+</ul>
+
+<h3>Pine Script & 커스터마이징</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-youtube">YouTube</span>
+    <a href="https://courses.theartoftrading.com/pages/youtube-pine-script-tutorials" target="_blank">The Art of Trading — Pine Script YouTube 시리즈</a>
+    <span class="desc">YouTube 무료 Pine Script 튜토리얼 시리즈. 실전 인디케이터 코딩</span>
+  </li>
+</ul>
+
+<h3>교육 코스</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-course">코스</span>
+    <a href="https://www.udemy.com/course/complete-tradingview-tutorial/" target="_blank">Udemy — TradingView Masterclass 2026</a>
+    <span class="desc">차트, 인디케이터, 알림, Pine Script, 백테스팅 완벽 마스터 코스</span>
+  </li>
+</ul>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PART 2: 추가 학습 리소스 -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section-divider">── PART 2: 추가 학습 리소스 ──</div>
+
+<!-- ═══ 크립토 심화 ═══ -->
+<section id="crypto-micro">
+<h2 style="border-color: var(--teal);">크립토 마켓 마이크로스트럭처</h2>
+<p>현재 교재에 없는 영역: Funding Rate, Open Interest, 청산 캐스케이드, 거래소 오더북 구조. 크립토 선물 주력이면 필수 지식.</p>
+
+<div class="platform-card" style="border-left: 4px solid var(--teal);">
+<h3 style="margin-top:0; color:var(--teal); border-color:var(--teal);">데이터 플랫폼 (실시간 모니터링)</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-tool">도구</span>
+    <a href="https://coinalyze.net/" target="_blank">Coinalyze — OI, Funding Rate, Liquidation 통합</a>
+    <span class="desc">크립토 선물 데이터 집계. OI 변화, 펀딩비, 예측 펀딩비, 청산, 거래량, 베이시스</span>
+  </li>
+  <li>
+    <span class="badge badge-tool">도구</span>
+    <a href="https://coinmarketcap.com/charts/derivatives-market/" target="_blank">CoinMarketCap — 파생상품 시장 데이터</a>
+    <span class="desc">전체 크립토 파생상품 시장 OI, 거래량, 롱/숏 비율 대시보드</span>
+  </li>
+  <li>
+    <span class="badge badge-tool">도구</span>
+    <a href="https://www.coinglass.com/" target="_blank">CoinGlass — 청산 히트맵, OI, 펀딩비</a>
+    <span class="desc">청산 히트맵, 롱숏 비율, OI 변화, 거래소별 비교. 크립토 파생상품 필수 도구</span>
+  </li>
+</ul>
+
+<h3 style="color:var(--teal); border-color:var(--teal);">교육 자료</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://web3.gate.com/en/crypto-wiki/article/what-are-derivatives-market-signals-how-futures-open-interest-funding-rates-and-liquidation-data-impact-crypto-prices-20251219" target="_blank">Gate — 파생상품 시그널 완벽 가이드</a>
+    <span class="desc">OI, 펀딩비, 청산 데이터가 가격에 미치는 영향. 실전 시그널 해석법</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://cryptoprofitcalc.com/funding-rate-in-crypto-2025-complete-guide-to-perpetual-futures-formulas-signals-strategies/" target="_blank">Funding Rate Complete Guide (2025)</a>
+    <span class="desc">펀딩비 공식, 시그널 해석, 전략 활용. 무기한 선물의 핵심 메커니즘</span>
+  </li>
+  <li>
+    <span class="badge badge-paper">리서치</span>
+    <a href="https://blog.amberdata.io/how-3.21b-vanished-in-60-seconds-october-2025-crypto-crash-explained-through-7-charts" target="_blank">Amberdata — 2025년 10월 $3.2B 청산 사태 분석</a>
+    <span class="desc">7개 차트로 분석한 청산 캐스케이드 실전 케이스. 마이크로스트럭처 7개 축 해설</span>
+  </li>
+  <li>
+    <span class="badge badge-paper">리서치</span>
+    <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5611392" target="_blank">SSRN — 2025년 10월 청산 캐스케이드 학술 논문</a>
+    <span class="desc">매크로 트리거, 마이크로스트럭처, 시스템 리스크 학술적 분석</span>
+  </li>
+  <li>
+    <span class="badge badge-paper">리서치</span>
+    <a href="https://www.coinglass.com/learn/2025-annual-report-en" target="_blank">CoinGlass 2025 파생상품 연간 리포트</a>
+    <span class="desc">2025년 크립토 파생상품 시장 전체 회고. OI/펀딩/청산 트렌드 분석</span>
+  </li>
+</ul>
+</div>
+
+<div class="info-box">
+  <strong>향후 교재 후보:</strong> 이 주제들을 모아 <strong>크립토 심화편</strong> 교재로 제작 가능. 적절한 YouTube 채널(Coin Bureau, Benjamin Cowen 등)을 소스로 사용.
+</div>
+</section>
+
+<!-- ═══ 리스크 관리 ═══ -->
+<section id="risk-mgmt">
+<h2 style="border-color: var(--danger);">리스크 관리 & 포지션 사이징</h2>
+<p>각 교재에 흩어진 리스크 관리를 한 곳에. Kelly Criterion, 드로다운 수학, 연속 손실 확률론 등 전문 지식.</p>
+
+<div class="platform-card" style="border-left: 4px solid var(--danger);">
+<h3 style="margin-top:0; color:var(--danger); border-color:var(--danger);">핵심 교육 자료</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://www.litefinance.org/blog/for-beginners/best-technical-indicators/kelly-criterion-trading/" target="_blank">Kelly Criterion Trading — 공식 & 리스크 관리 가이드</a>
+    <span class="desc">Kelly 공식(W×R−L)/R, Half/Quarter Kelly 실전 적용, 리밸런싱 주기</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://zerodha.com/varsity/chapter/kellys-criterion/" target="_blank">Zerodha Varsity — Kelly's Criterion 상세 해설</a>
+    <span class="desc">인도 최대 브로커의 교육 콘텐츠. Kelly Criterion 수학적 유도부터 실전 적용까지</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://nickyoder.com/kelly-criterion/" target="_blank">Kelly Criterion — 퀀트 관점 심화</a>
+    <span class="desc">퀀트 트레이딩에서의 Kelly Criterion. 로그 효용, 최적 배팅, 시뮬레이션</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://blog.quantinsti.com/risk-constrained-kelly-criterion/" target="_blank">QuantInsti — Risk-Constrained Kelly Criterion</a>
+    <span class="desc">리스크 제약 Kelly: 기초부터 트레이딩 적용까지. 파이썬 코드 포함</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://tradefundrr.com/position-sizing-methods/" target="_blank">7가지 포지션 사이징 기법 비교</a>
+    <span class="desc">고정비율, 변동비율, Kelly, 변동성 기반 등 7가지 방법론 비교 분석</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://tradethatswing.com/three-effective-forex-position-sizing-methods/" target="_blank">3가지 포지션 사이징: 최대 드로다운, 변동고정, 퍼센트</a>
+    <span class="desc">MDD 기반 사이징, 변동 고정 분수법, 퍼센트 리스크법 실전 비교</span>
+  </li>
+</ul>
+
+<h3 style="color:var(--danger); border-color:var(--danger);">드로다운 관리 & 리스크 수학</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://www.mql5.com/en/blogs/post/766052" target="_blank">Dynamic Position Sizing으로 Drawdown 컨트롤</a>
+    <span class="desc">동적 포지션 사이징: 성과/변동성 기반 자동 조절. 드로다운 절반 감소 방법</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://www.quantifiedstrategies.com/risk-management-trading/" target="_blank">12가지 리스크 관리 전략 + 백테스트</a>
+    <span class="desc">12가지 리스크 관리 기법과 각각의 백테스트 결과. 데이터 기반 비교</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://acy.com/en/market-news/education/market-education-risk-management-trading-compilation-guide-j-o-20250801-132913/" target="_blank">Ultimate Risk Management Guide (2026)</a>
+    <span class="desc">트레이딩 리스크 관리 종합 가이드. 포지션 사이징, 상관관계, 포트폴리오 리스크</span>
+  </li>
+  <li>
+    <span class="badge badge-guide">가이드</span>
+    <a href="https://highstrike.com/risk-management-trading/" target="_blank">Risk Management in Trading (2025) — HighStrike</a>
+    <span class="desc">리스크 관리 기초~고급. 1-2% 룰의 수학적 근거, 연속 손실 확률 계산</span>
+  </li>
+</ul>
+
+<h3 style="color:var(--danger); border-color:var(--danger);">도구</h3>
+<ul class="link-list">
+  <li>
+    <span class="badge badge-tool">도구</span>
+    <a href="https://www.backtestbase.com/education/how-much-risk-per-trade" target="_blank">Kelly Criterion Calculator — 무료 온라인 계산기</a>
+    <span class="desc">승률, 손익비 입력 → 최적 리스크 비율 자동 산출. Half/Quarter Kelly 포함</span>
+  </li>
+  <li>
+    <span class="badge badge-tool">도구</span>
+    <a href="https://www.mindmathmoney.com/articles/risk-management-trading-tools-every-trader-must-use-in-2025" target="_blank">2025년 필수 리스크 관리 도구 모음</a>
+    <span class="desc">포지션 사이즈 계산기, 상관관계 매트릭스, 변동성 트래커 등 도구 큐레이션</span>
+  </li>
+</ul>
+</div>
+
+<div class="info-box">
+  <strong>향후 교재 후보:</strong> 이 자료들 + YouTube 교육 채널을 소스로 <strong>리스크 관리 전문편</strong> 교재 제작 가능. 로드맵의 Phase 2 진입 전 학습 권장.
+</div>
+</section>
+
+<!-- ═══ 향후 교재 계획 ═══ -->
+<section id="next">
+<h2>향후 교재 제작 계획</h2>
+
+<div class="grid-2">
+  <div class="platform-card" style="border-left: 4px solid #e67e22;">
+    <h3 style="margin-top:0; color:#e67e22; border-color:#e67e22;">ICT 마스터편 (우선순위 1)</h3>
+    <p><strong>상태:</strong> URL 157개 확보 완료</p>
+    <p><strong>내용:</strong> ICT 원본 방법론. Market Maker Model, Optimal Trade Entry, Kill Zones, Power of 3, ICT Silver Bullet</p>
+    <p><strong>차별점:</strong> 현재 SMC편은 2차 소스. ICT 원본은 근본 원리부터 훨씬 깊음</p>
+    <p style="color:var(--green); font-weight:700;">→ 바로 제작 가능 (NotebookLM)</p>
+  </div>
+  <div class="platform-card" style="border-left: 4px solid var(--teal);">
+    <h3 style="margin-top:0; color:var(--teal); border-color:var(--teal);">크립토 심화편 (우선순위 2)</h3>
+    <p><strong>상태:</strong> YouTube 소스 조사 필요</p>
+    <p><strong>내용:</strong> Funding Rate, OI, 청산 캐스케이드, 거래소 구조, 온체인 기초, 김프/역프</p>
+    <p><strong>대상:</strong> Phase 1 진행 중 학습</p>
+    <p style="color:var(--warn);">→ 소스 확보 후 제작</p>
+  </div>
+  <div class="platform-card" style="border-left: 4px solid var(--danger);">
+    <h3 style="margin-top:0; color:var(--danger); border-color:var(--danger);">리스크 관리 전문편 (우선순위 3)</h3>
+    <p><strong>상태:</strong> YouTube 소스 조사 필요</p>
+    <p><strong>내용:</strong> Kelly Criterion, 변동성 사이징, MDD 수학, Gambler's Ruin, 포트폴리오 리스크</p>
+    <p><strong>대상:</strong> Phase 2 진입 전 학습</p>
+    <p style="color:var(--warn);">→ 소스 확보 후 제작</p>
+  </div>
+  <div class="platform-card" style="border-left: 4px solid var(--purple);">
+    <h3 style="margin-top:0; color:var(--purple); border-color:var(--purple);">오더플로우 심화편 (우선순위 4)</h3>
+    <p><strong>상태:</strong> YouTube 소스 조사 필요</p>
+    <p><strong>내용:</strong> 풋프린트 차트, CVD 심화, DOM 실전, 델타 분석, 테이프 리딩</p>
+    <p><strong>대상:</strong> 해외선물 본격 진입 시</p>
+    <p style="color:var(--text2);">→ Phase 2+ 진입 후 제작</p>
+  </div>
+</div>
+</section>
+
+</div>
+
+<div class="footer">
+  Trading Platform & Resources v1.0 · Updated 2026-03-22 · 크립토 + 해외선물 주력
+</div>
+
+</body>
+</html>

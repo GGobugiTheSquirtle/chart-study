@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BTC 트레이딩 문제집 — 100문제</title>
+<style>
+:root{--bg:#0a0e17;--card:#111827;--border:#1e293b;--text:#e2e8f0;--dim:#64748b;--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--blue:#3b82f6;--purple:#a855f7}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothic',sans-serif;line-height:1.6;padding:20px}
+.wrap{max-width:900px;margin:0 auto}
+h1{font-size:1.5em;font-weight:800;margin-bottom:4px}
+.dim{color:var(--dim);font-size:12px}
+.progress-bar{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;margin:14px 0;display:flex;align-items:center;gap:12px}
+.progress-fill{height:8px;background:var(--green);border-radius:4px;transition:width 0.3s}
+.section-title{font-size:1.1em;font-weight:700;margin:24px 0 8px;padding:8px 12px;background:var(--card);border-left:3px solid var(--amber);border-radius:0 6px 6px 0}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin:8px 0}
+.q-num{font-size:11px;color:var(--amber);font-weight:700;margin-bottom:4px}
+.q-text{font-size:14px;margin-bottom:10px;line-height:1.7}
+.q-opts{display:grid;gap:4px}
+.q-btn{text-align:left;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);cursor:pointer;font-size:13px;font-family:inherit;transition:all 0.15s}
+.q-btn:hover{border-color:var(--blue);background:#1e293b}
+.q-btn.correct{border-color:var(--green);background:rgba(34,197,94,0.15);color:var(--green)}
+.q-btn.wrong{border-color:var(--red);background:rgba(239,68,68,0.15);color:var(--red)}
+.q-btn.reveal{border-color:var(--green);background:rgba(34,197,94,0.08)}
+.q-explain{display:none;margin-top:8px;padding:10px;background:var(--bg);border-radius:6px;font-size:12px;line-height:1.7;border-left:3px solid var(--amber)}
+.q-explain.show{display:block}
+.tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600;margin-right:4px}
+.tag-basic{background:rgba(34,197,94,0.15);color:var(--green)}
+.tag-inter{background:rgba(59,130,246,0.15);color:var(--blue)}
+.tag-adv{background:rgba(239,68,68,0.15);color:var(--red)}
+.tag-prac{background:rgba(168,85,247,0.15);color:var(--purple)}
+.score-panel{background:var(--card);border:2px solid var(--amber);border-radius:12px;padding:20px;margin:20px 0;text-align:center;display:none}
+.score-panel.show{display:block}
+.score-val{font-size:48px;font-weight:800}
+.filter-bar{display:flex;gap:6px;margin:12px 0;flex-wrap:wrap}
+.f-btn{padding:4px 12px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--dim);cursor:pointer;font-size:12px;font-weight:600}
+.f-btn:hover{color:var(--text);border-color:var(--blue)}
+.f-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
+</style>
+</head><body>
+<div class="wrap">
+<h1>BTC 트레이딩 문제집 — 100문제</h1>
+<p class="dim">기초(1~25) → 중급(26~50) → 심화(51~75) → 실전(76~100) | 단계적 학습</p>
+
+<div class="progress-bar">
+  <span class="dim" style="white-space:nowrap">진행률</span>
+  <div style="flex:1;background:var(--bg);border-radius:4px;height:8px">
+    <div class="progress-fill" id="prog" style="width:0%"></div>
+  </div>
+  <span id="prog-text" class="dim">0/100</span>
+</div>
+
+<div class="filter-bar">
+  <button class="f-btn active" onclick="filterQ('all')">전체</button>
+  <button class="f-btn" onclick="filterQ('basic')">기초 (1~25)</button>
+  <button class="f-btn" onclick="filterQ('inter')">중급 (26~50)</button>
+  <button class="f-btn" onclick="filterQ('adv')">심화 (51~75)</button>
+  <button class="f-btn" onclick="filterQ('prac')">실전 (76~100)</button>
+  <button class="f-btn" onclick="filterQ('wrong')">오답만</button>
+</div>
+
+<div id="score-panel" class="score-panel">
+  <div class="score-val" id="score-val">0</div>
+  <div class="dim">/ 100점</div>
+  <div id="score-detail" style="margin-top:8px;font-size:13px"></div>
+</div>
+
+<div id="quiz-container"></div>
+
+<div style="text-align:center;margin:20px 0">
+  <button class="f-btn" onclick="showScore()" style="padding:10px 30px;font-size:14px;border-color:var(--amber);color:var(--amber)">채점하기</button>
+  <button class="f-btn" onclick="resetAll()" style="padding:10px 30px;font-size:14px">초기화</button>
+</div>
+
+</div>
+
+<script>
+const Q = [
+// ═══ SECTION 1: 기초 (1~25) ═══
+{id:1,s:'basic',q:'양봉(초록 캔들)의 의미로 올바른 것은?',o:['시가 > 종가','종가 > 시가','고가 > 저가','거래량 증가'],a:1,e:'양봉은 종가가 시가보다 높은 캔들. 가격이 상승했다는 의미.'},
+{id:2,s:'basic',q:'볼린저밴드의 기본 설정(20, 2)에서 "2"는 무엇을 의미하는가?',o:['이동평균 기간','표준편차 배수','ATR 배수','밴드 개수'],a:1,e:'20기간 이동평균에서 2 표준편차 범위를 상하 밴드로 설정.'},
+{id:3,s:'basic',q:'지지선(Support)의 정의로 가장 정확한 것은?',o:['가격이 계속 상승하는 선','매수세가 집중되어 하락을 막는 가격대','이동평균선의 다른 이름','거래량이 가장 많은 가격'],a:1,e:'지지선은 매수세(수요)가 충분하여 가격 하락을 저지하는 수평적 가격대.'},
+{id:4,s:'basic',q:'EMA(지수이동평균)가 SMA(단순이동평균)보다 유리한 점은?',o:['계산이 더 간단하다','과거 데이터에 가중치를 더 준다','최근 데이터에 가중치를 더 준다','항상 더 정확하다'],a:2,e:'EMA는 최근 가격에 더 높은 가중치를 부여하여 추세 변화에 더 빠르게 반응.'},
+{id:5,s:'basic',q:'R:R(Risk-Reward Ratio) 1.5:1의 의미는?',o:['15% 수익 목표','손실 대비 수익이 1.5배','승률 150%','레버리지 1.5배'],a:1,e:'$1 리스크(SL)에 $1.5 리워드(TP). 승률 40%만 되어도 장기 수익 가능.'},
+{id:6,s:'basic',q:'망치형(Hammer) 캔들의 특징은?',o:['위 꼬리가 길고 몸통이 크다','아래 꼬리가 길고 몸통이 작다','몸통이 없고 십자 모양','위아래 꼬리가 같다'],a:1,e:'긴 아래꼬리 + 작은 몸통 = 하락 중 강한 매수세 유입 → 반전 신호.'},
+{id:7,s:'basic',q:'유성형(Shooting Star)은 어떤 위치에서 의미가 있는가?',o:['하락 추세 바닥','상승 추세 고점','횡보 구간 중간','어디서나 동일'],a:1,e:'상승 추세 꼭대기에서 나타나는 긴 위꼬리 캔들 = 매도 압력 → 하락 반전 신호.'},
+{id:8,s:'basic',q:'BTC 선물에서 "롱(Long)"의 의미는?',o:['장기 투자','가격 상승에 베팅','레버리지를 높이는 것','현물을 보유하는 것'],a:1,e:'롱 = 가격이 올라갈 것으로 예상하고 매수. 가격이 오르면 수익, 내리면 손실.'},
+{id:9,s:'basic',q:'ATR(Average True Range)은 무엇을 측정하는 지표인가?',o:['추세 방향','변동성(휘청임의 크기)','거래량','모멘텀'],a:1,e:'ATR은 일정 기간의 평균 변동폭. SL/TP 설정, 포지션 사이징에 활용.'},
+{id:10,s:'basic',q:'EMA20이 EMA50 위에 있을 때의 의미는?',o:['하락 추세','상승 추세','횡보','추세 없음'],a:1,e:'단기 EMA가 장기 EMA 위 = 최근 가격이 평균보다 높음 = 상승 추세.'},
+{id:11,s:'basic',q:'볼린저밴드 하단에 가격이 닿았을 때 올바른 해석은?',o:['무조건 매수 신호','과매도 상태일 수 있음','반드시 반등한다','추세가 끝났다'],a:1,e:'BB 하단 = 통계적으로 과매도. 하지만 밴드워크(하단을 따라 하락)도 가능하므로 확인 캔들 필요.'},
+{id:12,s:'basic',q:'볼린저밴드 폭이 좁아지는 "스퀴즈" 후 일반적으로 어떤 일이 발생하는가?',o:['가격이 횡보를 계속한다','큰 방향성 움직임이 발생한다','거래량이 사라진다','추세가 반전된다'],a:1,e:'BB 수축 = 변동성 감소 → 에너지 축적 → 돌파 시 큰 움직임 발생.'},
+{id:13,s:'basic',q:'Profit Factor(PF)가 1.5인 전략의 의미는?',o:['승률 150%','총 수익이 총 손실의 1.5배','1.5배 레버리지','월 1.5% 수익'],a:1,e:'PF = 총 이익 / 총 손실. PF 1.5 = $1 잃을 때마다 $1.5를 번다.'},
+{id:14,s:'basic',q:'MFE(Maximum Favorable Excursion)는 무엇인가?',o:['최대 손실','진입 후 도달한 최대 수익','평균 수익','최종 수익'],a:1,e:'MFE = 포지션 보유 중 달성한 최대 미실현 이익. 얼마나 "갈 수 있었는지" 측정.'},
+{id:15,s:'basic',q:'MAE(Maximum Adverse Excursion)는 무엇인가?',o:['최대 수익','진입 후 겪은 최대 역행(손실)','평균 변동성','청산 가격'],a:1,e:'MAE = 보유 중 최대 미실현 손실. 진입 타이밍의 정확도를 측정.'},
+{id:16,s:'basic',q:'다음 중 "추세 추종" 전략에 해당하는 것은?',o:['하락 중 매수','상승 중 매수','고점에서 매도','뉴스에 따라 매매'],a:1,e:'추세 추종 = 기존 추세 방향으로 진입. 상승 추세에서 매수, 하락 추세에서 매도.'},
+{id:17,s:'basic',q:'캔들 차트에서 "감싸기(Engulfing)" 패턴의 조건은?',o:['현재 캔들이 이전 캔들을 완전히 감싸는 것','두 캔들의 색이 같은 것','꼬리가 없는 것','거래량이 2배인 것'],a:0,e:'현재 캔들의 몸통이 이전 캔들의 몸통을 완전히 감쌈. 상승 감싸기 = 반전 매수 신호.'},
+{id:18,s:'basic',q:'레버리지 10배에서 $200 포지션을 잡으면, 1% 가격 변동 시 손익은?',o:['$2','$20','$200','$0.2'],a:1,e:'$200 × 10배 = $2,000 노출. 1% 변동 = $20. 레버리지는 손익을 증폭.'},
+{id:19,s:'basic',q:'"세션"이란 무엇인가?',o:['매매 전략의 종류','글로벌 금융시장의 거래 시간대','캔들의 종류','지표의 설정값'],a:1,e:'Asia/London/NY 세션 — 각 시간대별 거래량과 변동성이 다름.'},
+{id:20,s:'basic',q:'SL(Stop Loss)을 설정하는 가장 좋은 기준은?',o:['고정 금액 ($10)','고정 비율 (1%)','구조적 레벨 (S/R 이탈 시)','설정하지 않는다'],a:2,e:'구조적 SL = 지지/저항 이탈 시. 시장 구조가 무효화되는 지점에 SL 설정.'},
+{id:21,s:'basic',q:'BTC 선물에서 "마진(Margin)"이란?',o:['수수료','포지션을 열기 위해 필요한 담보금','슬리피지','청산 가격'],a:1,e:'마진 = 레버리지를 사용하기 위한 담보금. 레버 10배면 $200 마진으로 $2,000 포지션.'},
+{id:22,s:'basic',q:'다중 타임프레임(MTF) 분석의 올바른 순서는?',o:['5M → 15M → 1H → 4H','4H → 1H → 15M → 5M','아무 순서나 상관없다','1H만 보면 된다'],a:1,e:'큰 TF에서 방향 잡고 → 작은 TF에서 진입 타이밍. 4H→1H→15M→5M 순서.'},
+{id:23,s:'basic',q:'다음 중 "뇌동매매"의 특징이 아닌 것은?',o:['0초 체결','방향 핑퐁','사전에 진입가를 정해놓음','감정적 진입'],a:2,e:'사전에 진입가를 정해놓는 것은 계획된 매매. 뇌동매매는 계획 없이 충동적으로 진입.'},
+{id:24,s:'basic',q:'BB%B가 0.05(5%)라면 가격의 위치는?',o:['BB 상단 근처','BB 중간선 근처','BB 하단 근처','BB 바깥'],a:2,e:'BB%B = (가격 - 하단) / (상단 - 하단). 5% = 하단 매우 근처 = 과매도 구간.'},
+{id:25,s:'basic',q:'Kelly Criterion에서 음수가 나오면 어떻게 해야 하는가?',o:['더 많이 투자한다','해당 전략을 사용하지 않는다','레버리지를 높인다','타임프레임을 바꾼다'],a:1,e:'Kelly 음수 = 기대값이 음수 → 거래할수록 돈을 잃으므로 거래하지 않아야.'},
+
+// ═══ SECTION 2: 중급 (26~50) ═══
+{id:26,s:'inter',q:'Order Block(OB)의 정의로 가장 정확한 것은?',o:['주문이 많은 가격대','강한 움직임 직전의 마지막 반대 캔들 영역','이동평균선이 교차하는 지점','볼린저밴드 중심선'],a:1,e:'OB = 기관이 대량 주문을 실행한 마지막 반대 캔들. 가격이 이 영역으로 돌아오면 재진입 기회.'},
+{id:27,s:'inter',q:'Fair Value Gap(FVG)는 어떻게 형성되는가?',o:['이동평균의 교차','3연속 같은 색 캔들','급격한 가격 이동으로 캔들 사이 갭 발생','거래량 감소'],a:2,e:'FVG = 3캔들 중 1번 캔들 고가와 3번 캔들 저가 사이 갭. 가격이 너무 빨리 움직여 효율적 거래가 안 된 영역.'},
+{id:28,s:'inter',q:'Liquidity Sweep의 핵심 원리는?',o:['추세 지속','최근 고/저점 잠깐 돌파 후 되돌아옴','볼린저밴드 터치','EMA 교차'],a:1,e:'기관이 소매 트레이더의 스탑을 수집(sweep)한 후 진짜 방향으로 이동.'},
+{id:29,s:'inter',q:'VWAP(Volume Weighted Average Price)이 주로 의미하는 것은?',o:['전일 종가','당일 거래량 가중 평균 가격(기관 평균 진입가)','볼린저 중심선','EMA 20'],a:1,e:'VWAP = 기관의 평균 체결 가격. 가격이 VWAP 위면 매수세 우위, 아래면 매도세 우위.'},
+{id:30,s:'inter',q:'3년 BTC 데이터 분석에서 가장 높은 PF를 보인 패턴은?',o:['BB 스퀴즈 돌파 (PF 1.07)','Order Block Bull (PF 1.38)','SR 지지 + 망치형 (PF 1.67)','FVG Fill (PF 1.16)'],a:2,e:'1H SR 지지 + 망치형 캔들 = PF 1.67로 전체 최고. 추세 정렬 시 승률 61.3%.'},
+{id:31,s:'inter',q:'추세 정렬(Trend Alignment)이 승률에 미치는 영향은 데이터상 얼마인가?',o:['+10~15%p','+2~6%p','+0.1%p','영향 없음'],a:1,e:'데이터 분석 결과 추세 정렬 시 승률 +2~6%p 향상. BB 하단 5M: 59.8% → 65.4%.'},
+{id:32,s:'inter',q:'5M BB 하단 반전 + 추세 정렬 시 승률은?',o:['48.3%','52.7%','59.8%','65.4%'],a:3,e:'5M BB 하단 반전 기본 59.8%, 추세 정렬(EMA20>EMA50) 시 65.4%로 +5.6%p 향상.'},
+{id:33,s:'inter',q:'Order Block이 다른 패턴보다 일관되게 높은 성과를 보이는 이유로 가장 타당한 것은?',o:['지표가 복잡해서','기관 주문 흔적이라 유동성이 집중되기 때문','무작위 확률','캔들 모양이 예쁘기 때문'],a:1,e:'OB = 기관이 실제로 주문을 실행한 영역 → 유동성이 남아있어 가격이 돌아올 때 반응할 확률 높음.'},
+{id:34,s:'inter',q:'BB 스퀴즈 돌파에서 거래량 확인이 중요한 이유는?',o:['차트가 예뻐서','가짜 돌파(whipsaw)를 걸러내기 위해','거래량은 중요하지 않다','항상 거래량이 높으니까'],a:1,e:'돌파봉의 거래량이 20기간 평균의 1.5배 이상이어야 진짜 돌파. 평균 이하 거래량 돌파 = 실패 확률 높음.'},
+{id:35,s:'inter',q:'컨플루언스(Confluence)란?',o:['하나의 강력한 지표','여러 근거가 같은 방향/가격대에서 겹치는 것','반대 신호가 나오는 것','타임프레임을 하나만 보는 것'],a:1,e:'Confluence = OB + S/R, FVG + BB 등 2개 이상의 근거가 같은 가격대에서 겹칠 때 신뢰도 상승.'},
+{id:36,s:'inter',q:'1H Order Block Bull의 "1%+ MFE 확률"은?',o:['19.5%','32.4%','49.0%','73.3%'],a:2,e:'1H OB Bull: N=2,109, 1%+ MFE 확률 49.0%. 약 절반의 거래에서 1% 이상 수익 구간 발생.'},
+{id:37,s:'inter',q:'Liquidity Sweep Bull 4H + 추세 정렬 시 승률은?',o:['48.5%','54.8%','58.1%','62.4%'],a:3,e:'4H Bull Sweep 기본 58.1%, 추세 정렬 시 62.4%. 큰 TF에서 스탑헌팅 후 반전 + 추세 일치 = 강력.'},
+{id:38,s:'inter',q:'"확인 캔들"을 기다려야 하는 이유는?',o:['차트가 더 예뻐져서','레벨에 도달했다고 반전이 보장되지 않으므로','항상 캔들을 기다려야 해서','거래량을 확인하려고'],a:1,e:'S/R 도달 = 반전 가능성. 하지만 돌파할 수도 있음. 반전 캔들(망치/유성/감싸기) 확인 후 진입하면 승률 향상.'},
+{id:39,s:'inter',q:'FVG(Fair Value Gap)의 실전 승률은 단독으로 사용 시 얼마 수준인가?',o:['40%','52~54%','65%','75%'],a:1,e:'FVG 단독 승률 52~54%. 에지가 약하므로 OB 또는 S/R과 겹칠 때(Confluence) 사용 권장.'},
+{id:40,s:'inter',q:'스캘핑에서 가장 높은 승률을 보인 조합은?',o:['BB 스퀴즈 돌파','EMA 교차','1H OB + 5M BB 하단 + 추세 정렬 (65%+)','VWAP 단독'],a:2,e:'1H에서 구조적 지지(OB) 확인 + 5M BB 하단에서 반전 캔들 + EMA 추세 정렬 = 기대 승률 65%+.'},
+{id:41,s:'inter',q:'VWAP의 가장 효과적인 활용법은?',o:['진입 신호로 직접 사용','방향 필터로 활용 (VWAP 위 = 롱 우위)','무시한다','SL 설정에 사용'],a:1,e:'VWAP 단독 승률 48~52%로 에지 약함. 방향 필터(VWAP 위에서만 롱, 아래에서만 숏)로 최적.'},
+{id:42,s:'inter',q:'15M Order Block Bull의 승률과 PF는?',o:['51.6% / 1.06','54.8% / 1.04','57.8% / 1.36','59.8% / 1.20'],a:2,e:'15M OB Bull: WR 57.8%, PF 1.36. N=3,827로 충분한 샘플. 추세 정렬 시 56.8%.'},
+{id:43,s:'inter',q:'다음 중 "가짜 돌파(False Breakout)"를 가장 잘 식별할 수 있는 것은?',o:['이동평균','Liquidity Sweep 패턴','볼린저밴드 중심선','거래 시간'],a:1,e:'Liq Sweep = 최근 고/저점을 잠깐 돌파 후 되돌아옴 = 전형적인 가짜 돌파. 이후 진짜 방향으로 이동.'},
+{id:44,s:'inter',q:'매매 일지에서 MFE 0%인 거래는 무엇을 의미하는가?',o:['완벽한 진입','진입 후 한 번도 수익 구간에 들어가지 못함','수수료 없음','청산하지 않음'],a:1,e:'MFE 0% = 진입 즉시 역행 = 진입 근거가 없었을 가능성 높음. 데이터: MFE 0% 거래 7건 = 전부 LOSS.'},
+{id:45,s:'inter',q:'볼린저밴드 %B 값이 1.05라면?',o:['가격이 하단밴드 아래','가격이 중심선','가격이 상단밴드 위(오버슈팅)','가격이 하단밴드 근처'],a:2,e:'%B > 1.0 = 상단밴드 위로 가격이 돌파. 극단적 과매수 또는 강한 상승 모멘텀.'},
+{id:46,s:'inter',q:'4H BB 하단 반전 패턴의 1%+ MFE 확률은?',o:['2.9%','17.1%','43.9%','73.3%'],a:3,e:'4H BB 하단 반전: 1%+ MFE 73.3%, 승률 66.7%. 큰 TF에서 극단적 과매도 반전 = 큰 수익 기회.'},
+{id:47,s:'inter',q:'"어중간한 가운데"에서 진입하면 데이터상 승률은?',o:['60% 이상','55%','50% 이하 (동전 던지기)','70%'],a:2,e:'구조적 레벨이 아닌 레인지 중간(30~70%) 진입 = 50% 이하. 에지 없음.'},
+{id:48,s:'inter',q:'스캘핑에서 적절한 R:R은?',o:['0.5:1','1.0:1','1.5~2.0:1','5.0:1'],a:2,e:'스캘핑 R:R 1.5~2.0이 최적. 승률 50%에 R:R 1.5면 장기 수익. 너무 높은 R:R은 TP 도달률 하락.'},
+{id:49,s:'inter',q:'EMA20 바운스 패턴이 가장 효과적인 조건은?',o:['역추세 진입','추세 방향과 같은 방향으로 바운스','거래량 무관','아무 시간대나'],a:1,e:'EMA20 바운스 = 추세 방향 되돌림 진입. EMA20이 동적 지지/저항 역할. 추세 반대 방향이면 무효.'},
+{id:50,s:'inter',q:'데이터 분석에서 "Score" 계산 공식은?',o:['승률 × PF','승률 × PF × √N','PF ÷ 승률','N × MFE'],a:1,e:'Score = WR% × PF × √N. 승률, 수익성, 표본 크기를 모두 반영한 복합 지표.'},
+
+// ═══ SECTION 3: 심화 (51~75) ═══
+{id:51,s:'adv',q:'Bull Order Block 진입 후 최적의 SL 위치는?',o:['OB 영역의 상단','OB 영역의 하단 아래','진입가에서 고정 %','VWAP'],a:1,e:'OB 하단 아래에 SL. OB 영역이 유지되지 않으면 = 시나리오 무효화 → 청산.'},
+{id:52,s:'adv',q:'FVG와 Order Block이 겹치는 영역에서 진입하면 어떤 이점이 있는가?',o:['없다','더 넓은 SL이 필요하다','두 가지 구조적 근거가 겹쳐 신뢰도 상승','레버리지를 높여야 한다'],a:2,e:'OB = 기관 주문 흔적, FVG = 가격 공백 → 두 영역 겹침 = 강력한 반응 가능성.'},
+{id:53,s:'adv',q:'Liquidity Sweep 후 진입 시 적절한 SL 위치는?',o:['Sweep 전 고/저점','Sweep 최대 돌출점 너머','진입가에서 0.5%','EMA20'],a:1,e:'Sweep의 꼬리(최대 돌출점) 너머에 SL. Sweep이 더 깊어지면 시나리오 무효화.'},
+{id:54,s:'adv',q:'15M에서 OB가 감지되고 5M에서 BB 하단 반전이 동시에 나타났다. 어떻게 하는가?',o:['5M 신호만 따른다','15M 신호만 따른다','두 신호가 같은 방향이면 고신뢰 진입','무시한다'],a:2,e:'Confluence: 15M OB(57.8%) + 5M BB하단(65.4%) 겹침 → 기대 승률 65%+ = 최적 진입.'},
+{id:55,s:'adv',q:'BB 밴드워크(Band Walk)란?',o:['가격이 BB 안에서 횡보','가격이 BB 상단/하단을 따라 지속적으로 이동','BB 폭이 줄어드는 것','BB 설정을 변경하는 것'],a:1,e:'밴드워크 = 강한 추세에서 가격이 BB 상/하단을 따라 움직임. 이때 BB 반전 신호 무시해야.'},
+{id:56,s:'adv',q:'4H Order Block + 1H FVG Fill + 15M 추세 정렬이 모두 같은 방향일 때, 이것을 무엇이라 부르는가?',o:['다이버전스','컨플루언스(Confluence)','오실레이터','스퀴즈'],a:1,e:'3가지 다른 근거(OB + FVG + 추세)가 같은 방향/가격대에서 겹침 = 최고 수준의 Confluence.'},
+{id:57,s:'adv',q:'데이터에서 Bear 패턴이 Bull 패턴보다 전반적으로 PF가 낮은 이유로 가장 타당한 것은?',o:['데이터 오류','BTC의 구조적 상승 편향 때문','분석 방법 문제','타임프레임 차이'],a:1,e:'BTC는 장기적으로 우상향하는 자산. 숏은 시간이 갈수록 불리 → Bear 패턴 PF가 낮음.'},
+{id:58,s:'adv',q:'분할 익절(Partial Take Profit)의 최적 전략은?',o:['전량 TP1에서 청산','TP1(50%), 나머지 트레일링','전량 트레일링','분할 익절은 필요 없다'],a:1,e:'TP1에서 50% 확정 = 수익 보호. 나머지 50%는 트레일링으로 추가 수익 추구.'},
+{id:59,s:'adv',q:'MFE 0.2% 도달 시 SL을 BE(Break Even)로 이동하는 이유는?',o:['더 큰 수익을 위해','EXIT_GIVEBACK(수익 반납) 방지','항상 그래야 해서','거래소 규칙'],a:1,e:'데이터: EXIT_GIVEBACK 3회 반복. MFE 달성 후 전량 반납 → 최소 본전 보장.'},
+{id:60,s:'adv',q:'ICT(Inner Circle Trader) 컨셉에서 "스마트 머니"의 행동 패턴은?',o:['소매 트레이더와 같은 방향','소매 트레이더의 스탑을 수집한 후 반대로 이동','무작위','뉴스 기반'],a:1,e:'기관(스마트 머니)은 유동성이 필요 → 소매의 스탑 레벨로 가격을 밀어 주문 체결 → 진짜 방향으로 이동.'},
+{id:61,s:'adv',q:'BB 스퀴즈 돌파에서 "방향"을 판단하는 가장 좋은 추가 근거는?',o:['동전 던지기','상위 TF 추세 방향','돌파 캔들의 색깔만','거래 시간'],a:1,e:'BB 스퀴즈는 방향을 알려주지 않음. 상위 TF 추세 방향으로 돌파를 기대 → 추세 방향 돌파에만 진입.'},
+{id:62,s:'adv',q:'5M에서 Order Block Bull 진입 시, 추세 정렬(EMA20>EMA50) 조건을 추가하면 승률은?',o:['49.3%','55.9%','57.4%','59.4%'],a:3,e:'5M OB Bull 기본 57.4% → 추세 정렬 시 59.4%. +2.0%p 향상.'},
+{id:63,s:'adv',q:'다음 중 "낮은 품질" 진입의 신호가 아닌 것은?',o:['0초 체결','1H 레인지 30~70% 위치','확인 캔들 대기 후 진입','방향 핑퐁 (숏→롱→숏)'],a:2,e:'확인 캔들 대기 = 높은 품질. 나머지는 모두 뇌동매매/낮은 품질 신호.'},
+{id:64,s:'adv',q:'4H BB 하단 반전의 MAE가 3.1%인 이유와 대응 방법은?',o:['무시한다','4H TF이므로 변동폭이 크다 → SL을 넓게 잡고 사이즈 줄임','항상 5M으로 진입','4H 패턴은 사용하지 않는다'],a:1,e:'큰 TF = 큰 변동폭. MAE 3.1%이므로 SL 범위가 넓어야 → 포지션 사이즈를 줄여 리스크 $1 유지.'},
+{id:65,s:'adv',q:'Order Block 탐지에서 "강한 움직임"의 기준으로 사용한 것은?',o:['RSI 70 이상','봉 body가 0.3% 이상 + body 비율 60% 이상','MACD 교차','거래량 3배'],a:1,e:'OB 코드: body_pct > 0.6 (봉의 60% 이상이 몸통) + 가격 변동 0.3% 이상 = "강한 움직임".'},
+{id:66,s:'adv',q:'FVG Fill 전략에서 "갭이 채워진다"의 의미는?',o:['가격이 갭 영역을 통과한다','가격이 갭 영역으로 되돌아온다','갭이 사라진다','새로운 갭이 생긴다'],a:1,e:'FVG Fill = 급등 후 남은 가격 공백으로 가격이 되돌아옴. 이때 원래 방향으로 재진입.'},
+{id:67,s:'adv',q:'실전에서 "체크리스트 3/5 이상 확인"의 5개 항목은?',o:['RSI, MACD, 스토캐스틱, ADX, CCI','추세선, S/R, BB, 캔들패턴, 채널','EMA5, EMA10, EMA20, EMA50, EMA200','시가, 종가, 고가, 저가, 거래량'],a:1,e:'5개: (1)추세선 4TF (2)지지저항 4TF (3)볼린저밴드 위치 (4)캔들 모양 (5)채널 이동.'},
+{id:68,s:'adv',q:'Liquidity Sweep에서 "wick"의 크기가 중요한 이유는?',o:['차트가 예뻐서','wick이 클수록 더 많은 스탑이 수집됐다는 의미','wick은 무관하다','항상 같은 크기여야'],a:1,e:'긴 wick = 많은 스탑 오더 수집 → 유동성 확보 후 진짜 방향으로 이동할 에너지가 충분.'},
+{id:69,s:'adv',q:'15M EMA20 바운스 Bear의 PF가 1.25인 이유로 가장 타당한 것은?',o:['무작위','하락 추세에서 EMA20이 동적 저항 역할을 하기 때문','데이터 오류','상승 추세에서만 유효'],a:1,e:'하락 추세에서 EMA20 = 동적 저항. 가격이 반등하다 EMA20에서 다시 하락 → 추세 지속 진입.'},
+{id:70,s:'adv',q:'SR 지지 + 강한양봉(1H)의 추세 정렬 승률은 53.9%인데, SR 지지 + 망치형(1H)은 61.3%다. 차이의 원인은?',o:['표본 크기 차이 (475 vs 148)','망치형이 더 강한 반전 신호이기 때문','둘 다','무작위'],a:2,e:'망치형은 긴 아래꼬리 = 강한 매수 거부 신호. 강한 양봉은 추세 지속일 수도 반전일 수도 있어 신뢰도 차이.'},
+{id:71,s:'adv',q:'BB 스퀴즈의 "폭 1.5% 미만" 기준은 어떻게 측정하는가?',o:['상단 - 하단의 절대값','(상단 - 하단) / 중심선 × 100','상단 / 하단','고가 - 저가'],a:1,e:'BB Width = (BB상단 - BB하단) / SMA20 × 100. 1.5% 미만 = 극도의 변동성 수축 = 돌파 임박.'},
+{id:72,s:'adv',q:'실전 매매에서 "0초 체결"이 86% 패배율을 보이는 근본 원인은?',o:['운이 나빠서','분석 없이 시장가로 충동 진입하기 때문','0초가 아니라 실제로 1초','거래소 문제'],a:1,e:'0초 체결 = 계획 없이 클릭 = 뇌동매매. 분석/확인 과정이 생략됨 → 에지 없는 진입.'},
+{id:73,s:'adv',q:'OB + FVG + Liq Sweep이 모두 같은 가격대에서 발생하면 어떤 의미인가?',o:['혼란스러운 신호','극도로 강한 반응 예상 가격대 (Triple Confluence)','무시해야 한다','SL을 없애도 된다'],a:1,e:'Triple Confluence = 기관 주문 + 가격 공백 + 스탑 수집이 모두 겹침. 극강의 반응 가능성.'},
+{id:74,s:'adv',q:'다음 중 "포지션 사이징"에서 가장 중요한 원칙은?',o:['항상 같은 금액','승률에 따라 리스크 금액 조절','감으로 결정','레버리지 최대화'],a:1,e:'리스크 금액 = 승률 + 현재 단계에 맞춤. 승률 60% 전 $1 → $5 → $10 단계적 증가.'},
+{id:75,s:'adv',q:'Confluence 진입의 최소 조건은?',o:['1개 근거','2개 이상의 근거가 같은 방향/가격대에서 겹침','5개 이상','근거 없어도 됨'],a:1,e:'최소 2개 Confluence. 하나의 패턴만으로 진입하지 마라. 겹칠수록 승률 상승.'},
+
+// ═══ SECTION 4: 실전 (76~100) ═══
+{id:76,s:'prac',q:'BTC가 1H SR 지지에 도달했고 15M 추세가 UP이다. 5M에서 아직 반전 캔들이 안 나왔다. 어떻게 하는가?',o:['바로 롱 진입','확인 캔들을 기다린다','숏 진입','포기한다'],a:1,e:'법칙: S/R 도달 → 확인 캔들 대기. 바로 진입 = 뇌동매매. 반전 캔들 나올 때까지 기다린다.'},
+{id:77,s:'prac',q:'직전 숏에서 손절당했다. 10분 후 같은 자리에서 숏 기회가 보인다. 어떻게 하는가?',o:['바로 숏 진입','최소 30분 쿨다운 후 재평가','롱으로 전환','포지션을 2배로'],a:1,e:'법칙: 손절 후 최소 30분 쿨다운. 감정이 가라앉은 후 새로운 분석으로 재진입 판단.'},
+{id:78,s:'prac',q:'4H 추세 DOWN, 1H 추세 DOWN, 15M 추세 UP. 어느 방향이 유리한가?',o:['롱 (15M을 따라)','숏 (4H+1H를 따라)','매매하지 않는다','양방향 모두'],a:1,e:'다수 TF가 일치하는 방향 우선. 4H+1H DOWN = 2:1로 숏 우위. 15M UP은 일시적 반등일 수 있음.'},
+{id:79,s:'prac',q:'BB 하단에서 망치형이 나왔지만 BB 밴드워크 중이다. 어떻게 하는가?',o:['망치형이니까 롱 진입','밴드워크 중이므로 관망 또는 추세 방향(숏)','양방향 주문','SL 없이 롱'],a:1,e:'밴드워크 = 강한 추세에서 BB 하단을 따라 계속 하락. 이때 BB 반전 신호 무시.'},
+{id:80,s:'prac',q:'스캘핑 중 MFE 0.2%에 도달했다. SL은 현재 -0.15% 위치. 어떻게 하는가?',o:['SL 유지','SL을 BE(진입가)로 이동','전량 익절','SL 제거'],a:1,e:'법칙: MFE 0.2% 도달 → SL→BE 이동. 최소 본전 보장 → EXIT_GIVEBACK 방지.'},
+{id:81,s:'prac',q:'22:45 KST, 좋은 숏 타점이 보인다. 하지만 규칙상 00시 이후 진입 금지. 어떻게 하는가?',o:['규칙을 무시하고 진입','진입 가능 (아직 00시 전)','TP를 00시 전에 설정하고 진입','포기'],a:1,e:'22:45는 00시 전이므로 진입 가능. 단, 00시 이후 신규 진입 금지 규칙과 혼동하지 않기.'},
+{id:82,s:'prac',q:'1H OB 영역으로 가격이 돌아왔다. 하지만 5M에서 강한 음봉으로 OB를 관통 중이다. 어떻게 하는가?',o:['바로 롱 진입','OB 관통 = 시나리오 무효화 → 패스','숏 전환','더 큰 사이즈로 롱'],a:1,e:'OB 영역을 강하게 관통하면 = 기관 수요 소진 = 시나리오 무효. 무조건 패스.'},
+{id:83,s:'prac',q:'현재 승률 45%, 실전 15건. 적절한 리스크 금액은?',o:['$50','$10','$1','$0 (매매 중단)'],a:2,e:'승률 60% 전까지 $1 리스크 유지. 45%는 아직 학습 단계 → $1로 경험 축적.'},
+{id:84,s:'prac',q:'Liquidity Sweep이 발생했는데, sweep 후에도 가격이 계속 같은 방향으로 간다. 어떻게 하는가?',o:['진짜 돌파로 판단하고 추세 따라간다','반전을 기다린다','무시한다','양방향 주문'],a:0,e:'Sweep 후 되돌아오지 않으면 = 진짜 돌파. 스탑헌팅이 아니라 실제 브레이크아웃.'},
+{id:85,s:'prac',q:'15M FVG가 채워졌지만 해당 가격대에 다른 구조적 근거가 없다. 진입하는가?',o:['FVG만으로 진입','진입하지 않는다 (Confluence 부족)','레버리지를 높여 진입','SL 없이 진입'],a:1,e:'FVG 단독 승률 52~54% = 에지 약함. Confluence 없으면 패스. 최소 2개 근거 겹침 필요.'},
+{id:86,s:'prac',q:'5분 안에 3번 방향을 바꿨다 (숏→롱→숏). 어떤 상태인가?',o:['좋은 적응력','뇌동매매 / 핑퐁 / 틸트 상태','정상적 매매','고빈도 전략'],a:1,e:'법칙: 핑퐁 금지. 5분에 3번 방향 전환 = 분석 없는 충동 = 즉시 매매 중단.'},
+{id:87,s:'prac',q:'좋은 타점이 보였는데 이미 지나갔다. "이거라도 타야겠다"는 생각이 든다. 어떻게 하는가?',o:['빠르게 진입 (아직 갈 수 있음)','PASS — 다음 타점까지 기다린다','절반 사이즈로 진입','SL 넓게 잡고 진입'],a:1,e:'법칙: 타점 놓치면 보내줘라. 추격 진입 = LOSS의 근본 원인. 다음 타점은 반드시 온다.'},
+{id:88,s:'prac',q:'Entry: 69,500 / SL: 69,300 / TP: 69,800. R:R은?',o:['1.0:1','1.5:1','2.0:1','0.67:1'],a:1,e:'리스크 = 69,500 - 69,300 = $200. 리워드 = 69,800 - 69,500 = $300. R:R = 300/200 = 1.5:1.'},
+{id:89,s:'prac',q:'레버리지 10x, 진입가 $69,000, SL $68,800. $1 리스크를 지키려면 포지션 사이즈는?',o:['$69','$345','$500','$1,000'],a:1,e:'SL 거리 = $200. 가격 대비 = 200/69000 = 0.29%. 레버 10x → 0.29% × 10 = 2.9%. $1/2.9% = $34.5 마진 → $345 포지션.'},
+{id:90,s:'prac',q:'3연패 후 "이번엔 되겠지"라는 생각이 든다. 규칙에 따르면?',o:['한 번 더 시도','당일 매매 종료','사이즈를 2배로','다른 코인으로 전환'],a:1,e:'법칙: 3연패 → 당일 매매 종료. 판단력이 가장 흐린 시간. 내일 새로운 마음으로.'},
+{id:91,s:'prac',q:'1H S/R 지지 + 15M OB + 5M 망치형이 모두 같은 가격대에서 발생. 이 진입의 기대 승률은?',o:['45%','52%','60%+','90%'],a:2,e:'Triple Confluence: SR(61.3%) + OB(57.8%) + 확인캔들. 겹칠수록 상승 → 기대 60%+.'},
+{id:92,s:'prac',q:'진입 전 "3초 멈춤" 체크에서 확인할 3가지는?',o:['차트 색깔, 시간, 날씨','15M 추세 맞나? / S/R 근처인가? / 추격 아닌가?','EMA, RSI, MACD','아무거나'],a:1,e:'3초 확인: (1) 15M 추세 방향 맞나? (2) 구조적 레벨 근처인가? (3) 놓친 타점 추격 아닌가?'},
+{id:93,s:'prac',q:'VWAP 아래에서 롱 진입하려고 한다. 적절한가?',o:['적절하다','VWAP 아래 = 매도세 우위 → 롱 비추','VWAP은 무관','레버리지를 높이면 가능'],a:1,e:'VWAP = 기관 평균가. VWAP 아래 = 시장이 매도세 우위. 롱보다 숏이 유리한 영역.'},
+{id:94,s:'prac',q:'스캘핑으로 +$2.32 수익을 냈다. 직후 "더 벌 수 있었는데"라는 생각이 든다. 올바른 태도는?',o:['다시 진입해서 더 번다','수익은 수익. 기준 매매였으면 OK','아쉬우니까 사이즈를 키운다','반대 방향으로 진입'],a:1,e:'법칙: 프로세스로 평가. 기준에 맞는 매매 + 수익 = 좋은 매매. "더 벌 수 있었는데" = FOMO.'},
+{id:95,s:'prac',q:'BB 상단에서 유성형(Shooting Star)이 나왔다. 하지만 4H 추세가 강한 상승이다. 어떻게 하는가?',o:['숏 진입 (유성형 신호)','관망 또는 롱 유지 (4H 추세 우선)','양방향 주문','SL 없이 숏'],a:1,e:'큰 TF 추세 > 작은 TF 신호. 4H 강한 상승 중 BB 상단 유성형 = 밴드워크 가능성. 역추세 숏 위험.'},
+{id:96,s:'prac',q:'OB 영역에 가격이 도달했으나 거래량이 평균 이하다. 신뢰도는?',o:['높다','낮다 — 기관 참여 미흡 시 반응 약할 수 있음','거래량 무관','반드시 진입'],a:1,e:'기관 참여 = 거래량 동반. OB 도달 + 저거래량 = 기관 미참여 가능 → 신뢰도 하락.'},
+{id:97,s:'prac',q:'현재 총 실전 기록: 5W 10L (승률 33%). 이 상황에서 가장 중요한 것은?',o:['더 많이 거래해서 수를 늘린다','LOSS 거래를 분석하여 반복 패턴 제거','레버리지를 높인다','다른 코인으로 전환'],a:1,e:'승률 33% = 아직 학습 단계. LOSS 분석 → 공통 실수 패턴(추격, 핑퐁, 심야) 제거 → 승률 향상.'},
+{id:98,s:'prac',q:'매매 법칙에서 "제0법칙: 마인드셋"의 핵심 메시지는?',o:['돈을 많이 벌어라','지금은 등록금을 내는 기간. 같은 이유로 두 번 잃지 마라','매매를 그만둬라','감정을 무시하라'],a:1,e:'현재는 배우는 비용. 잃는 건 괜찮되, 같은 실수 반복 금지. 프로세스로 평가.'},
+{id:99,s:'prac',q:'숏이 강한 추세인데 "하방이 고점이 높고 상방이 고점이 낮다"의 의미는?',o:['상승 추세','하락 추세에서 숏 수익이 롱 수익보다 크다는 것','횡보','아무 의미 없다'],a:1,e:'하방 움직임의 고점(MFE) > 상방 움직임의 고점(MFE) = 숏이 확률적으로 더 큰 수익 가능.'},
+{id:100,s:'prac',q:'매매를 마치고 일지를 쓸 때, 가장 먼저 기록해야 할 것은?',o:['수익 금액','어디서 살지를 미리 정했는가 (제1법칙 준수 여부)','사용한 지표','거래 시간'],a:1,e:'제1법칙이 모든 것의 기초. 진입가를 미리 정했는가 → Yes면 기준 매매, No면 뇌동매매. 이 구분이 핵심.'},
+];
+
+// ═══════════════════════════════════════════════════════
+let answered = {};
+let wrongSet = new Set();
+
+function renderQuiz(filter) {
+  const el = document.getElementById('quiz-container');
+  let html = '';
+  let currentSection = '';
+  const sectionNames = {basic:'기초 (1~25)', inter:'중급 (26~50)', adv:'심화 (51~75)', prac:'실전 (76~100)'};
+  const sectionTags = {basic:'tag-basic', inter:'tag-inter', adv:'tag-adv', prac:'tag-prac'};
+
+  Q.forEach((q,idx) => {
+    if (filter && filter !== 'all' && filter !== 'wrong' && q.s !== filter) return;
+    if (filter === 'wrong' && !wrongSet.has(q.id)) return;
+
+    if (q.s !== currentSection) {
+      currentSection = q.s;
+      html += `<div class="section-title"><span class="tag ${sectionTags[q.s]}">${sectionNames[q.s]}</span></div>`;
+    }
+
+    const qid = `q${q.id}`;
+    html += `<div class="q-card" id="${qid}" data-qid="${q.id}">
+      <div class="q-num"><span class="tag ${sectionTags[q.s]}">${q.s.toUpperCase()}</span> Q${q.id}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-opts">`;
+
+    q.o.forEach((opt, oi) => {
+      const letter = String.fromCharCode(65 + oi);
+      html += `<button class="q-btn" id="${qid}_${oi}" onclick="answer(${q.id},${oi})">${letter}. ${opt}</button>`;
+    });
+
+    html += `</div><div class="q-explain" id="${qid}_e"></div></div>`;
+  });
+
+  el.innerHTML = html;
+
+  // Restore answered state
+  Object.entries(answered).forEach(([qid, oi]) => {
+    const q = Q.find(x => x.id == qid);
+    if (q) highlightAnswer(q, oi);
+  });
+}
+
+function answer(qid, oi) {
+  if (answered[qid] !== undefined) return; // already answered
+  answered[qid] = oi;
+  const q = Q.find(x => x.id === qid);
+  highlightAnswer(q, oi);
+  updateProgress();
+}
+
+function highlightAnswer(q, oi) {
+  const correct = q.a === oi;
+  const qid = `q${q.id}`;
+
+  // Highlight selected
+  document.getElementById(`${qid}_${oi}`).classList.add(correct ? 'correct' : 'wrong');
+  // Reveal correct
+  if (!correct) {
+    document.getElementById(`${qid}_${q.a}`).classList.add('reveal');
+    wrongSet.add(q.id);
+  }
+  // Show explanation
+  const eEl = document.getElementById(`${qid}_e`);
+  eEl.innerHTML = (correct ? '<span style="color:var(--green)">O 정답!</span>' : '<span style="color:var(--red)">X 오답</span>') + ' — ' + q.e;
+  eEl.classList.add('show');
+}
+
+function updateProgress() {
+  const total = Q.length;
+  const done = Object.keys(answered).length;
+  document.getElementById('prog').style.width = (done/total*100) + '%';
+  document.getElementById('prog-text').textContent = `${done}/${total}`;
+}
+
+function showScore() {
+  let correct = 0;
+  let bySection = {basic:{c:0,t:0}, inter:{c:0,t:0}, adv:{c:0,t:0}, prac:{c:0,t:0}};
+  Q.forEach(q => {
+    bySection[q.s].t++;
+    if (answered[q.id] !== undefined && answered[q.id] === q.a) {
+      correct++;
+      bySection[q.s].c++;
+    }
+  });
+
+  const panel = document.getElementById('score-panel');
+  document.getElementById('score-val').textContent = correct;
+  document.getElementById('score-val').style.color = correct >= 80 ? 'var(--green)' : correct >= 60 ? 'var(--amber)' : 'var(--red)';
+
+  let detail = '';
+  Object.entries(bySection).forEach(([k,v]) => {
+    const names = {basic:'기초', inter:'중급', adv:'심화', prac:'실전'};
+    const pct = v.t > 0 ? (v.c/v.t*100).toFixed(0) : 0;
+    detail += `${names[k]}: ${v.c}/${v.t} (${pct}%) | `;
+  });
+  document.getElementById('score-detail').textContent = detail;
+  panel.classList.add('show');
+  panel.scrollIntoView({behavior:'smooth'});
+}
+
+function resetAll() {
+  answered = {};
+  wrongSet = new Set();
+  document.getElementById('score-panel').classList.remove('show');
+  renderQuiz('all');
+  updateProgress();
+}
+
+function filterQ(f) {
+  document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderQuiz(f);
+}
+
+// Init
+renderQuiz('all');
+</script>
+</body></html>
